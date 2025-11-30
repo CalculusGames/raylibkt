@@ -5,9 +5,9 @@ compilerOpts = -Ilib/raylib/src
 linkerOpts = -lraylib
 linkerOpts.mingw = -Llib/mingw
 linkerOpts.linux = -Llib/linux
-linkerOpts.macos = -Llib/osx
+linkerOpts.osx = -Llib/osx
 
 staticLibraries = libraylib.a
 libraryPaths.mingw = lib/mingw
 libraryPaths.linux = lib/linux
-libraryPaths.macos = lib/osx
+libraryPaths.osx = lib/osx
