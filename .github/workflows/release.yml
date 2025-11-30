@@ -1,0 +1,82 @@
+name: Release Project
+on:
+  workflow_dispatch:
+    inputs:
+      changelog:
+        type: string
+        description: 'Changelog to replace the auto-generated one'
+      suffix:
+        type: string
+        description: 'Suffix to append to the version'
+        default: ''
+
+jobs:
+  publish:
+    runs-on: macos-latest
+    name: Publish to Repositories
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+      - name: Set up Konan
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.konan/caches
+            ~/.konan/dependencies
+            ~/.konan/kotlin-native-prebuilt-macos-*
+          key: ${{ runner.os }}-konan
+          restore-keys: |
+            ${{ runner.os }}-konan
+      - name: Change Permissions
+        run: chmod +x ./gradlew
+      - name: Publish to Repositories
+        env:
+          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+        run: ./gradlew publish
+
+  release:
+    runs-on: ubuntu-latest
+    name: Release Project
+    timeout-minutes: 30
+    needs: publish
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Change Permissions
+        run: chmod +x ./gradlew
+      - name: Extract Gradle version
+        run: echo "VERSION=$(./gradlew properties | grep '^version:' | awk '{print $2}')" >> $GITHUB_ENV
+      - name: Retrieve Latest Tag
+        id: latest_tag
+        run: echo "LATEST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+      - name: Generate Changelog
+        if: ${{ github.event.inputs.changelog == '' }}
+        id: changelog
+        uses: mikepenz/release-changelog-builder-action@v5
+        with:
+          configuration: ".github/release.json"
+          mode: "HYBRID"
+          fromTag: "${{ env.LATEST_TAG }}"
+          toTag: "${{ github.ref_name }}"
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VERSION }}${{ github.event.inputs.suffix }}
+          name: raylibkt v${{ env.VERSION }}${{ github.event.inputs.suffix }}
+          body: ${{ steps.changelog.outputs.changelog || github.event.inputs.changelog }}
+          draft: false
+          prerelease: ${{ github.ref_name != 'master' }}
