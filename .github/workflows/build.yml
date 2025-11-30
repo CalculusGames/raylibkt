@@ -106,6 +106,7 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
+    needs: setup
 
     permissions:
       contents: read
