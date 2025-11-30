@@ -33,12 +33,39 @@ kotlin {
     applyDefaultHierarchyTemplate()
     withSourcesJar()
 
-    linuxX64()
-    macosX64()
-    macosArm64()
-    mingwX64()
+	val hostOs = System.getProperty("os.name").lowercase()
+	val hostArch = System.getProperty("os.arch").lowercase()
+	val isMac = hostOs.contains("mac") || hostOs.contains("darwin")
+	val isArm64 = hostArch.contains("aarch64") || hostArch.contains("arm64")
+	val isX64 = hostArch.contains("amd64") || hostArch.contains("x86_64")
+
+	when {
+		hostOs.contains("linux") && isX64 -> linuxX64()
+		hostOs.contains("windows") && isX64 -> mingwX64()
+		isMac && isX64 -> macosX64()
+		isMac && isArm64 -> macosArm64()
+		else -> throw GradleException("Host OS '$hostOs' with architecture '$hostArch' is not supported for native compilation.")
+	}
 
     targets.filterIsInstance<KotlinNativeTarget>().forEach { target ->
+		target.binaries {
+			findByName("debugTest")?.apply {
+				if (target.konanTarget.family.isAppleFamily) {
+					val frameworks = listOf(
+						"CoreFoundation",
+						"CoreGraphics",
+						"AppKit",
+						"IOKit",
+						"Metal",
+						"QuartzCore",
+						"Cocoa"
+					)
+
+					linkerOpts(frameworks.flatMap { listOf("-framework", it) })
+				}
+			}
+		}
+
         target.compilations.all {
             cinterops {
                 val raylib by creating {
@@ -51,6 +78,16 @@ kotlin {
             }
         }
     }
+
+	sourceSets {
+		commonMain.dependencies {
+			implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+		}
+
+		commonTest.dependencies {
+			implementation(kotlin("test"))
+		}
+	}
 }
 
 fun KotlinMultiplatformExtension.configureSourceSets() {
