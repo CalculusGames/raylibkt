@@ -64,6 +64,10 @@ kotlin {
 
 					linkerOpts(frameworks.flatMap { listOf("-framework", it) })
 				}
+
+				if (target.konanTarget.family == Family.MINGW) {
+					linkerOpts("-lopengl32", "-lwinmm")
+				}
 			}
 		}
 

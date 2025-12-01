@@ -4,6 +4,7 @@ package raylib
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.posix.getenv
+import raylib.internal.CloseWindow
 
 internal actual val _isHeadless: Boolean
     get() = getenv("DISPLAY") == null || getenv("WAYLAND_DISPLAY") == null
