@@ -3,6 +3,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.konan.target.Family
 
 plugins {
     kotlin("multiplatform") version "2.2.21"
@@ -62,6 +63,10 @@ kotlin {
 					)
 
 					linkerOpts(frameworks.flatMap { listOf("-framework", it) })
+				}
+
+				if (target.konanTarget.family == Family.MINGW) {
+					linkerOpts("-Llib/mingw", "-lraylib", "-Wl,--exclude-libs,user32")
 				}
 			}
 		}
