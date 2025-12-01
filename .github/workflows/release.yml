@@ -64,6 +64,7 @@ jobs:
         run: chmod +x ./gradlew
       - name: Publish Kotlin Multiplatform to Calculus Games
         if: ${{ matrix.is_main }}
+        shell: bash
         env:
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
@@ -72,6 +73,7 @@ jobs:
         run: ./gradlew publishKotlinMultiplatformPublicationToCalculusGamesRepository
       - name: Publish Kotlin Multiplatform to GitHub Packages
         if: ${{ matrix.is_main && github.ref_name == 'master' }}
+        shell: bash
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -79,6 +81,7 @@ jobs:
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
         run: ./gradlew publishKotlinMultiplatformPublicationToGitHubPackagesRepository
       - name: Publish Native Publication to Calculus Games
+        shell: bash
         env:
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
@@ -87,6 +90,7 @@ jobs:
         run: ./gradlew publish${{ matrix.publication }}PublicationToCalculusGamesRepository
       - name: Publish Native Publication to GitHub Packages
         if: ${{ github.ref_name == 'master' }}
+        shell: bash
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
