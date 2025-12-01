@@ -204,10 +204,10 @@ jobs:
             publication: LinuxX64
             is_main: true
           - os: macos-15
-            publication: MacosX64
+            publication: MacosArm64
             is_main: false
           - os: macos-15-intel
-            publication: MacosArm64
+            publication: MacosX64
             is_main: false
           - os: windows-2025
             publication: MingwX64
