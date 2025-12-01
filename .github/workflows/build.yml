@@ -10,7 +10,7 @@ on:
 
 jobs:
   setup:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 30
 
     steps:
@@ -22,16 +22,6 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
           cache: 'gradle'
-      - name: Set up Konan
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.konan/caches
-            ~/.konan/dependencies
-            ~/.konan/kotlin-native-prebuilt-macos-*
-          key: ${{ runner.os }}-konan
-          restore-keys: |
-            ${{ runner.os }}-konan
       - name: Change Permissions
         run: chmod +x ./gradlew
       - name: Gradle Information
@@ -196,7 +186,7 @@ jobs:
         run: bash dokka.sh ${GITHUB_SHA::7}
 
   publish:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
     needs: [build, test]
     if: ${{ github.event_name != 'pull_request' }}
     timeout-minutes: 30
@@ -204,6 +194,11 @@ jobs:
     permissions:
       contents: write
       packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, macos-15-intel, windows-2025]
 
     steps:
       - uses: actions/checkout@v6
@@ -222,7 +217,7 @@ jobs:
           path: |
             ~/.konan/caches
             ~/.konan/dependencies
-            ~/.konan/kotlin-native-prebuilt-macos-*
+            ~/.konan/kotlin-native-prebuilt-*
           key: ${{ runner.os }}-konan
           restore-keys: |
             ${{ runner.os }}-konan

@@ -12,9 +12,25 @@ on:
 
 jobs:
   publish:
-    runs-on: macos-latest
-    name: Publish to Repositories
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
+
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux-x64
+            os: ubuntu-24.04
+          - name: macos-arm64
+            os: macos-15
+          - name: macos-x64
+            os: macos-15-intel
+          - name: windows
+            os: windows-2025
 
     steps:
       - uses: actions/checkout@v6
@@ -51,7 +67,6 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    name: Release Project
     timeout-minutes: 30
     needs: publish
 
