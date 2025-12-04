@@ -1,11 +1,20 @@
 @file:OptIn(ExperimentalForeignApi::class)
 package raylib
 
+import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.NativePlacement
 import kotlinx.cinterop.cValue
+import kotlinx.cinterop.alloc
+import kotlinx.cinterop.allocArray
 import kotlinx.cinterop.get
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.pointed
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
+import kray.toByteArray
 import raylib.internal.*
 
 /**
@@ -16,6 +25,13 @@ import raylib.internal.*
  * @property a The alpha component (0-255).
  */
 data class Color(val r: UByte, val g: UByte, val b: UByte, val a: UByte = 255.toUByte()) {
+
+	init {
+		require(r.toInt() in 0..255) { "red value must be between 0 and 255"}
+		require(g.toInt() in 0..255) { "green value must be between 0 and 255" }
+		require(b.toInt() in 0..255) { "blue value must be between 0 and 255" }
+		require(a.toInt() in 0..255) { "alpha value must be between 0 and 255" }
+	}
 
     /**
      * Creates a Color instance from a raw raylib Color structure.
@@ -28,6 +44,16 @@ data class Color(val r: UByte, val g: UByte, val b: UByte, val a: UByte = 255.to
         a = raw.a
     )
 
+	/**
+	 * Creates a Color instance from a raw raylib Color CValue.
+	 * @param raw The raw raylib Color CValue.
+	 */
+	constructor(raw: CValue<raylib.internal.Color>) : this(
+		raw.useContents {
+			((a.toInt() shl 24) or (r.toInt() shl 16) or (g.toInt() shl 8) or b.toInt()).toLong()
+		}
+	)
+
     /**
      * Creates a Color instance from integer values for red, green, blue, and alpha components.
      * @param r The red component (0-255).
@@ -35,38 +61,28 @@ data class Color(val r: UByte, val g: UByte, val b: UByte, val a: UByte = 255.to
      * @param b The blue component (0-255).
      * @param a The alpha component (0-255).
      */
-    constructor(r: Int, g: Int, b: Int, a: Int) : this(r.toUByte(), g.toUByte(), b.toUByte(), a.toUByte())
+    constructor(r: Int, g: Int, b: Int, a: Int = 255) : this(r.toUByte(), g.toUByte(), b.toUByte(), a.toUByte())
 
     /**
-     * Creates a Color instance from integer values for red, green, and blue components.
-     * The alpha component is set to 255 (fully opaque).
-     * @param r The red component (0-255).
-     * @param g The green component (0-255).
-     * @param b The blue component (0-255).
+     * Creates a Color instance from a single integer representing an ARGB color.
+     * @param argb The ARGB color as an integer.
      */
-    constructor(r: Int, g: Int, b: Int) : this(r.toUByte(), g.toUByte(), b.toUByte(), 255.toUByte())
-
-    /**
-     * Creates a Color instance from a single integer representing an RGB color.
-     * The alpha component is set to 255 (fully opaque).
-     * @param rgb The RGB color as an integer.
-     */
-    constructor(rgb: Int) : this(
-        r = ((rgb shr 16) and 0xFF).toUByte(),
-        g = ((rgb shr 8) and 0xFF).toUByte(),
-        b = (rgb and 0xFF).toUByte(),
-        a = 255.toUByte()
+    constructor(argb: Int) : this(
+		a = ((argb shr 24) and 0xFF).toUByte(),
+		r = ((argb shr 16) and 0xFF).toUByte(),
+		g = ((argb shr 8) and 0xFF).toUByte(),
+		b = (argb and 0xFF).toUByte(),
     )
 
     /**
-     * Creates a Color instance from a single long integer representing an RGBA color.
-     * @param rgba The RGBA color as a long integer.
+     * Creates a Color instance from a single long integer representing an ARGB color.
+     * @param argb The RGBA color as a long integer.
      */
-    constructor(rgba: Long) : this(
-        r = ((rgba shr 24) and 0xFF).toUByte(),
-        g = ((rgba shr 16) and 0xFF).toUByte(),
-        b = ((rgba shr 8) and 0xFF).toUByte(),
-        a = (rgba and 0xFF).toUByte()
+    constructor(argb: Long) : this(
+		a = ((argb shr 24) and 0xFF).toUByte(),
+        r = ((argb shr 16) and 0xFF).toUByte(),
+        g = ((argb shr 8) and 0xFF).toUByte(),
+        b = (argb and 0xFF).toUByte(),
     )
 
     /**
@@ -89,15 +105,67 @@ data class Color(val r: UByte, val g: UByte, val b: UByte, val a: UByte = 255.to
      */
     constructor(hue: Float, saturation: Float, value: Float) : this(raw = ColorFromHSV(hue, saturation, value).useContents { this })
 
-    /**
-     * Returns a new Color instance with the alpha component adjusted by the specified factor.
-     * @param factor The factor to adjust the alpha component (0.0 to 1.0).
-     * @return A new Color instance with the adjusted alpha component.
-     */
-    fun transparent(factor: Float): Color {
-        val newAlpha = (a.toInt() * factor).toInt().coerceIn(0, 255)
-        return Color(r, g, b, newAlpha.toUByte())
-    }
+	/**
+	 * The color as an RGBA long.
+	 */
+	val rgba: Long
+		get() {
+			val r0 = r.toLong()
+			val g0 = g.toLong()
+			val b0 = b.toLong()
+			val a0 = a.toLong()
+
+			return (r0 shl 24) or (g0 shl 16) or (b0 shl 8) or a0
+		}
+
+	/**
+	 * The color as an RGB integer. This explicitly does not include the alpha component.
+	 */
+	val rgb: Int
+		get() {
+			val r0 = r.toInt()
+			val g0 = g.toInt()
+			val b0 = b.toInt()
+
+			return (r0 shl 16) or (g0 shl 8) or b0
+		}
+
+	/**
+	 * The color as an ARGB long.
+	 */
+	val argb: Long
+		get() {
+			val r0 = r.toLong()
+			val g0 = g.toLong()
+			val b0 = b.toLong()
+			val a0 = a.toLong()
+
+			return (a0 shl 24) or (r0 shl 16) or (g0 shl 8) or b0
+		}
+
+	/**
+	 * The color as a hexadecimal string in ARGB format.
+	 */
+	val hex8: String
+		get() = argb.toString(16).run {
+			var str = this
+			while (length < 8) {
+				str = "0$str"
+			}
+			str
+		}
+
+	/**
+	 * The color as a hexadecimal string in RGB format.
+	 */
+	val hex6: String
+		get() = rgb.toString(16).run {
+			var str = this
+			while (length < 6) {
+				str = "0$str"
+			}
+			str
+		}
 
     internal fun raw(): CValue<raylib.internal.Color> {
         return cValue<raylib.internal.Color> {
@@ -107,6 +175,57 @@ data class Color(val r: UByte, val g: UByte, val b: UByte, val a: UByte = 255.to
             a = this@Color.a
         }
     }
+
+	/**
+	 * Creates a linear interpolated color between this color and another color.
+	 * @param other The other color to interpolate
+	 * @param factor The factor of the interpolation (0.0-1.0)
+	 * @return A new Color instance interpolated between the two
+	 */
+	fun lerp(other: Color, factor: Float): Color {
+		val newRaw = ColorLerp(raw(), other.raw(), factor)
+		return Color(newRaw)
+	}
+
+	/**
+	 * Returns a new Color instance with the alpha component adjusted by the specified factor.
+	 * @param factor The factor to adjust the alpha component (0.0 to 1.0).
+	 * @return A new Color instance with the adjusted alpha component.
+	 */
+	fun transparent(factor: Float): Color {
+		val newAlpha = (a.toInt() * factor).toInt().coerceIn(0, 255)
+		return Color(r, g, b, newAlpha.toUByte())
+	}
+
+	/**
+	 * Applies contrast to this color between a factor of 0.0 and 1.0.
+	 * @param factor The factor of the contrast (0.0-1.0)
+	 * @return A new Color instance with the contrast applied
+	 */
+	fun contrast(factor: Float): Color {
+		val newRaw = ColorContrast(raw(), factor)
+		return Color(newRaw)
+	}
+
+	/**
+	 * Applies brightness to this color between a factor of 0.0 and 1.0.
+	 * @param factor The factor of the contrast (0.0-1.0)
+	 * @return A new Color instance with the brightness applied
+	 */
+	fun brightness(factor: Float): Color {
+		val newRaw = ColorBrightness(raw(), factor)
+		return Color(newRaw)
+	}
+
+	/**
+	 * Takes this color and tints it with another color.
+	 * @param tint The color to tint with
+	 * @return A new Color instance with the tint applied
+	 */
+	fun tint(other: Color): Color {
+		val newRaw = ColorTint(raw(), other.raw())
+		return Color(newRaw)
+	}
 
     /**
      * Predefined color constants.
@@ -3842,23 +3961,175 @@ data class Color(val r: UByte, val g: UByte, val b: UByte, val a: UByte = 255.to
          */
         val ZINNWALDITE_BROWN = Color(44, 22, 8)
     }
+
+	override fun hashCode(): Int {
+		return argb.hashCode()
+	}
+
+	override fun equals(other: Any?): Boolean {
+		if (other !is Color) return false
+		return other.argb == argb
+	}
+
+	override fun toString(): String {
+		return "#${hex8}"
+	}
+}
+
+/**
+ * The format of the image or texture.
+ * @property bpp Bytes per pixel in uncompressed format. If the format is compressed, this is `0`, as it needs a different calculation.
+ */
+enum class PictureFormat(internal val value: PixelFormat, val bpp: Int = 0) {
+	/**
+	 * 8 bit per pixel (no alpha)
+	 *
+	 * Commonly used for grayscale images
+	 */
+	UNCOMPRESSED_GRAYSCALE(PIXELFORMAT_UNCOMPRESSED_GRAYSCALE, 1),
+	/**
+	 * 8*2 bpp (2 channels) for gray + alpha
+	 *
+	 * Commonly used for grayscale images with transparency
+	 */
+	UNCOMPRESSED_GRAY_ALPHA(PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA, 2),
+	/**
+	 * 16 bpp for R5G5B5
+	 *
+	 * Commonly used in older graphics systems
+	 */
+	UNCOMPRESSED_R5G6B5(PIXELFORMAT_UNCOMPRESSED_R5G6B5, 2),
+	/**
+	 * 24 bpp for R8G8B8
+	 *
+	 * Commonly used for standard RGB images
+	 */
+	UNCOMPRESSED_R8G8B8(PIXELFORMAT_UNCOMPRESSED_R8G8B8, 3),
+	/**
+	 * 16 bpp for R5G5B5A1
+	 *
+	 * Commonly used for images with 1-bit alpha transparency
+	 */
+	UNCOMPRESSED_R5G5B5A1(PIXELFORMAT_UNCOMPRESSED_R5G5B5A1, 2),
+	/**
+	 * 16 bpp for R4G4B4A4
+	 *
+	 * Commonly used for images with 4-bit alpha transparency
+	 */
+	UNCOMPRESSED_R4G4B4A4(PIXELFORMAT_UNCOMPRESSED_R4G4B4A4, 2),
+	/**
+	 * 32 bpp for R8G8B8A8
+	 *
+	 * Commonly used for standard RGBA images
+	 */
+	UNCOMPRESSED_R8G8B8A8(PIXELFORMAT_UNCOMPRESSED_R8G8B8A8, 4),
+	/**
+	 * 32 bpp for R32
+	 *
+	 * High precision single channel (red) images
+	 */
+	UNCOMPRESSED_R32(PIXELFORMAT_UNCOMPRESSED_R32, 4),
+	/**
+	 * 32*3 bpp for R32G32
+	 *
+	 * High precision two channel (red, green) images
+	 */
+	UNCOMPRESSED_R32G32B32(PIXELFORMAT_UNCOMPRESSED_R32G32B32, 12),
+	/**
+	 * 32*3 bpp for R32G32B32
+	 *
+	 * High precision three channel (red, green, blue) images
+	 */
+	UNCOMPRESSED_R32G32B32A32(PIXELFORMAT_UNCOMPRESSED_R32G32B32A32, 16),
+	/**
+	 * 4 bpp (no alpha) for RGB data in DXT1 format
+	 *
+	 * Commonly used for images without transparency
+	 */
+	COMPRESSED_DXT1_RGB(PIXELFORMAT_COMPRESSED_DXT1_RGB),
+	/**
+	 * 4 bpp (1 bit alpha) for RGBA data in DXT1 format
+	 *
+	 * Commonly used for images with 1-bit alpha transparency
+	 */
+	COMPRESSED_DXT1_RGBA(PIXELFORMAT_COMPRESSED_DXT1_RGBA),
+	/**
+	 * 8 bpp for RGBA data in DXT3 format
+	 *
+	 * Commonly used for images with sharp alpha transitions
+	 */
+	COMPRESSED_DXT3_RGBA(PIXELFORMAT_COMPRESSED_DXT3_RGBA),
+	/**
+	 * 8 bpp for RGBA data in DXT5 format
+	 *
+	 * Commonly used for images with smooth alpha transitions
+	 */
+	COMPRESSED_DXT5_RGBA(PIXELFORMAT_COMPRESSED_DXT5_RGBA),
+	/**
+	 * 4 bpp for RGB data in ETC1 format
+	 *
+	 * Commonly used in OpenGL ES 2.0+
+	 */
+	COMPRESSED_ETC1_RGB(PIXELFORMAT_COMPRESSED_ETC1_RGB),
+	/**
+	 * 8 bpp for RGBA data in ETC2/EAC format
+	 *
+	 * Commonly used in OpenGL ES 3.0+
+	 */
+	COMPRESSED_ETC2_RGB(PIXELFORMAT_COMPRESSED_ETC2_RGB),
+	/**
+	 * 8 bpp for RGBA data in ETC2/EAC format with 1-bit alpha
+	 *
+	 * Commonly used in OpenGL ES 3.0+
+	 */
+	COMPRESSED_ETC2_EAC_RGBA(PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA),
+	/**
+	 * 4 bpp for RGB data in PVRT format
+	 *
+	 * Commonly used in PowerVR GPUs
+	 */
+	COMPRESSED_PVRT_RGB(PIXELFORMAT_COMPRESSED_PVRT_RGB),
+	/**
+	 * 4 bpp for RGBA data in PVRT format
+	 *
+	 * Commonly used in PowerVR GPUs
+	 */
+	COMPRESSED_PVRT_RGBA(PIXELFORMAT_COMPRESSED_PVRT_RGBA),
+	/**
+	 * 8 bpp for RGBA data in ASTC 4x4 format
+	 *
+	 * High quality compression for mobile and desktop
+	 */
+	COMPRESSED_ASTC_4X4_RGBA(PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA),
+	/**
+	 * 2 bpp for RGBA data in ASTC 8x8 format
+	 *
+	 * High compression ratio for mobile and desktop
+	 */
+	COMPRESSED_ASTC_8X8_RGBA(PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA)
 }
 
 /**
  * Represents a raylib image.
+ *
+ * Note that images are immutable and modification operations return new Image instances.
  */
-class Image private constructor(private val raw: CValue<raylib.internal.Image>) {
+class Image internal constructor(internal val raw: CValue<raylib.internal.Image>) {
 
     companion object {
         /**
          * Loads an image from the specified file path.
-         * @param path The file path of the image to load.
+         * @param path The file path of the image to load, relative to [appDir].
          * @return An Image object representing the loaded image.
          */
-        fun load(path: String): Image {
-            val rawImage = LoadImage(path)
-            return Image(rawImage)
-        }
+        fun load(path: String): Image = Image(LoadImage(path.inAppDir()))
+
+		/**
+		 * Loads an image from the specified file.
+		 * @param file The file to load
+		 * @return An Image object representing the loaded image
+		 */
+		fun load(file: File): Image = load(file.absolutePath)
 
         /**
          * Takes a screenshot of the current screen.
@@ -4002,156 +4273,71 @@ class Image private constructor(private val raw: CValue<raylib.internal.Image>) 
     val height: Int
         get() = raw.useContents { height }
 
-    enum class Format(internal val value: PixelFormat) {
-        /**
-         * 8 bit per pixel (no alpha)
-         *
-         * Commonly used for grayscale images
-         */
-        UNCOMPRESSED_GRAYSCALE(PIXELFORMAT_UNCOMPRESSED_GRAYSCALE),
-        /**
-         * 8*2 bpp (2 channels) for gray + alpha
-         *
-         * Commonly used for grayscale images with transparency
-         */
-        UNCOMPRESSED_GRAY_ALPHA(PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA),
-        /**
-         * 16 bpp for R5G5B5
-         *
-         * Commonly used in older graphics systems
-         */
-        UNCOMPRESSED_R5G6B5(PIXELFORMAT_UNCOMPRESSED_R5G6B5),
-        /**
-         * 24 bpp for R8G8B8
-         *
-         * Commonly used for standard RGB images
-         */
-        UNCOMPRESSED_R8G8B8(PIXELFORMAT_UNCOMPRESSED_R8G8B8),
-        /**
-         * 16 bpp for R5G5B5A1
-         *
-         * Commonly used for images with 1-bit alpha transparency
-         */
-        UNCOMPRESSED_R5G5B5A1(PIXELFORMAT_UNCOMPRESSED_R5G5B5A1),
-        /**
-         * 16 bpp for R4G4B4A4
-         *
-         * Commonly used for images with 4-bit alpha transparency
-         */
-        UNCOMPRESSED_R4G4B4A4(PIXELFORMAT_UNCOMPRESSED_R4G4B4A4),
-        /**
-         * 32 bpp for R8G8B8A8
-         *
-         * Commonly used for standard RGBA images
-         */
-        UNCOMPRESSED_R8G8B8A8(PIXELFORMAT_UNCOMPRESSED_R8G8B8A8),
-        /**
-         * 32 bpp for R32
-         *
-         * High precision single channel (red) images
-         */
-        UNCOMPRESSED_R32(PIXELFORMAT_UNCOMPRESSED_R32),
-        /**
-         * 32*2 bpp for R32G32
-         *
-         * High precision two channel (red, green) images
-         */
-        UNCOMPRESSED_R32G32B32(PIXELFORMAT_UNCOMPRESSED_R32G32B32),
-        /**
-         * 32*3 bpp for R32G32B32
-         *
-         * High precision three channel (red, green, blue) images
-         */
-        UNCOMPRESSED_R32G32B32A32(PIXELFORMAT_UNCOMPRESSED_R32G32B32A32),
-        /**
-         * 4 bpp (no alpha) for RGB data in DXT1 format
-         *
-         * Commonly used for images without transparency
-         */
-        COMPRESSED_DXT1_RGB(PIXELFORMAT_COMPRESSED_DXT1_RGB),
-        /**
-         * 4 bpp (1 bit alpha) for RGBA data in DXT1 format
-         *
-         * Commonly used for images with 1-bit alpha transparency
-         */
-        COMPRESSED_DXT1_RGBA(PIXELFORMAT_COMPRESSED_DXT1_RGBA),
-        /**
-         * 8 bpp for RGBA data in DXT3 format
-         *
-         * Commonly used for images with sharp alpha transitions
-         */
-        COMPRESSED_DXT3_RGBA(PIXELFORMAT_COMPRESSED_DXT3_RGBA),
-        /**
-         * 8 bpp for RGBA data in DXT5 format
-         *
-         * Commonly used for images with smooth alpha transitions
-         */
-        COMPRESSED_DXT5_RGBA(PIXELFORMAT_COMPRESSED_DXT5_RGBA),
-        /**
-         * 4 bpp for RGB data in ETC1 format
-         *
-         * Commonly used in OpenGL ES 2.0+
-         */
-        COMPRESSED_ETC1_RGB(PIXELFORMAT_COMPRESSED_ETC1_RGB),
-        /**
-         * 8 bpp for RGBA data in ETC2/EAC format
-         *
-         * Commonly used in OpenGL ES 3.0+
-         */
-        COMPRESSED_ETC2_RGB(PIXELFORMAT_COMPRESSED_ETC2_RGB),
-        /**
-         * 8 bpp for RGBA data in ETC2/EAC format with 1-bit alpha
-         *
-         * Commonly used in OpenGL ES 3.0+
-         */
-        COMPRESSED_ETC2_EAC_RGBA(PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA),
-        /**
-         * 4 bpp for RGB data in PVRT format
-         *
-         * Commonly used in PowerVR GPUs
-         */
-        COMPRESSED_PVRT_RGB(PIXELFORMAT_COMPRESSED_PVRT_RGB),
-        /**
-         * 4 bpp for RGBA data in PVRT format
-         *
-         * Commonly used in PowerVR GPUs
-         */
-        COMPRESSED_PVRT_RGBA(PIXELFORMAT_COMPRESSED_PVRT_RGBA),
-        /**
-         * 8 bpp for RGBA data in ASTC 4x4 format
-         *
-         * High quality compression for mobile and desktop
-         */
-        COMPRESSED_ASTC_4X4_RGBA(PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA),
-        /**
-         * 2 bpp for RGBA data in ASTC 8x8 format
-         *
-         * High compression ratio for mobile and desktop
-         */
-        COMPRESSED_ASTC_8X8_RGBA(PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA)
-    }
+	/**
+	 * A byte array representation of this image's data.
+	 */
+	val bytes: UByteArray?
+		get() = raw.useContents {
+			val bpp = this@Image.format.bpp
+			val size = if (bpp != 0) width * height * bpp else {
+				when (this@Image.format) {
+					// 4x4 compressed
+					PictureFormat.COMPRESSED_DXT1_RGB,
+					PictureFormat.COMPRESSED_DXT1_RGBA,
+					PictureFormat.COMPRESSED_ETC1_RGB,
+					PictureFormat.COMPRESSED_ETC2_RGB,
+					PictureFormat.COMPRESSED_PVRT_RGB,
+					PictureFormat.COMPRESSED_PVRT_RGBA -> {
+						val blocksWide = (width + 3) / 4 // block width = 4
+						val blocksHigh = (height + 3) / 4 // block height = 4
+						blocksWide * blocksHigh * 8 // 1 byte per block
+					}
+					PictureFormat.COMPRESSED_DXT3_RGBA,
+					PictureFormat.COMPRESSED_DXT5_RGBA,
+					PictureFormat.COMPRESSED_ETC2_EAC_RGBA,
+					PictureFormat.COMPRESSED_ASTC_4X4_RGBA -> {
+						val blocksWide = (width + 3) / 4 // block width = 4
+						val blocksHigh = (height + 3) / 4 // blocks height = 4
+						blocksWide * blocksHigh * 16 // 2 bytes per block
+					}
+					// 8x8 compressed
+					PictureFormat.COMPRESSED_ASTC_8X8_RGBA -> {
+						val blocksWide = (width + 7) / 8 // block width = 8
+						val blocksHigh = (height + 7) / 8 // block height = 8
+						blocksWide * blocksHigh * 16 // 2 bytes per block
+					}
+					else -> error("format ${this@Image.format} is not configured properly; please report this bug")
+				}
+			}
+
+			data?.toByteArray(size)
+		}
 
     /**
      * The pixel format of the image.
      */
-    var format: Format
+    val format: PictureFormat
         get() {
             val rawFormat = raw.useContents { format }
-            return Format.entries.find { it.value.toInt() == rawFormat }
+            return PictureFormat.entries.find { it.value.toInt() == rawFormat }
                 ?: throw IllegalStateException("Unknown image format: $rawFormat")
         }
-        set(value) {
-            ImageFormat(raw, value.value.toInt())
-        }
+
+	/**
+	 * Whether the current image is valid.
+	 * @return true if valid, false otherwise
+	 */
+	val isValid: Boolean
+		get() = IsImageValid(raw)
 
     /**
      * Gets the color of the pixel at the specified (x, y) coordinates.
-     * @param x The x-coordinate of the pixel.
-     * @param y The y-coordinate of the pixel.
+     * @param x The X coordinate of the pixel.
+     * @param y The Y coordinate of the pixel.
      * @return A Color object representing the color of the pixel.
      */
     operator fun get(x: Int, y: Int): Color {
-        return Color(GetImageColor(raw, x, y).useContents { this })
+		return GetImageColor(raw, x, y).useContents { Color(this) }
     }
 
     /**
@@ -4164,4 +4350,586 @@ class Image private constructor(private val raw: CValue<raylib.internal.Image>) 
         return Array(size) { i -> Color(array[i]) }
     }
 
+	private fun NativePlacement.copyPtr(): CPointer<raylib.internal.Image> {
+		val ptr = alloc<raylib.internal.Image>()
+		raw.useContents {
+			ptr.width = width
+			ptr.height = height
+			ptr.mipmaps = mipmaps
+			ptr.format = format
+			ptr.data = data
+		}
+
+		return ptr.ptr
+	}
+
+	private fun NativePlacement.ptrOf(image: Image): CPointer<raylib.internal.Image> {
+		val ptr = alloc<raylib.internal.Image>()
+		image.raw.useContents {
+			ptr.width = width
+			ptr.height = height
+			ptr.mipmaps = mipmaps
+			ptr.format = format
+			ptr.data = data
+		}
+
+		return ptr.ptr
+	}
+
+	/**
+	 * Converts this image to another image format.
+	 * @param format The image format to convert to
+	 * @return A new Image object that is in the new format
+	 */
+	fun convertTo(format: PictureFormat): Image = memScoped {
+		val copy = copyPtr()
+		ImageFormat(copy, format.value.toInt())
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Flips the image horizontally.
+	 * @return A new Image object that is the horizontally flipped version of this image.
+	 */
+	fun flipH(): Image = memScoped {
+		val copy = copyPtr()
+		ImageFlipHorizontal(copy)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Flips the image vertically.
+	 * @return A new Image object that is the vertically flipped version of this image.
+	 */
+	fun flipV(): Image = memScoped {
+		val copy = copyPtr()
+		ImageFlipVertical(copy)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Rotates the image clockwise 90 degrees.
+	 * @return A new Image object that is the rotated version of this image.
+	 */
+	fun rotateCW(): Image = memScoped {
+		val copy = copyPtr()
+		ImageRotateCW(copy)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Rotates the image counter-clockwise 90 degrees.
+	 * @return A new Image object that is the rotated version of this image.
+	 */
+	fun rotateCCW(): Image = memScoped {
+		val copy = copyPtr()
+		ImageRotateCCW(copy)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Rotates the image a certain number of degrees.
+	 *
+	 * Input negative values to rotate counter-clockwise.
+	 * @param degrees Degrees to rotate (-359 to 359)
+	 * @return A new Image object that is the rotated version of this image.
+	 */
+	fun rotate(degrees: Int): Image = memScoped {
+		val copy = copyPtr()
+		ImageRotateCW(copy)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws a pixel on the current image.
+	 * @param x The X coordinate of the pixel
+	 * @param y The Y coordinate of the pixel
+	 * @return A new Image object with the drawn pixel on the image
+	 */
+	fun draw(x: Int, y: Int, color: Color): Image = memScoped {
+		val copy = copyPtr()
+		ImageDrawPixel(copy, x, y, color.raw())
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws a line on the current image.
+	 * @param x1 The X coordinate of the first point.
+	 * @param y1 The Y coordinate of the first point.
+	 * @param x2 The X coordinate of the second point.
+	 * @param y2 The Y coordinate of the second point.
+	 * @param color The color of the line.
+	 * @return A new Image object with the drawn line on the image
+	 */
+	fun line(x1: Int, y1: Int, x2: Int, y2: Int, color: Color): Image = memScoped {
+		val copy = copyPtr()
+		ImageDrawLine(copy, x1, y1, x2, y2, color.raw())
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws a line on the current image.
+	 * @param x1 The X coordinate of the first point.
+	 * @param y1 The Y coordinate of the first point.
+	 * @param x2 The X coordinate of the second point.
+	 * @param y2 The Y coordinate of the second point.
+	 * @param thick The thickness of the line.
+	 * @param color The color of the line.
+	 * @return A new Image object with the drawn line on the image.
+	 */
+	fun line(x1: Int, y1: Int, x2: Int, y2: Int, thick: Int, color: Color): Image = memScoped {
+		val copy = copyPtr()
+		ImageDrawLineEx(copy,
+			cValue {
+				x = x1.toFloat()
+				y = y1.toFloat()
+			},
+			cValue {
+				x = x2.toFloat()
+				y = y2.toFloat()
+			}, thick, color.raw())
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws a circle outline on the image.
+	 * @param cx The X coordinate of the center.
+	 * @param cy The Y coordinate of the center.
+	 * @param radius The radius of the circle
+	 * @param color The color of the circle.
+	 * @return A new Image object with the circle drawn on the image.
+	 */
+	fun circle(cx: Int, cy: Int, radius: Int, color: Color): Image = memScoped {
+		val copy = copyPtr()
+		ImageDrawCircleLines(copy, cx, cy, radius, color.raw())
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws a filled circle on the image.
+	 * @param cx The X coordinate of the center.
+	 * @param cy The Y coordinate of the center.
+	 * @param radius The radius of the circle
+	 * @param color The color of the circle.
+	 * @return A new Image object with the circle drawn on the image.
+	 */
+	fun fillCircle(cx: Int, cy: Int, radius: Int, color: Color): Image = memScoped {
+		val copy = copyPtr()
+		ImageDrawCircle(copy, cx, cy, radius, color.raw())
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws a rectangle outline on the image.
+	 * @param x The X coordinate of the top-left corner.
+	 * @param y The Y coordinate of the top-left corner.
+	 * @param width The width of the rectangle.
+	 * @param height The height of the rectangle.
+	 * @param thick The thickness of the outline.
+	 * @param color The color of the outline.
+	 * @return A new Image object with the rectangle drawn on the image.
+	 */
+	fun rect(x: Int, y: Int, width: Int, height: Int, thick: Int, color: Color): Image = memScoped {
+		val copy = copyPtr()
+		ImageDrawRectangleLines(
+			copy,
+			cValue {
+				this.x = x.toFloat()
+				this.y = y.toFloat()
+				this.width = width.toFloat()
+				this.height = height.toFloat()
+			}, thick, color.raw())
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws a filled rectangle on the image.
+	 * @param x The X coordinate of the top-left corner.
+	 * @param y The Y coordinate of the top-left corner.
+	 * @param width The width of the rectangle.
+	 * @param height The height of the rectangle.
+	 * @param color The color of the rectangle.
+	 * @return A new Image object with the rectangle drawn on the image.
+	 */
+	fun fillRect(x: Int, y: Int, width: Int, height: Int, color: Color): Image = memScoped {
+		val copy = copyPtr()
+		ImageDrawRectangle(copy, x, y, width, height, color.raw())
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws a triangle outline on the image.
+	 * @param x1 The X coordinate of the first vertex
+	 * @param y1 The Y coordinate of the first vertex
+	 * @param x2 The X coordinate of the second vertex
+	 * @param y2 The Y coordinate of the second vertex
+	 * @param x3 The X coordinate of the third vertex
+	 * @param y3 The Y coordinate of the third vertex
+	 * @param color The color of the outline
+	 * @return A new Image object with the triangle drawn on the image
+	 */
+	fun triangle(
+		x1: Int,
+		y1: Int,
+		x2: Int,
+		y2: Int,
+		x3: Int,
+		y3: Int,
+		color: Color
+	): Image = memScoped {
+		val copy = copyPtr()
+		ImageDrawTriangleLines(copy,
+			cValue {
+				x = x1.toFloat()
+				y = y1.toFloat()
+			},
+			cValue {
+				x = x2.toFloat()
+				y = y2.toFloat()
+			},
+			cValue {
+				x = x3.toFloat()
+				y = y3.toFloat()
+			}, color.raw()
+		)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws a filled triangle on the image.
+	 * @param x1 The X coordinate of the first vertex
+	 * @param y1 The Y coordinate of the first vertex
+	 * @param x2 The X coordinate of the second vertex
+	 * @param y2 The Y coordinate of the second vertex
+	 * @param x3 The X coordinate of the third vertex
+	 * @param y3 The Y coordinate of the third vertex
+	 * @param color The color of the triangle
+	 * @return A new Image object with the triangle drawn on the image
+	 */
+	fun fillTriangle(
+		x1: Int,
+		y1: Int,
+		x2: Int,
+		y2: Int,
+		x3: Int,
+		y3: Int,
+		color: Color
+	): Image = memScoped {
+		val copy = copyPtr()
+		ImageDrawTriangle(copy,
+			cValue {
+				x = x1.toFloat()
+				y = y1.toFloat()
+			},
+			cValue {
+				x = x2.toFloat()
+				y = y2.toFloat()
+			},
+			cValue {
+				x = x3.toFloat()
+				y = y3.toFloat()
+			}, color.raw()
+		)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws a filled triangle on the image, linear interpolating three colors to the center.
+	 * @param x1 The X coordinate of the first vertex
+	 * @param y1 The Y coordinate of the first vertex
+	 * @param x2 The X coordinate of the second vertex
+	 * @param y2 The Y coordinate of the second vertex
+	 * @param x3 The X coordinate of the third vertex
+	 * @param y3 The Y coordinate of the third vertex
+	 * @param color1 The color of the triangle at the first vertex
+	 * @param color2 The color of the triangle at the second vertex
+	 * @param color3 The color of the triangle at the third vertex
+	 * @return A new Image object with the triangle drawn on the image
+	 */
+	fun fillTriangle(
+		x1: Int,
+		y1: Int,
+		x2: Int,
+		y2: Int,
+		x3: Int,
+		y3: Int,
+		color1: Color,
+		color2: Color,
+		color3: Color
+	): Image = memScoped {
+		val copy = copyPtr()
+		ImageDrawTriangleEx(copy,
+			cValue {
+				x = x1.toFloat()
+				y = y1.toFloat()
+			},
+			cValue {
+				x = x2.toFloat()
+				y = y2.toFloat()
+			},
+			cValue {
+				x = x3.toFloat()
+				y = y3.toFloat()
+			},
+			color1.raw(), color2.raw(), color3.raw()
+		)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws a triangle fan on the image.
+	 * @param color The color of the triangle fan
+	 * @param points The points to draw the triangle fan through
+	 * @return A new Image object with the triangle fan drawn on the image
+	 */
+	fun triangleFan(color: Color, points: List<Pair<Int, Int>>): Image = memScoped {
+		if (points.size < 3) return@memScoped this@Image
+		val copy = copyPtr()
+		val array = allocArray<Vector2>(points.size) { i -> points[i].toVector2() }
+
+		ImageDrawTriangleFan(copy, array, points.size, color.raw())
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws a triangle fan on the image.
+	 * @param color The color of the triangle fan
+	 * @param points The points to draw the triangle fan through
+	 * @return A new Image object with the triangle fan drawn on the image
+	 */
+	fun triangleFan(color: Color, vararg points: Pair<Int, Int>) : Image
+		= triangleFan(color, points.toList())
+
+	/**
+	 * Draws a triangle strip on the image.
+	 * @param color The color of the triangle strip
+	 * @param points The points to draw the triangle strip through
+	 * @return A new Image object with the triangle strip drawn on the image
+	 */
+	fun triangleStrip(color: Color, points: List<Pair<Int, Int>>) = memScoped {
+		if (points.size < 3) return@memScoped this@Image
+
+		val copy = copyPtr()
+		val array = allocArray<Vector2>(points.size) { i -> points[i].toVector2() }
+		ImageDrawTriangleStrip(copy, array, points.size, color.raw())
+
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws a triangle strip on the image.
+	 * @param color The color of the triangle strip
+	 * @param points The points to draw the triangle strip through
+	 * @return A new Image object with the triangle strip drawn on the image
+	 */
+	fun triangleStrip(color: Color, vararg points: Pair<Int, Int>): Image
+		= triangleStrip(color, points.toList())
+
+	/**
+	 * Draws a source image onto this image at the specified destination rectangle,
+	 * using the specified source rectangle and tint color.
+	 * @param src The source image to draw from.
+	 * @param sx The x-coordinate of the source rectangle's top-left corner.
+	 * @param sy The y-coordinate of the source rectangle's top-left corner.
+	 * @param sw The width of the source rectangle.
+	 * @param sh The height of the source rectangle.
+	 * @param dx The x-coordinate of the destination rectangle's top-left corner.
+	 * @param dy The y-coordinate of the destination rectangle's top-left corner.
+	 * @param dw The width of the destination rectangle.
+	 * @param dh The height of the destination rectangle.
+	 * @param tint The color to tint the drawn image. Default is white (no tint).
+	 * @return A new Image object with the source image drawn onto it.
+	 */
+	fun draw(
+		src: Image,
+		sx: Int, sy: Int, sw: Int, sh: Int,
+		dx: Int, dy: Int, dw: Int, dh: Int,
+		tint: Color = Color.WHITE
+	): Image = memScoped {
+		val copy = copyPtr()
+		val srcCopy = ptrOf(src).pointed.readValue()
+
+		val srcRect = cValue<Rectangle> {
+			x = sx.toFloat()
+			y = sy.toFloat()
+			width = sw.toFloat()
+			height = sh.toFloat()
+		}
+
+		val destRect = cValue<Rectangle> {
+			x = dx.toFloat()
+			y = dy.toFloat()
+			width = dw.toFloat()
+			height = dh.toFloat()
+		}
+
+		ImageDraw(copy, srcCopy, srcRect, destRect, tint.raw())
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Draws the entire source image onto this image, scaling it to fit the dimensions of this image,
+	 * using the specified tint color.
+	 * @param src The source image to draw from.
+	 * @param x The x-coordinate of the destination rectangle's top-left corner.
+	 * @param y The y-coordinate of the destination rectangle's top-left corner.
+	 * @param tint The color to tint the drawn image. Default is white (no tint).
+	 * @return A new Image object with the source image drawn onto it.
+	 */
+	fun draw(src: Image, x: Int, y: Int, tint: Color = Color.WHITE): Image = draw(
+		src,
+		0, 0, src.width, src.height,
+		x, y, this.width, this.height,
+		tint
+	)
+
+	/**
+	 * Draws text on the image at the specified position, with the given font size and color.
+	 * @param x The X coordinate of the text position.
+	 * @param y The Y coordinate of the text position.
+	 * @param text The text string to draw.
+	 * @param fontSize The font size of the text.
+	 * @param color The color of the text.
+	 * @return A new Image object with the text drawn on the image.
+	 */
+	fun drawText(x: Int, y: Int, text: String, fontSize: Int, color: Color): Image = memScoped {
+		val copy = copyPtr()
+		ImageDrawText(copy, text, x, y, fontSize, color.raw())
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Unloads the raw image from memory.
+	 *
+	 * **This should only be called if the image wasn't loaded from a file.**
+	 * This should be called when an image is no longer in use.
+	 */
+	fun unload() {
+		UnloadImage(raw)
+	}
+
+}
+
+/**
+ * Draws an image on the canvas at the specified position with an optional tint color.
+ * @param image The image to draw.
+ * @param x The X coordinate where the image will be drawn.
+ * @param y The Y coordinate where the image will be drawn.
+ * @param tint The color to tint the image. Default is white (no tint).
+ */
+fun Canvas.drawImage(
+	image: Image,
+	x: Int,
+	y: Int,
+	tint: Color = Color.WHITE
+) {
+	ensureDrawing()
+
+	// convert to Texture2D, pass to drawTexture
+	val texture = Texture2D.load(image)
+	drawTexture(texture, x, y, tint)
+}
+
+/**
+ * Represents a two-dimensional texture in raylib.
+ * @property id The unique identifier for the texture.
+ * @property width The width of the texture in pixels.
+ * @property height The height of the texture in pixels.
+ * @property mipmaps The number of mipmap levels (aka levels of detail) in the texture.
+ * Higher value of mipmaps = more levels of detail. Most commonly used value is 1 (no mipmaps).
+ * @property format The pixel format of the texture.
+ */
+class Texture2D(
+	val id: UInt,
+	val width: Int,
+	val height: Int,
+	val mipmaps: Int = 1,
+	val format: PictureFormat = PictureFormat.UNCOMPRESSED_R32G32B32A32
+) {
+
+	companion object {
+
+		/**
+		 * Loads a texture from the specified file path.
+		 * @param path The file path of the texture to load.
+		 * @return A Texture2D object representing the loaded texture.
+		 */
+		fun load(path: String): Texture2D {
+			val rawTexture = LoadTexture(path.inAppDir())
+			val texture = Texture2D(rawTexture)
+			UnloadTexture(rawTexture)
+
+			return texture
+		}
+
+		/**
+		 * Loads a texture from the specified file path.
+		 * @param file The file of the texture to load
+		 * @return A Texture2D object representing the loaded texture.
+		 */
+		fun load(file: File): Texture2D = load(file.absolutePath)
+
+	}
+
+	/**
+	 * Creates a Texture2D instance from a raw raylib Texture2D C struct.
+	 * @param raw The raw CValue representing the raylib Texture2D.
+	 */
+	constructor(raw: CValue<raylib.internal.Texture2D>) : this(raw.useContents { this })
+
+	/**
+	 * Creates a Texture2D instance from a raw raylib Texture2D struct.
+	 * @param raw The raw raylib Texture2D struct.
+	 */
+	constructor(raw: raylib.internal.Texture2D) : this(
+		id = raw.id,
+		width = raw.width,
+		height = raw.height,
+		mipmaps = raw.mipmaps,
+		format = PictureFormat.entries.find { it.value.toInt() == raw.format }
+			?: throw IllegalStateException("Unknown texture format: ${raw.format}")
+	)
+
+	internal fun raw(): CValue<raylib.internal.Texture2D> = cValue {
+		id = this@Texture2D.id
+		width = this@Texture2D.width
+		height = this@Texture2D.height
+		mipmaps = this@Texture2D.mipmaps
+		format = this@Texture2D.format.value.toInt()
+	}
+
+}
+
+/**
+ * Gets an [Image] from a [Texture2D].
+ * @param texture The texture to get the image from.
+ * @return An Image object representing the image extracted from the texture.
+ */
+fun Image.Companion.load(texture: Texture2D) = Image(LoadImageFromTexture(texture.raw()))
+
+/**
+ * Creates a [Texture2D] from an [Image].
+ * @param image The image to create the texture from.
+ * @return A Texture2D object representing the created texture.
+ */
+fun Texture2D.Companion.load(image: Image): Texture2D {
+	val rawTexture = LoadTextureFromImage(image.raw)
+	return Texture2D(rawTexture)
+}
+
+/**
+ * Draws a texture on the canvas at the specified position with an optional tint color.
+ * @param texture The texture to draw.
+ * @param x The X coordinate where the texture will be drawn.
+ * @param y The X coordinate where the texture will be drawn.
+ * @param tint The color to tint the texture. Default is white (no tint).
+ */
+fun Canvas.drawTexture(
+	texture: Texture2D,
+	x: Int,
+	y: Int,
+	tint: Color = Color.WHITE
+) {
+	ensureDrawing()
+	DrawTexture(texture.raw(), x, y, tint.raw())
 }

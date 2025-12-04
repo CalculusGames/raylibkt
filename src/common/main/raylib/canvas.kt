@@ -20,6 +20,13 @@ internal fun Pair<Int, Int>.toVector2(): CValue<Vector2> {
 	}
 }
 
+internal fun Pair<Float, Float>.toVector2(): CValue<Vector2> {
+	return cValue<Vector2>{
+		x = first
+		y = second
+	}
+}
+
 // Draw Functions
 
 /**

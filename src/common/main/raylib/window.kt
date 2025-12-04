@@ -2,8 +2,10 @@
 
 package raylib
 
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toKString
+import kotlinx.cinterop.useContents
 import platform.posix.getenv
 import raylib.internal.*
 
@@ -63,6 +65,24 @@ object Window {
 		get() = GetCurrentMonitor()
 
 	/**
+	 * The X position of the current monitor in pixels.
+	 *
+	 * This determines the monitor's position in a multi-monitor setup. For example,
+	 * if a monitor is positioned to the left of the primary monitor, this value may be negative.
+	 */
+	val monitorX: Float
+		get() = GetMonitorPosition(monitorId).useContents { x }
+
+	/**
+	 * The Y position of the current monitor in pixels.
+	 *
+	 * This determines the monitor's position in a multi-monitor setup. For example,
+	 * if a monitor is positioned above the primary monitor, this value may be negative.
+	 */
+	val monitorY: Float
+		get() = GetMonitorPosition(monitorId).useContents { y }
+
+	/**
 	 * The width of the current monitor.
 	 */
 	val monitorWidth: Int
@@ -74,16 +94,94 @@ object Window {
 	val monitorHeight: Int
 		get() = GetMonitorHeight(monitorId)
 
+	/**
+	 * The physical width of the current monitor in millimeters.
+	 */
+	val monitorPhysicalWidth: Int
+		get() = GetMonitorPhysicalWidth(monitorId)
+
+	/**
+	 * The physical height of the current monitor in millimeters.
+	 */
+	val monitorPhysicalHeight: Int
+		get() = GetMonitorPhysicalHeight(monitorId)
+
+	/**
+	 * The current refresh rate of the monitor in Hz.
+	 */
+	val monitorRefreshRate: Int
+		get() = GetMonitorRefreshRate(monitorId)
+
+	/**
+	 * The name of the current monitor.
+	 */
+	val monitorName: String?
+		get() = GetMonitorName(monitorId)?.toKString()
+
     /**
      * Initializes the window with the specified width, height, and title.
      * @param width The width of the window.
      * @param height The height of the window.
      * @param title The title of the window.
+	 * @param loop Optional lifecycle loop (see [lifecycle])
+	 * @param targetFps The target FPS to set for the game (defaults to 60 when [loop] is provided)
      */
-    fun open(width: Int, height: Int, title: String = "Raylib Window") {
+	fun open(
+		width: Int,
+		height: Int,
+		title: String = "Raylib Window",
+		loop: (Window.() -> Unit)? = null,
+		targetFps: Int? = null
+	) {
         InitWindow(width, height, title)
 		currentTitle = title
+
+		if (targetFps != null) {
+			this.fps = targetFps
+		}
+
+		if (loop != null) {
+			if (targetFps == null) this.fps = 60
+			lifecycle(loop)
+		}
     }
+
+	/**
+	 * Runs a game loop while [shouldClose] is false.
+	 *
+	 * This should serve as the main entrypoint to your game. The function will be called repeatedly until
+	 * the game closes.
+	 * @param loop The game loop to call until the window should be closed
+	 */
+	fun lifecycle(loop: Window.() -> Unit) {
+		while (!shouldClose) {
+			loop()
+		}
+	}
+
+	/**
+	 * The X position of the window on the screen.
+	 */
+	val windowX: Float
+		get() = GetWindowPosition().useContents { x }
+
+	/**
+	 * The Y position of the window on the screen.
+	 */
+	val windowY: Float
+		get() = GetWindowPosition().useContents { y }
+
+	/**
+	 * The current scale factor of the window on the X axis for HighDPI support.
+	 */
+	val windowScaleDPIX: Float
+		get() = GetWindowScaleDPI().useContents { x }
+
+	/**
+	 * The current scale factor of the window on the Y axis for HighDPI support.
+	 */
+	val windowScaleDPIY: Float
+		get() = GetWindowScaleDPI().useContents { y }
 
     /**
      * Closes the window.
@@ -97,6 +195,15 @@ object Window {
      */
     val ready: Boolean
         get() = IsWindowReady()
+
+	/**
+	 * Whether the window should close.
+	 *
+	 * This is determined by whether the 'X' button was clicked, the computer is shutting down,
+	 * or other triggers that would cause the window to close.
+	 */
+	val shouldClose: Boolean
+		get() = WindowShouldClose()
 
     /**
      * Indicates whether the window is hidden from view.
@@ -276,30 +383,93 @@ object Window {
         get() = GetClipboardText()?.toKString()
         set(value) = SetClipboardText(value)
 
+	/**
+	 * The image stored in the system clipboard.
+	 */
+	val clipboardImage: Image
+		get() = Image(GetClipboardImage())
+
+	/**
+	 * Enables waiting for events when canvas drawing is finished.
+	 */
+	fun enableEventWaiting() {
+		EnableEventWaiting()
+	}
+
+	/**
+	 * Disables waiting for events when canvas drawing is finished.
+	 */
+	fun disableEventWaiting() {
+		DisableEventWaiting()
+	}
+
+	/**
+	 * The number of seconds since [open] was called.
+	 */
+	val time: Double
+		get() = GetTime()
+
+	/**
+	 * The target frames per second in the window.
+	 *
+	 * The getter will return the current FPS; setter will set the target FPS.
+	 */
+	var fps: Int
+		get() = GetFPS()
+		set(value) = SetTargetFPS(value)
+
 }
 
 /**
- * The current cursor state.
+ * The canvas management object.
  */
-object Cursor {
+object Canvas {
 
-    /**
-     * Whether the cursor is enabled on the screen.
-     */
-    var isCursorEnabled: Boolean
-        get() = IsCursorOnScreen()
-        set(value) {
-            if (value) EnableCursor() else DisableCursor()
-        }
+	/**
+	 * Whether the canvas is currently in a drawing state.
+	 */
+	var inDrawingState: Boolean = false
+		private set
 
-    /**
-     * Whether the cursor is hidden.
-     */
-    var isCursorHidden: Boolean
-        get() = IsCursorHidden()
-        set(value) {
-            if (value) HideCursor() else ShowCursor()
-        }
+	/**
+	 * Sets the background color of the canvas.
+	 * @param color The color to set as the background.
+	 */
+	fun setBackgroundColor(color: Color) {
+		ClearBackground(color.raw())
+	}
+
+	/**
+	 * Begins the drawing process on the canvas.
+	 *
+	 * Note that [end] must be called after finishing drawing to finalize.
+	 */
+	fun start() {
+		if (inDrawingState) return
+		BeginDrawing()
+		inDrawingState = true
+	}
+
+	/**
+	 * Ends the drawing process on the canvas.
+	 */
+	fun end() {
+		if (!inDrawingState) return
+ 		EndDrawing()
+		inDrawingState = false
+	}
+
+	/**
+	 * Draws on the canvas using the provided callback function.
+	 *
+	 * [start] and [end] are called automatically.
+	 * @param callback The drawing operations to perform on the canvas.
+	 */
+	fun draw(callback: Canvas.() -> Unit) {
+		if (!inDrawingState) start()
+		this.callback()
+		if (inDrawingState) end()
+	}
 
 }
 
