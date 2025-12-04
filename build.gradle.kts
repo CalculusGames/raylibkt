@@ -3,6 +3,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeHostTest
 import org.jetbrains.kotlin.konan.target.Family
 
@@ -77,6 +78,8 @@ kotlin {
     targets.filterIsInstance<KotlinNativeTarget>().forEach { target ->
 		target.binaries {
 			findByName("debugTest")?.apply {
+				freeCompilerArgs += "-Xadd-light-debug=enable"
+
 				if (target.konanTarget.family.isAppleFamily) {
 					val frameworks = listOf(
 						"CoreFoundation",
