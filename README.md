@@ -1,6 +1,6 @@
-# raylibkt
+# Kray
 
-> Kotlin/Native bindings for raylib
+> Kotlin/Native game engine built on raylib and raygui
 
 ## Overview
 
@@ -11,9 +11,13 @@
 ![badge-linux-x64](http://img.shields.io/badge/platform-linux--x64-2D3F6C.svg?style=flat)
 ![badge-windows](http://img.shields.io/badge/platform-windows-4D76CD.svg?style=flat)
 
+Kray is a Kotlin/Native game engine built on top of raylib and raygui. It provides a simple and idiomatic Kotlin API for creating games and graphical applications.
+
 [raylib](https://github.com/raysan5/raylib) is a free and open source library to enjoy videogame programming in C.
 
-This repository provides Kotlin/Native bindings for raylib, allowing you to use raylib in Kotlin/Native projects and
+[raygui](https://github.com/raysan5/raygui) is a simple and easy-to-use immediate-mode-gui library based on raylib.
+
+This repository also provides Kotlin/Native bindings and wrappers for raylib and raygui allowing you to use them in Kotlin/Native projects and
 make games or graphical applications in Kotlin.
 
 ## Installation
