@@ -4276,7 +4276,7 @@ class Image internal constructor(internal val raw: CValue<raylib.internal.Image>
 	/**
 	 * A byte array representation of this image's data.
 	 */
-	val bytes: UByteArray?
+	val bytes: ByteArray?
 		get() = raw.useContents {
 			val bpp = this@Image.format.bpp
 			val size = if (bpp != 0) width * height * bpp else {

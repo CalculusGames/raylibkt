@@ -188,11 +188,11 @@ class File(path: String) {
 	 * Reads a byte array from the specified file.
 	 * @return the byte array contained in the file.
 	 */
-	fun readBytes(): UByteArray = memScoped {
+	fun readBytes(): ByteArray = memScoped {
 		val size = alloc(length)
 		val data = LoadFileData(absolutePath, size.ptr)
 
-		return data?.toByteArray(length) ?: UByteArray(0)
+		return data?.toByteArray(length) ?: ByteArray(0)
 	}
 
 	/**
