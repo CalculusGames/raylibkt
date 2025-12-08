@@ -4,7 +4,10 @@ package raylib
 
 import kotlinx.cinterop.*
 import kray.toByteArray
+import platform.posix.perror
 import platform.posix.remove
+import platform.posix.rmdir
+import platform.posix.unlink
 import raylib.internal.*
 
 /**
@@ -246,7 +249,16 @@ class File(path: String) {
 	 * @return true if successful
 	 */
 	fun delete(): Boolean {
-		return remove(absolutePath) == 0
+		val result = if (isDirectory)
+			rmdir(absolutePath) == 0
+		else
+			remove(absolutePath) == 0
+
+		if (!result) {
+			perror("Error deleting file/directory")
+		}
+
+		return result
 	}
 
 	/**

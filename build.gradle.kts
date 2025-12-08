@@ -78,7 +78,9 @@ kotlin {
     targets.filterIsInstance<KotlinNativeTarget>().forEach { target ->
 		target.binaries {
 			findByName("debugTest")?.apply {
-				freeCompilerArgs += "-Xadd-light-debug=enable"
+				debuggable = true
+				optimized = false
+				freeCompilerArgs += listOf("-Xadd-light-debug=enable", "-g")
 
 				if (target.konanTarget.family.isAppleFamily) {
 					val frameworks = listOf(
@@ -107,6 +109,7 @@ kotlin {
 
                     includeDirs {
                         allHeaders(project.file("lib/raylib/src"))
+						allHeaders(project.file("lib/raylib/src/platforms"))
                     }
                 }
 

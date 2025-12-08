@@ -17,6 +17,11 @@ class TestWindow {
 		assertTrue { Window.ready }
 		assertEquals("Test Window", Window.currentTitle)
 
+		Window.fps = 60
+		Canvas.draw {
+			setBackgroundColor(Color.WHITE)
+		}
+
 		// Clipboard
 		Window.clipboardText = "Kray"
 		assertEquals("Kray", Window.clipboardText)

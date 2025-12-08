@@ -13,4 +13,6 @@ internal actual val _isHeadless: Boolean
 
 internal actual fun _close0() {
 	CloseWindow()
+	_closed0 = true
 }
+internal actual var _closed0: Boolean = false

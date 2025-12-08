@@ -138,6 +138,7 @@ object Window {
 		loop: (Window.() -> Unit)? = null,
 		targetFps: Int? = null
 	) {
+		_closed0 = false
         InitWindow(width, height, title)
 		currentTitle = title
 
@@ -199,7 +200,7 @@ object Window {
      * Indicates whether the window has been initialized successfully.
      */
     val ready: Boolean
-        get() = IsWindowReady()
+        get() = IsWindowReady() && !_closed0
 
 	/**
 	 * Whether the window should close.
@@ -660,6 +661,7 @@ enum class CameraMode3D(internal val value: CameraMode) {
  * In orthographic, when increased, it zooms in; when decreased, it zooms out.
  * @property projection The type of camera projection
  */
+@Suppress("DuplicatedCode")
 class Camera3D(
 	var position: Triple<Float, Float, Float>,
 	var target: Triple<Float, Float, Float>,
@@ -775,7 +777,6 @@ class Camera3D(
 			rotation = rotation.first to rotation.second to value
 		}
 
-	@Suppress("DuplicatedCode")
 	internal fun NativePlacement.raw(): CPointer<raylib.internal.Camera3D>
 		= alloc<raylib.internal.Camera3D> {
 			position.x = x
@@ -791,7 +792,6 @@ class Camera3D(
 			this.projection = this@Camera3D.projection.value.toInt()
 		}.ptr
 
-	@Suppress("DuplicatedCode")
 	internal fun raw(): CValue<raylib.internal.Camera3D> = cValue {
 		position.x = x
 		position.y = y
@@ -810,7 +810,6 @@ class Camera3D(
 	 * Updates the camera's current mode.
 	 * @param mode The new camera mode to set
 	 */
-	@Suppress("DuplicatedCode")
 	fun update(mode: CameraMode3D): Unit = memScoped {
 		val cameraPtr = raw()
 		UpdateCamera(cameraPtr, mode.value.toInt())
@@ -924,3 +923,4 @@ fun Canvas.camera3D(camera: Camera3D, block: Canvas.() -> Unit) {
 internal expect val _isHeadless: Boolean
 
 internal expect fun _close0()
+internal expect var _closed0: Boolean
