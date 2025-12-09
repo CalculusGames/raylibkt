@@ -2,20 +2,20 @@
 
 package kray
 
-import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CArrayPointer
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.FloatVar
 import kotlinx.cinterop.IntVar
 import kotlinx.cinterop.IntVarOf
 import kotlinx.cinterop.NativePlacement
+import kotlinx.cinterop.UByteVar
 import kotlinx.cinterop.allocArray
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.get
 import kotlinx.cinterop.nativeHeap
+import kotlinx.cinterop.readBytes
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.set
 import kotlinx.cinterop.value
@@ -29,9 +29,26 @@ import raylib.internal.Vector3
  * @param size The size of the dynamic array.
  * @return An unsigned byte array from the pointer
  */
-fun COpaquePointer.toByteArray(size: Int): ByteArray {
-	val ptr = reinterpret<ByteVar>()
-	return ByteArray(size) { i -> ptr[i] }
+fun COpaquePointer.toUByteArray(size: Int): UByteArray = readBytes(size).toUByteArray()
+
+/**
+ * Converts a [COpaquePointer] (aka `void *`) to an integer array.
+ * @param size The size of the dynamic array.
+ * @return An integer array from the pointer
+ */
+fun COpaquePointer.toIntArray(size: Int): IntArray {
+	val ptr = reinterpret<IntVar>()
+	return IntArray(size) { i -> ptr[i] }
+}
+
+/**
+ * Converts a [COpaquePointer] (aka `void *`) to an unsigned integer array.
+ * @param size The size of the dynamic array.
+ * @return An unsigned integer array from the pointer
+ */
+fun COpaquePointer.toUIntArray(size: Int): UIntArray {
+	val ptr = reinterpret<IntVar>()
+	return UIntArray(size) { i -> ptr[i].toUInt() }
 }
 
 // pairs, triples and quadruples

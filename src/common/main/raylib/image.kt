@@ -2,7 +2,6 @@
 package raylib
 
 import kotlinx.cinterop.*
-import kray.toByteArray
 import kray.toVector2
 import raylib.internal.*
 
@@ -4303,7 +4302,7 @@ class Image internal constructor(internal val raw: CValue<raylib.internal.Image>
 				}
 			}
 
-			data?.toByteArray(size)
+			data?.readBytes(size)
 		}
 
     /**
@@ -4926,7 +4925,7 @@ fun Window.endTextureMode() {
  * @param renderTexture The render texture to render to.
  * @param block The block of code to execute while rendering to the render texture.
  */
-suspend fun Window.textureMode(renderTexture: RenderTexture2D, block: suspend Window.() -> Unit) {
+fun Window.textureMode(renderTexture: RenderTexture2D, block: Window.() -> Unit) {
 	startTextureMode(renderTexture)
 	this.block()
 	endTextureMode()

@@ -3,11 +3,11 @@
 package raylib
 
 import kotlinx.cinterop.*
-import kray.toByteArray
+import kray.toUByteArray
+import kray.toUIntArray
 import platform.posix.perror
 import platform.posix.remove
 import platform.posix.rmdir
-import platform.posix.unlink
 import raylib.internal.*
 
 /**
@@ -167,7 +167,7 @@ class File(path: String) {
 		val size = alloc(length)
 		val data = LoadFileData(absolutePath, size.ptr)
 
-		return data?.toByteArray(length) ?: ByteArray(0)
+		return data?.readBytes(length) ?: ByteArray(0)
 	}
 
 	/**
@@ -306,4 +306,172 @@ fun String.toFile(): File = File(this)
  */
 fun Image.writeTo(file: File): Boolean {
 	return ExportImage(raw, file.absolutePath)
+}
+
+// Hashing functions
+
+/**
+ * Compresses this byte array using DEFLATE algorithm.
+ * @return the compressed byte array
+ */
+fun UByteArray.compress(): UByteArray = memScoped {
+	val length = alloc<IntVar>()
+	val compressed = this@compress.usePinned { pinned ->
+		CompressData(pinned.addressOf(0), size, length.ptr)
+	}
+
+	return compressed?.toUByteArray(length.value) ?: UByteArray(0)
+}
+
+/**
+ * Compresses this byte array using DEFLATE algorithm.
+ * @return the compressed byte array
+ */
+fun ByteArray.compress(): ByteArray = memScoped {
+	val length = alloc<IntVar>()
+	val compressed = this@compress.usePinned { pinned ->
+		CompressData(pinned.addressOf(0).reinterpret(), size, length.ptr)
+	}
+
+	return compressed?.readBytes(length.value) ?: ByteArray(0)
+}
+
+/**
+ * Decompresses this byte array using INFLATE algorithm.
+ * @return the decompressed byte array
+ */
+fun UByteArray.decompress(): UByteArray = memScoped {
+	val length = alloc<IntVar>()
+	val decompressed = this@decompress.usePinned { pinned ->
+		DecompressData(pinned.addressOf(0), size, length.ptr)
+	}
+
+	return decompressed?.toUByteArray(length.value) ?: UByteArray(0)
+}
+
+/**
+ * Decompresses this byte array using INFLATE algorithm.
+ * @return the decompressed byte array
+ */
+fun ByteArray.decompress(): ByteArray = memScoped {
+	val length = alloc<IntVar>()
+	val decompressed = this@decompress.usePinned { pinned ->
+		DecompressData(pinned.addressOf(0).reinterpret(), size, length.ptr)
+	}
+
+	return decompressed?.readBytes(length.value) ?: ByteArray(0)
+}
+
+/**
+ * Encodes this byte array to a Base64 string.
+ * @return the Base64 encoded string
+ */
+fun UByteArray.toBase64(): String = memScoped {
+	val length = alloc<IntVar>()
+	val data = this@toBase64.usePinned { pinned ->
+		EncodeDataBase64(pinned.addressOf(0), size, length.ptr)
+	}
+
+	return data?.toKString() ?: ""
+}
+
+/**
+ * Encodes this byte array to a Base64 string.
+ * @return the Base64 encoded string
+ */
+fun ByteArray.toBase64(): String = memScoped {
+	val length = alloc<IntVar>()
+	val data = this@toBase64.usePinned { pinned ->
+		EncodeDataBase64(pinned.addressOf(0).reinterpret(), size, length.ptr)
+	}
+
+	return data?.toKString() ?: ""
+}
+
+/**
+ * Decodes a Base64 string to a byte array.
+ * @return the decoded byte array
+ */
+fun String.fromBase64U(): UByteArray = memScoped {
+	val length = alloc<IntVar>()
+	val data = DecodeDataBase64(this@fromBase64U, length.ptr)
+
+	return data?.toUByteArray(length.value) ?: UByteArray(0)
+}
+
+/**
+ * Decodes a Base64 string to a byte array.
+ * @return the decoded byte array
+ */
+fun String.fromBase64(): ByteArray = memScoped {
+	val length = alloc<IntVar>()
+	val data = DecodeDataBase64(this@fromBase64, length.ptr)
+
+	return data?.readBytes(length.value) ?: ByteArray(0)
+}
+
+/**
+ * Computes the CRC32 hash of this byte array.
+ * @return the CRC32 hash as a hexadecimal string, or an empty string if an error occurs
+ */
+fun UByteArray.crc32(): UInt
+	= usePinned { pinned -> ComputeCRC32(pinned.addressOf(0).reinterpret(), size) }
+
+/**
+ * Computes the CRC32 hash of this byte array.
+ * @return the CRC32 hash as a hexadecimal string, or an empty string if an error occurs
+ */
+fun ByteArray.crc32(): UInt
+	= usePinned { pinned -> ComputeCRC32(pinned.addressOf(0).reinterpret(), size) }
+
+/**
+ * Computes the MD5 hash of this byte array.
+ * @return the MD5 hash as a hexadecimal string, or an empty string if an error occurs
+ */
+fun UByteArray.md5(): String {
+	val sha1 = usePinned { pinned ->
+		val ptr = ComputeMD5(pinned.addressOf(0).reinterpret(), size)
+		ptr?.toUByteArray(16)
+	} ?: return ""
+
+	return sha1.joinToString("") { it.toString(16).padStart(2, '0') }
+}
+
+/**
+ * Computes the MD5 hash of this byte array.
+ * @return the MD5 hash as a hexadecimal string, or an empty string if an error occurs
+ */
+fun ByteArray.md5(): String {
+	val sha1 = usePinned { pinned ->
+		val ptr = ComputeMD5(pinned.addressOf(0).reinterpret(), size)
+		ptr?.toUByteArray(16)
+	} ?: return ""
+
+	return sha1.joinToString("") { it.toString(16).padStart(2, '0') }
+}
+
+/**
+ * Computes the SHA1 hash of this byte array.
+ * @return the SHA1 hash as a hexadecimal string, or an empty string if an error occurs
+ */
+fun UByteArray.sha1(): String {
+	val sha1 = usePinned { pinned ->
+		val ptr = ComputeSHA1(pinned.addressOf(0).reinterpret(), size)
+		ptr?.toUByteArray(20)
+	} ?: return ""
+
+	return sha1.joinToString("") { it.toString(16).padStart(2, '0') }
+}
+
+/**
+ * Computes the SHA1 hash of this byte array.
+ * @return the SHA1 hash as a hexadecimal string, or an empty string if an error occurs
+ */
+fun ByteArray.sha1(): String {
+	val sha1 = usePinned { pinned ->
+		val ptr = ComputeSHA1(pinned.addressOf(0).reinterpret(), size)
+		ptr?.toUByteArray(20)
+	} ?: return ""
+
+	return sha1.joinToString("") { it.toString(16).padStart(2, '0') }
 }
