@@ -6,8 +6,10 @@ $dokka.location:kray//allocArrayOf/<ERROR CLASS> ERROR CLASS: Symbol not found f
 $dokka.location:kray//allocArrayOf/<ERROR CLASS> ERROR CLASS: Symbol not found for NativePlacement#kotlin.Int/PointingToDeclaration/kray/kray/alloc-array-of.html
 $dokka.location:kray//to/<ERROR CLASS> ERROR CLASS: Symbol not found for Pair<A, B>#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/kray/kray/to.html
 $dokka.location:kray//to/<ERROR CLASS> ERROR CLASS: Symbol not found for Triple<A, B, C>#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/kray/kray/to.html
-$dokka.location:kray//toByteArray/<ERROR CLASS> ERROR CLASS: Symbol not found for COpaquePointer#kotlin.Int/PointingToDeclaration/kray/kray/to-byte-array.html
 $dokka.location:kray//toDynamicArray/kotlin.collections.Collection[kotlin.Int]#/PointingToDeclaration/kray/kray/to-dynamic-array.html
+$dokka.location:kray//toIntArray/<ERROR CLASS> ERROR CLASS: Symbol not found for COpaquePointer#kotlin.Int/PointingToDeclaration/kray/kray/to-int-array.html
+$dokka.location:kray//toUByteArray/<ERROR CLASS> ERROR CLASS: Symbol not found for COpaquePointer#kotlin.Int/PointingToDeclaration/kray/kray/to-u-byte-array.html
+$dokka.location:kray//toUIntArray/<ERROR CLASS> ERROR CLASS: Symbol not found for COpaquePointer#kotlin.Int/PointingToDeclaration/kray/kray/to-u-int-array.html
 $dokka.location:kray//toVector2/<ERROR CLASS> ERROR CLASS: Symbol not found for Pair<kotlin/Float, kotlin/Float>#/PointingToDeclaration/kray/kray/to-vector2.html
 $dokka.location:kray//toVector2/<ERROR CLASS> ERROR CLASS: Symbol not found for Pair<kotlin/Int, kotlin/Int>#/PointingToDeclaration/kray/kray/to-vector2.html
 $dokka.location:kray//toVector3/<ERROR CLASS> ERROR CLASS: Symbol not found for Triple<kotlin/Float, kotlin/Float, kotlin/Float>#/PointingToDeclaration/kray/kray/to-vector3.html
@@ -39,6 +41,10 @@ $dokka.location:raylib//catmullRomSpline/raylib.Canvas#raylib.Color#kotlin.Float
 $dokka.location:raylib//catmullRomSpline/raylib.Canvas#raylib.Color#kotlin.Float#kotlin.collections.List[<ERROR CLASS> ERROR CLASS: Symbol not found for Pair<kotlin/Int, kotlin/Int>]/PointingToDeclaration/kray/raylib/catmull-rom-spline.html
 $dokka.location:raylib//circle/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Float#raylib.Color/PointingToDeclaration/kray/raylib/circle.html
 $dokka.location:raylib//circle3/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Float#kotlin.Float#kotlin.Float#kotlin.Float#kotlin.Float#raylib.Color/PointingToDeclaration/kray/raylib/circle3.html
+$dokka.location:raylib//compress/<ERROR CLASS> ERROR CLASS: Symbol not found for UByteArray#/PointingToDeclaration/kray/raylib/compress.html
+$dokka.location:raylib//compress/kotlin.ByteArray#/PointingToDeclaration/kray/raylib/compress.html
+$dokka.location:raylib//crc32/<ERROR CLASS> ERROR CLASS: Symbol not found for UByteArray#/PointingToDeclaration/kray/raylib/crc32.html
+$dokka.location:raylib//crc32/kotlin.ByteArray#/PointingToDeclaration/kray/raylib/crc32.html
 $dokka.location:raylib//cubicBezierSpline/raylib.Canvas#raylib.Color#kotlin.Float#<ERROR CLASS> ERROR CLASS: Symbol not found for Pair<kotlin/Int, kotlin/Int>/PointingToDeclaration/kray/raylib/cubic-bezier-spline.html
 $dokka.location:raylib//cubicBezierSpline/raylib.Canvas#raylib.Color#kotlin.Float#kotlin.collections.List[<ERROR CLASS> ERROR CLASS: Symbol not found for Pair<kotlin/Int, kotlin/Int>]/PointingToDeclaration/kray/raylib/cubic-bezier-spline.html
 $dokka.location:raylib//cwd/#/PointingToDeclaration/kray/raylib/cwd.html
@@ -46,6 +52,8 @@ $dokka.location:raylib//cylinder/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#
 $dokka.location:raylib//cylinder/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Float#kotlin.Float#kotlin.Float#raylib.Color/PointingToDeclaration/kray/raylib/cylinder.html
 $dokka.location:raylib//cylinder/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Float#kotlin.Float#raylib.Color/PointingToDeclaration/kray/raylib/cylinder.html
 $dokka.location:raylib//cylinder/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Float#kotlin.Float#kotlin.Int#raylib.Color/PointingToDeclaration/kray/raylib/cylinder.html
+$dokka.location:raylib//decompress/<ERROR CLASS> ERROR CLASS: Symbol not found for UByteArray#/PointingToDeclaration/kray/raylib/decompress.html
+$dokka.location:raylib//decompress/kotlin.ByteArray#/PointingToDeclaration/kray/raylib/decompress.html
 $dokka.location:raylib//draw/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#raylib.Color/PointingToDeclaration/kray/raylib/draw.html
 $dokka.location:raylib//draw/raylib.Canvas#kotlin.Int#kotlin.Int#raylib.Color/PointingToDeclaration/kray/raylib/draw.html
 $dokka.location:raylib//drawBoundingBox/raylib.Canvas#raylib.BoundingBox#raylib.Color/PointingToDeclaration/kray/raylib/draw-bounding-box.html
@@ -91,6 +99,8 @@ $dokka.location:raylib//fillRoundRect/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin
 $dokka.location:raylib//fillSphere/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Float#kotlin.Int#kotlin.Int#raylib.Color/PointingToDeclaration/kray/raylib/fill-sphere.html
 $dokka.location:raylib//fillSphere/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Float#raylib.Color/PointingToDeclaration/kray/raylib/fill-sphere.html
 $dokka.location:raylib//fillTriangle/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#raylib.Color/PointingToDeclaration/kray/raylib/fill-triangle.html
+$dokka.location:raylib//fromBase64/kotlin.String#/PointingToDeclaration/kray/raylib/from-base64.html
+$dokka.location:raylib//fromBase64U/kotlin.String#/PointingToDeclaration/kray/raylib/from-base64-u.html
 $dokka.location:raylib//grid/raylib.Canvas#kotlin.Int#kotlin.Float/PointingToDeclaration/kray/raylib/grid.html
 $dokka.location:raylib//inAppDir/kotlin.String#/PointingToDeclaration/kray/raylib/in-app-dir.html
 $dokka.location:raylib//line/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Float#raylib.Color/PointingToDeclaration/kray/raylib/line.html
@@ -103,6 +113,8 @@ $dokka.location:raylib//linearSpline/raylib.Canvas#raylib.Color#kotlin.Float#<ER
 $dokka.location:raylib//linearSpline/raylib.Canvas#raylib.Color#kotlin.Float#kotlin.collections.List[<ERROR CLASS> ERROR CLASS: Symbol not found for Pair<kotlin/Int, kotlin/Int>]/PointingToDeclaration/kray/raylib/linear-spline.html
 $dokka.location:raylib//load/raylib.Image.Companion#raylib.Texture2D/PointingToDeclaration/kray/raylib/load.html
 $dokka.location:raylib//load/raylib.Texture2D.Companion#raylib.Image/PointingToDeclaration/kray/raylib/load.html
+$dokka.location:raylib//md5/<ERROR CLASS> ERROR CLASS: Symbol not found for UByteArray#/PointingToDeclaration/kray/raylib/md5.html
+$dokka.location:raylib//md5/kotlin.ByteArray#/PointingToDeclaration/kray/raylib/md5.html
 $dokka.location:raylib//openURL/#kotlin.String/PointingToDeclaration/kray/raylib/open-u-r-l.html
 $dokka.location:raylib//polygon/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Float#kotlin.Float#kotlin.Int#raylib.Color/PointingToDeclaration/kray/raylib/polygon.html
 $dokka.location:raylib//polygon/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Float#kotlin.Float#raylib.Color/PointingToDeclaration/kray/raylib/polygon.html
@@ -118,6 +130,8 @@ $dokka.location:raylib//roundRect/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int
 $dokka.location:raylib//roundRect/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Float#kotlin.Int#raylib.Color/PointingToDeclaration/kray/raylib/round-rect.html
 $dokka.location:raylib//screenshot/#kotlin.String/PointingToDeclaration/kray/raylib/screenshot.html
 $dokka.location:raylib//setLineSpacing/raylib.Canvas#kotlin.Int/PointingToDeclaration/kray/raylib/set-line-spacing.html
+$dokka.location:raylib//sha1/<ERROR CLASS> ERROR CLASS: Symbol not found for UByteArray#/PointingToDeclaration/kray/raylib/sha1.html
+$dokka.location:raylib//sha1/kotlin.ByteArray#/PointingToDeclaration/kray/raylib/sha1.html
 $dokka.location:raylib//shader/raylib.Canvas#raylib.Shader#kotlin.Function1[raylib.Canvas,kotlin.Unit]/PointingToDeclaration/kray/raylib/shader.html
 $dokka.location:raylib//sphere/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Float#kotlin.Int#kotlin.Int#raylib.Color/PointingToDeclaration/kray/raylib/sphere.html
 $dokka.location:raylib//sphere/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Float#raylib.Color/PointingToDeclaration/kray/raylib/sphere.html
@@ -126,7 +140,9 @@ $dokka.location:raylib//start3D/raylib.Canvas#raylib.Camera3D/PointingToDeclarat
 $dokka.location:raylib//startShader/raylib.Canvas#raylib.Shader/PointingToDeclaration/kray/raylib/start-shader.html
 $dokka.location:raylib//startTextureMode/raylib.Window#raylib.RenderTexture2D/PointingToDeclaration/kray/raylib/start-texture-mode.html
 $dokka.location:raylib//stopShader/raylib.Canvas#/PointingToDeclaration/kray/raylib/stop-shader.html
-$dokka.location:raylib//textureMode/raylib.Window#raylib.RenderTexture2D#kotlin.coroutines.SuspendFunction1[raylib.Window,kotlin.Unit]/PointingToDeclaration/kray/raylib/texture-mode.html
+$dokka.location:raylib//textureMode/raylib.Window#raylib.RenderTexture2D#kotlin.Function1[raylib.Window,kotlin.Unit]/PointingToDeclaration/kray/raylib/texture-mode.html
+$dokka.location:raylib//toBase64/<ERROR CLASS> ERROR CLASS: Symbol not found for UByteArray#/PointingToDeclaration/kray/raylib/to-base64.html
+$dokka.location:raylib//toBase64/kotlin.ByteArray#/PointingToDeclaration/kray/raylib/to-base64.html
 $dokka.location:raylib//toFile/kotlin.String#/PointingToDeclaration/kray/raylib/to-file.html
 $dokka.location:raylib//triangle/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#raylib.Color/PointingToDeclaration/kray/raylib/triangle.html
 $dokka.location:raylib//triangle3/raylib.Canvas#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#raylib.Color/PointingToDeclaration/kray/raylib/triangle3.html
@@ -1003,7 +1019,45 @@ $dokka.location:raylib/Font/glyphCount/#/PointingToDeclaration/kray/raylib/-fon
 $dokka.location:raylib/Font/isValid/#/PointingToDeclaration/kray/raylib/-font/is-valid.html
 $dokka.location:raylib/Font/texture/#/PointingToDeclaration/kray/raylib/-font/texture.html
 $dokka.location:raylib/Font/unload/#/PointingToDeclaration/kray/raylib/-font/unload.html
+$dokka.location:raylib/GamePad.Axis.LEFT_X///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-axis/-l-e-f-t_-x/index.html
+$dokka.location:raylib/GamePad.Axis.LEFT_Y///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-axis/-l-e-f-t_-y/index.html
+$dokka.location:raylib/GamePad.Axis.LT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-axis/-l-t/index.html
+$dokka.location:raylib/GamePad.Axis.RIGHT_X///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-axis/-r-i-g-h-t_-x/index.html
+$dokka.location:raylib/GamePad.Axis.RIGHT_Y///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-axis/-r-i-g-h-t_-y/index.html
+$dokka.location:raylib/GamePad.Axis.RT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-axis/-r-t/index.html
+$dokka.location:raylib/GamePad.Axis///PointingToDeclaration/kray/raylib/-game-pad/-axis/index.html
+$dokka.location:raylib/GamePad.Axis/valueOf/#kotlin.String/PointingToDeclaration/kray/raylib/-game-pad/-axis/value-of.html
+$dokka.location:raylib/GamePad.Axis/values/#/PointingToDeclaration/kray/raylib/-game-pad/-axis/values.html
+$dokka.location:raylib/GamePad.Button.DOWN///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-d-o-w-n/index.html
+$dokka.location:raylib/GamePad.Button.DPAD_DOWN///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-d-p-a-d_-d-o-w-n/index.html
+$dokka.location:raylib/GamePad.Button.DPAD_LEFT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-d-p-a-d_-l-e-f-t/index.html
+$dokka.location:raylib/GamePad.Button.DPAD_RIGHT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-d-p-a-d_-r-i-g-h-t/index.html
+$dokka.location:raylib/GamePad.Button.DPAD_UP///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-d-p-a-d_-u-p/index.html
+$dokka.location:raylib/GamePad.Button.LB///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-l-b/index.html
+$dokka.location:raylib/GamePad.Button.LEFT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-l-e-f-t/index.html
+$dokka.location:raylib/GamePad.Button.LT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-l-t/index.html
+$dokka.location:raylib/GamePad.Button.MIDDLE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-m-i-d-d-l-e/index.html
+$dokka.location:raylib/GamePad.Button.MIDDLE_LEFT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-m-i-d-d-l-e_-l-e-f-t/index.html
+$dokka.location:raylib/GamePad.Button.MIDDLE_RIGHT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-m-i-d-d-l-e_-r-i-g-h-t/index.html
+$dokka.location:raylib/GamePad.Button.RB///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-r-b/index.html
+$dokka.location:raylib/GamePad.Button.RIGHT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-r-i-g-h-t/index.html
+$dokka.location:raylib/GamePad.Button.RT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-r-t/index.html
+$dokka.location:raylib/GamePad.Button.UNKNOWN///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-u-n-k-n-o-w-n/index.html
+$dokka.location:raylib/GamePad.Button.UP///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-game-pad/-button/-u-p/index.html
+$dokka.location:raylib/GamePad.Button///PointingToDeclaration/kray/raylib/-game-pad/-button/index.html
+$dokka.location:raylib/GamePad.Button/valueOf/#kotlin.String/PointingToDeclaration/kray/raylib/-game-pad/-button/value-of.html
+$dokka.location:raylib/GamePad.Button/values/#/PointingToDeclaration/kray/raylib/-game-pad/-button/values.html
 $dokka.location:raylib/GamePad///PointingToDeclaration/kray/raylib/-game-pad/index.html
+$dokka.location:raylib/GamePad/getAxisCount/#kotlin.Int/PointingToDeclaration/kray/raylib/-game-pad/get-axis-count.html
+$dokka.location:raylib/GamePad/getAxisMovement/#raylib.GamePad.Axis#kotlin.Int/PointingToDeclaration/kray/raylib/-game-pad/get-axis-movement.html
+$dokka.location:raylib/GamePad/getName/#kotlin.Int/PointingToDeclaration/kray/raylib/-game-pad/get-name.html
+$dokka.location:raylib/GamePad/isAvailable/#kotlin.Int/PointingToDeclaration/kray/raylib/-game-pad/is-available.html
+$dokka.location:raylib/GamePad/isDown/#raylib.GamePad.Button#kotlin.Int/PointingToDeclaration/kray/raylib/-game-pad/is-down.html
+$dokka.location:raylib/GamePad/isPressed/#raylib.GamePad.Button#kotlin.Int/PointingToDeclaration/kray/raylib/-game-pad/is-pressed.html
+$dokka.location:raylib/GamePad/isUp/#raylib.GamePad.Button#kotlin.Int/PointingToDeclaration/kray/raylib/-game-pad/is-up.html
+$dokka.location:raylib/GamePad/isreleased/#raylib.GamePad.Button#kotlin.Int/PointingToDeclaration/kray/raylib/-game-pad/isreleased.html
+$dokka.location:raylib/GamePad/lastPressed/#/PointingToDeclaration/kray/raylib/-game-pad/last-pressed.html
+$dokka.location:raylib/GamePad/vibrate/#kotlin.Float#kotlin.Float#kotlin.Float#kotlin.Int/PointingToDeclaration/kray/raylib/-game-pad/vibrate.html
 $dokka.location:raylib/Image.Companion///PointingToDeclaration/kray/raylib/-image/-companion/index.html
 $dokka.location:raylib/Image.Companion/fromCellular/#kotlin.Int#kotlin.Int#kotlin.Int/PointingToDeclaration/kray/raylib/-image/-companion/from-cellular.html
 $dokka.location:raylib/Image.Companion/fromChecked/#kotlin.Int#kotlin.Int#kotlin.Int#kotlin.Int#raylib.Color#raylib.Color/PointingToDeclaration/kray/raylib/-image/-companion/from-checked.html
@@ -1049,6 +1103,135 @@ $dokka.location:raylib/Image/triangleStrip/#raylib.Color#<ERROR CLASS> ERROR CLA
 $dokka.location:raylib/Image/triangleStrip/#raylib.Color#kotlin.collections.List[<ERROR CLASS> ERROR CLASS: Symbol not found for Pair<kotlin/Int, kotlin/Int>]/PointingToDeclaration/kray/raylib/-image/triangle-strip.html
 $dokka.location:raylib/Image/unload/#/PointingToDeclaration/kray/raylib/-image/unload.html
 $dokka.location:raylib/Image/width/#/PointingToDeclaration/kray/raylib/-image/width.html
+$dokka.location:raylib/Key.A///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-a/index.html
+$dokka.location:raylib/Key.APOSTROPHE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-a-p-o-s-t-r-o-p-h-e/index.html
+$dokka.location:raylib/Key.B///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-b/index.html
+$dokka.location:raylib/Key.BACKSPACE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-b-a-c-k-s-p-a-c-e/index.html
+$dokka.location:raylib/Key.C///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-c/index.html
+$dokka.location:raylib/Key.CAPS_LOCK///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-c-a-p-s_-l-o-c-k/index.html
+$dokka.location:raylib/Key.COMMA///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-c-o-m-m-a/index.html
+$dokka.location:raylib/Key.Companion///PointingToDeclaration/kray/raylib/-key/-companion/index.html
+$dokka.location:raylib/Key.Companion/find/#kotlin.Char/PointingToDeclaration/kray/raylib/-key/-companion/find.html
+$dokka.location:raylib/Key.Companion/find/#kotlin.Int/PointingToDeclaration/kray/raylib/-key/-companion/find.html
+$dokka.location:raylib/Key.Companion/findAll/#kotlin.Char/PointingToDeclaration/kray/raylib/-key/-companion/find-all.html
+$dokka.location:raylib/Key.D///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-d/index.html
+$dokka.location:raylib/Key.DELETE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-d-e-l-e-t-e/index.html
+$dokka.location:raylib/Key.DOWN_ARROW///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-d-o-w-n_-a-r-r-o-w/index.html
+$dokka.location:raylib/Key.E///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-e/index.html
+$dokka.location:raylib/Key.EIGHT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-e-i-g-h-t/index.html
+$dokka.location:raylib/Key.END///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-e-n-d/index.html
+$dokka.location:raylib/Key.ENTER///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-e-n-t-e-r/index.html
+$dokka.location:raylib/Key.EQUAL///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-e-q-u-a-l/index.html
+$dokka.location:raylib/Key.ESC///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-e-s-c/index.html
+$dokka.location:raylib/Key.F///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f/index.html
+$dokka.location:raylib/Key.F1///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f1/index.html
+$dokka.location:raylib/Key.F10///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f10/index.html
+$dokka.location:raylib/Key.F11///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f11/index.html
+$dokka.location:raylib/Key.F12///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f12/index.html
+$dokka.location:raylib/Key.F2///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f2/index.html
+$dokka.location:raylib/Key.F3///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f3/index.html
+$dokka.location:raylib/Key.F4///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f4/index.html
+$dokka.location:raylib/Key.F5///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f5/index.html
+$dokka.location:raylib/Key.F6///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f6/index.html
+$dokka.location:raylib/Key.F7///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f7/index.html
+$dokka.location:raylib/Key.F8///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f8/index.html
+$dokka.location:raylib/Key.F9///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f9/index.html
+$dokka.location:raylib/Key.FIVE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f-i-v-e/index.html
+$dokka.location:raylib/Key.FOUR///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-f-o-u-r/index.html
+$dokka.location:raylib/Key.G///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-g/index.html
+$dokka.location:raylib/Key.GRAVE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-g-r-a-v-e/index.html
+$dokka.location:raylib/Key.H///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-h/index.html
+$dokka.location:raylib/Key.HOME///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-h-o-m-e/index.html
+$dokka.location:raylib/Key.I///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-i/index.html
+$dokka.location:raylib/Key.INSERT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-i-n-s-e-r-t/index.html
+$dokka.location:raylib/Key.J///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-j/index.html
+$dokka.location:raylib/Key.K///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k/index.html
+$dokka.location:raylib/Key.KP_0///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_0/index.html
+$dokka.location:raylib/Key.KP_1///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_1/index.html
+$dokka.location:raylib/Key.KP_2///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_2/index.html
+$dokka.location:raylib/Key.KP_3///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_3/index.html
+$dokka.location:raylib/Key.KP_4///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_4/index.html
+$dokka.location:raylib/Key.KP_5///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_5/index.html
+$dokka.location:raylib/Key.KP_6///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_6/index.html
+$dokka.location:raylib/Key.KP_7///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_7/index.html
+$dokka.location:raylib/Key.KP_8///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_8/index.html
+$dokka.location:raylib/Key.KP_9///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_9/index.html
+$dokka.location:raylib/Key.KP_ADD///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_-a-d-d/index.html
+$dokka.location:raylib/Key.KP_DECIMAL///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_-d-e-c-i-m-a-l/index.html
+$dokka.location:raylib/Key.KP_DIVIDE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_-d-i-v-i-d-e/index.html
+$dokka.location:raylib/Key.KP_ENTER///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_-e-n-t-e-r/index.html
+$dokka.location:raylib/Key.KP_EQUAL///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_-e-q-u-a-l/index.html
+$dokka.location:raylib/Key.KP_MULTIPLY///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-k-p_-m-u-l-t-i-p-l-y/index.html
+$dokka.location:raylib/Key.L///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-l/index.html
+$dokka.location:raylib/Key.LALT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-l-a-l-t/index.html
+$dokka.location:raylib/Key.LCTRL///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-l-c-t-r-l/index.html
+$dokka.location:raylib/Key.LEFT_ARROW///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-l-e-f-t_-a-r-r-o-w/index.html
+$dokka.location:raylib/Key.LEFT_BRACKET///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-l-e-f-t_-b-r-a-c-k-e-t/index.html
+$dokka.location:raylib/Key.LSHIFT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-l-s-h-i-f-t/index.html
+$dokka.location:raylib/Key.LSUPER///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-l-s-u-p-e-r/index.html
+$dokka.location:raylib/Key.M///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-m/index.html
+$dokka.location:raylib/Key.MENU///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-m-e-n-u/index.html
+$dokka.location:raylib/Key.MINUS///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-m-i-n-u-s/index.html
+$dokka.location:raylib/Key.N///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-n/index.html
+$dokka.location:raylib/Key.NINE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-n-i-n-e/index.html
+$dokka.location:raylib/Key.NULL///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-n-u-l-l/index.html
+$dokka.location:raylib/Key.NUM_LOCK///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-n-u-m_-l-o-c-k/index.html
+$dokka.location:raylib/Key.O///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-o/index.html
+$dokka.location:raylib/Key.ONE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-o-n-e/index.html
+$dokka.location:raylib/Key.P///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-p/index.html
+$dokka.location:raylib/Key.PAGE_DOWN///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-p-a-g-e_-d-o-w-n/index.html
+$dokka.location:raylib/Key.PAGE_UP///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-p-a-g-e_-u-p/index.html
+$dokka.location:raylib/Key.PAUSE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-p-a-u-s-e/index.html
+$dokka.location:raylib/Key.PERIOD///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-p-e-r-i-o-d/index.html
+$dokka.location:raylib/Key.PRINT_SCREEN///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-p-r-i-n-t_-s-c-r-e-e-n/index.html
+$dokka.location:raylib/Key.Q///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-q/index.html
+$dokka.location:raylib/Key.R///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-r/index.html
+$dokka.location:raylib/Key.RALT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-r-a-l-t/index.html
+$dokka.location:raylib/Key.RCTRL///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-r-c-t-r-l/index.html
+$dokka.location:raylib/Key.RIGHT_ARROW///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-r-i-g-h-t_-a-r-r-o-w/index.html
+$dokka.location:raylib/Key.RIGHT_BRACKET///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-r-i-g-h-t_-b-r-a-c-k-e-t/index.html
+$dokka.location:raylib/Key.RSHIFT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-r-s-h-i-f-t/index.html
+$dokka.location:raylib/Key.RSUPER///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-r-s-u-p-e-r/index.html
+$dokka.location:raylib/Key.S///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-s/index.html
+$dokka.location:raylib/Key.SCROLL_LOCK///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-s-c-r-o-l-l_-l-o-c-k/index.html
+$dokka.location:raylib/Key.SEMICOLON///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-s-e-m-i-c-o-l-o-n/index.html
+$dokka.location:raylib/Key.SEVEN///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-s-e-v-e-n/index.html
+$dokka.location:raylib/Key.SIX///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-s-i-x/index.html
+$dokka.location:raylib/Key.SLASH///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-s-l-a-s-h/index.html
+$dokka.location:raylib/Key.SPACE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-s-p-a-c-e/index.html
+$dokka.location:raylib/Key.T///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-t/index.html
+$dokka.location:raylib/Key.TAB///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-t-a-b/index.html
+$dokka.location:raylib/Key.THREE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-t-h-r-e-e/index.html
+$dokka.location:raylib/Key.TWO///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-t-w-o/index.html
+$dokka.location:raylib/Key.U///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-u/index.html
+$dokka.location:raylib/Key.UP_ARROW///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-u-p_-a-r-r-o-w/index.html
+$dokka.location:raylib/Key.V///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-v/index.html
+$dokka.location:raylib/Key.W///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-w/index.html
+$dokka.location:raylib/Key.X///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-x/index.html
+$dokka.location:raylib/Key.Y///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-y/index.html
+$dokka.location:raylib/Key.Z///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-z/index.html
+$dokka.location:raylib/Key.ZERO///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-key/-z-e-r-o/index.html
+$dokka.location:raylib/Key///PointingToDeclaration/kray/raylib/-key/index.html
+$dokka.location:raylib/Key/chars/#/PointingToDeclaration/kray/raylib/-key/chars.html
+$dokka.location:raylib/Key/value/#/PointingToDeclaration/kray/raylib/-key/value.html
+$dokka.location:raylib/Key/valueOf/#kotlin.String/PointingToDeclaration/kray/raylib/-key/value-of.html
+$dokka.location:raylib/Key/values/#/PointingToDeclaration/kray/raylib/-key/values.html
+$dokka.location:raylib/Keyboard///PointingToDeclaration/kray/raylib/-keyboard/index.html
+$dokka.location:raylib/Keyboard/charPressed/#/PointingToDeclaration/kray/raylib/-keyboard/char-pressed.html
+$dokka.location:raylib/Keyboard/isAltDown/#/PointingToDeclaration/kray/raylib/-keyboard/is-alt-down.html
+$dokka.location:raylib/Keyboard/isCtrlDown/#/PointingToDeclaration/kray/raylib/-keyboard/is-ctrl-down.html
+$dokka.location:raylib/Keyboard/isDown/#kotlin.Char/PointingToDeclaration/kray/raylib/-keyboard/is-down.html
+$dokka.location:raylib/Keyboard/isDown/#raylib.Key/PointingToDeclaration/kray/raylib/-keyboard/is-down.html
+$dokka.location:raylib/Keyboard/isPressed/#kotlin.Char/PointingToDeclaration/kray/raylib/-keyboard/is-pressed.html
+$dokka.location:raylib/Keyboard/isPressed/#raylib.Key/PointingToDeclaration/kray/raylib/-keyboard/is-pressed.html
+$dokka.location:raylib/Keyboard/isReleased/#kotlin.Char/PointingToDeclaration/kray/raylib/-keyboard/is-released.html
+$dokka.location:raylib/Keyboard/isReleased/#raylib.Key/PointingToDeclaration/kray/raylib/-keyboard/is-released.html
+$dokka.location:raylib/Keyboard/isShiftDown/#/PointingToDeclaration/kray/raylib/-keyboard/is-shift-down.html
+$dokka.location:raylib/Keyboard/isSuperDown/#/PointingToDeclaration/kray/raylib/-keyboard/is-super-down.html
+$dokka.location:raylib/Keyboard/isUp/#kotlin.Char/PointingToDeclaration/kray/raylib/-keyboard/is-up.html
+$dokka.location:raylib/Keyboard/isUp/#raylib.Key/PointingToDeclaration/kray/raylib/-keyboard/is-up.html
+$dokka.location:raylib/Keyboard/keyPressed/#/PointingToDeclaration/kray/raylib/-keyboard/key-pressed.html
+$dokka.location:raylib/Keyboard/setExitKey/#raylib.Key/PointingToDeclaration/kray/raylib/-keyboard/set-exit-key.html
 $dokka.location:raylib/Material.Companion///PointingToDeclaration/kray/raylib/-material/-companion/index.html
 $dokka.location:raylib/Material.Companion/MAX_MATERIAL_MAPS/#/PointingToDeclaration/kray/raylib/-material/-companion/-m-a-x_-m-a-t-e-r-i-a-l_-m-a-p-s.html
 $dokka.location:raylib/Material.Companion/default/#/PointingToDeclaration/kray/raylib/-material/-companion/default.html
@@ -1191,12 +1374,46 @@ $dokka.location:raylib/Model/setMeshMaterial/#kotlin.Int#raylib.Material/Pointin
 $dokka.location:raylib/Model/setMeshMaterial/#raylib.Mesh#raylib.Material/PointingToDeclaration/kray/raylib/-model/set-mesh-material.html
 $dokka.location:raylib/Model/setPart/#kotlin.Int#raylib.Mesh#raylib.Material/PointingToDeclaration/kray/raylib/-model/set-part.html
 $dokka.location:raylib/Model/transform/#/PointingToDeclaration/kray/raylib/-model/transform.html
+$dokka.location:raylib/Mouse.Button.BACK///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-button/-b-a-c-k/index.html
+$dokka.location:raylib/Mouse.Button.EXTRA///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-button/-e-x-t-r-a/index.html
+$dokka.location:raylib/Mouse.Button.FORWARD///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-button/-f-o-r-w-a-r-d/index.html
+$dokka.location:raylib/Mouse.Button.LEFT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-button/-l-e-f-t/index.html
+$dokka.location:raylib/Mouse.Button.MIDDLE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-button/-m-i-d-d-l-e/index.html
+$dokka.location:raylib/Mouse.Button.RIGHT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-button/-r-i-g-h-t/index.html
+$dokka.location:raylib/Mouse.Button.SIDE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-button/-s-i-d-e/index.html
+$dokka.location:raylib/Mouse.Button///PointingToDeclaration/kray/raylib/-mouse/-button/index.html
+$dokka.location:raylib/Mouse.Button/valueOf/#kotlin.String/PointingToDeclaration/kray/raylib/-mouse/-button/value-of.html
+$dokka.location:raylib/Mouse.Button/values/#/PointingToDeclaration/kray/raylib/-mouse/-button/values.html
+$dokka.location:raylib/Mouse.Cursor.ARROW///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-cursor/-a-r-r-o-w/index.html
+$dokka.location:raylib/Mouse.Cursor.BLOCKED///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-cursor/-b-l-o-c-k-e-d/index.html
+$dokka.location:raylib/Mouse.Cursor.CROSSHAIR///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-cursor/-c-r-o-s-s-h-a-i-r/index.html
+$dokka.location:raylib/Mouse.Cursor.DEFAULT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-cursor/-d-e-f-a-u-l-t/index.html
+$dokka.location:raylib/Mouse.Cursor.DIAGONAL_RESIZE_LEFT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-cursor/-d-i-a-g-o-n-a-l_-r-e-s-i-z-e_-l-e-f-t/index.html
+$dokka.location:raylib/Mouse.Cursor.DIAGONAL_RESIZE_RIGHT///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-cursor/-d-i-a-g-o-n-a-l_-r-e-s-i-z-e_-r-i-g-h-t/index.html
+$dokka.location:raylib/Mouse.Cursor.HORIZONAL_RESIZE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-cursor/-h-o-r-i-z-o-n-a-l_-r-e-s-i-z-e/index.html
+$dokka.location:raylib/Mouse.Cursor.IBEAM///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-cursor/-i-b-e-a-m/index.html
+$dokka.location:raylib/Mouse.Cursor.POINTING_HAND///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-cursor/-p-o-i-n-t-i-n-g_-h-a-n-d/index.html
+$dokka.location:raylib/Mouse.Cursor.RESIZE_ALL///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-cursor/-r-e-s-i-z-e_-a-l-l/index.html
+$dokka.location:raylib/Mouse.Cursor.VERTICAL_RESIZE///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-mouse/-cursor/-v-e-r-t-i-c-a-l_-r-e-s-i-z-e/index.html
+$dokka.location:raylib/Mouse.Cursor///PointingToDeclaration/kray/raylib/-mouse/-cursor/index.html
+$dokka.location:raylib/Mouse.Cursor/valueOf/#kotlin.String/PointingToDeclaration/kray/raylib/-mouse/-cursor/value-of.html
+$dokka.location:raylib/Mouse.Cursor/values/#/PointingToDeclaration/kray/raylib/-mouse/-cursor/values.html
 $dokka.location:raylib/Mouse///PointingToDeclaration/kray/raylib/-mouse/index.html
+$dokka.location:raylib/Mouse/deltaX/#/PointingToDeclaration/kray/raylib/-mouse/delta-x.html
+$dokka.location:raylib/Mouse/deltaY/#/PointingToDeclaration/kray/raylib/-mouse/delta-y.html
 $dokka.location:raylib/Mouse/isCursorEnabled/#/PointingToDeclaration/kray/raylib/-mouse/is-cursor-enabled.html
 $dokka.location:raylib/Mouse/isCursorHidden/#/PointingToDeclaration/kray/raylib/-mouse/is-cursor-hidden.html
 $dokka.location:raylib/Mouse/isCursorOnScreen/#/PointingToDeclaration/kray/raylib/-mouse/is-cursor-on-screen.html
+$dokka.location:raylib/Mouse/isDown/#raylib.Mouse.Button/PointingToDeclaration/kray/raylib/-mouse/is-down.html
+$dokka.location:raylib/Mouse/isPressed/#raylib.Mouse.Button/PointingToDeclaration/kray/raylib/-mouse/is-pressed.html
+$dokka.location:raylib/Mouse/isReleased/#raylib.Mouse.Button/PointingToDeclaration/kray/raylib/-mouse/is-released.html
+$dokka.location:raylib/Mouse/isUp/#raylib.Mouse.Button/PointingToDeclaration/kray/raylib/-mouse/is-up.html
 $dokka.location:raylib/Mouse/mouseX/#/PointingToDeclaration/kray/raylib/-mouse/mouse-x.html
 $dokka.location:raylib/Mouse/mouseY/#/PointingToDeclaration/kray/raylib/-mouse/mouse-y.html
+$dokka.location:raylib/Mouse/setCursor/#raylib.Mouse.Cursor/PointingToDeclaration/kray/raylib/-mouse/set-cursor.html
+$dokka.location:raylib/Mouse/setScale/#kotlin.Float#kotlin.Float/PointingToDeclaration/kray/raylib/-mouse/set-scale.html
+$dokka.location:raylib/Mouse/wheelX/#/PointingToDeclaration/kray/raylib/-mouse/wheel-x.html
+$dokka.location:raylib/Mouse/wheelY/#/PointingToDeclaration/kray/raylib/-mouse/wheel-y.html
 $dokka.location:raylib/PictureFormat.COMPRESSED_ASTC_4X4_RGBA///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-picture-format/-c-o-m-p-r-e-s-s-e-d_-a-s-t-c_4-x4_-r-g-b-a/index.html
 $dokka.location:raylib/PictureFormat.COMPRESSED_ASTC_8X8_RGBA///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-picture-format/-c-o-m-p-r-e-s-s-e-d_-a-s-t-c_8-x8_-r-g-b-a/index.html
 $dokka.location:raylib/PictureFormat.COMPRESSED_DXT1_RGB///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kray/raylib/-picture-format/-c-o-m-p-r-e-s-s-e-d_-d-x-t1_-r-g-b/index.html
