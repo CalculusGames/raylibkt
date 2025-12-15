@@ -4768,6 +4768,160 @@ class Image internal constructor(internal val raw: CValue<raylib.internal.Image>
 	}
 
 	/**
+	 * Resizes the image to the specified width and height.
+	 * @param newWidth The new width of the image.
+	 * @param newHeight The new height of the image.
+	 * @return A new Image object that is resized.
+	 */
+	fun resize(newWidth: Int, newHeight: Int): Image = memScoped {
+		val copy = copyPtr()
+		ImageResize(copy, newWidth, newHeight)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Crops the image to the specified rectangle.
+	 * @param x The X coordinate of the top-left corner of the crop rectangle.
+	 * @param y The Y coordinate of the top-left corner of the crop rectangle.
+	 * @param width The width of the crop rectangle.
+	 * @param height The height of the crop rectangle.
+	 * @return A new Image object that is cropped.
+	 */
+	fun crop(x: Int, y: Int, width: Int, height: Int): Image = memScoped {
+		val copy = copyPtr()
+		val rect = cValue<Rectangle> {
+			this.x = x.toFloat()
+			this.y = y.toFloat()
+			this.width = width.toFloat()
+			this.height = height.toFloat()
+		}
+		ImageCrop(copy, rect)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Dithers the image to the specified bits per pixel for all color channels.
+	 * @param bpp Bits per pixel for all color channels.
+	 * @return A new Image object that is dithered.
+	 */
+	fun dither(bpp: Int) = dither(bpp, bpp, bpp, bpp)
+
+	/**
+	 * Dithers the image to the specified bits per pixel for each color channel.
+	 * @param rbpp Red bits per pixel.
+	 * @param gbpp Green bits per pixel.
+	 * @param bbpp Blue bits per pixel.
+	 * @param abpp Alpha bits per pixel.
+	 * @return A new Image object that is dithered.
+	 */
+	fun dither(rbpp: Int, gbpp: Int, bbpp: Int, abpp: Int): Image = memScoped {
+		val copy = copyPtr()
+		ImageDither(copy, rbpp, gbpp, bbpp, abpp)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Applies a Gaussian blur to the image with the specified size.
+	 * @param size The size of the blur effect.
+	 * @return A new Image object that is blurred.
+	 */
+	fun blur(size: Int): Image = memScoped {
+		val copy = copyPtr()
+		ImageBlurGaussian(copy, size)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Adjusts the contrast of the image.
+	 * @param contrast The contrast adjustment value (-100 to 100).
+	 * @return A new Image object with adjusted contrast.
+	 */
+	fun contrast(contrast: Float): Image = memScoped {
+		require(contrast >= -100F) { "Contrast must be between -100 and 100" }
+		require(contrast <= 100F) { "Contrast must be between -100 and 100" }
+
+		val copy = copyPtr()
+		ImageColorContrast(copy, contrast)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Adjusts the brightness of the image.
+	 * @param brightness The brightness adjustment value (-255 to 255).
+	 * @return A new Image object with adjusted brightness.
+	 */
+	fun brightness(brightness: Int): Image = memScoped {
+		require(brightness in -255..255) { "Brightness must be between -255 and 255" }
+
+		val copy = copyPtr()
+		ImageColorBrightness(copy, brightness)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Replaces a specific color in the image with another color.
+	 * @param from The color to be replaced.
+	 * @param to The color to replace with.
+	 * @return A new Image object with the color replaced.
+	 */
+	fun replace(from: Color, to: Color): Image = memScoped {
+		val copy = copyPtr()
+		ImageColorReplace(copy, from.raw(), to.raw())
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Gets the color palette of the image.
+	 * @param maxSize The maximum number of colors to include in the palette.
+	 * @return A list of Color objects representing the image's color palette.
+	 */
+	fun getPalette(maxSize: Int = 10): List<Color> = memScoped {
+		val count = alloc<IntVar>()
+		val rawColors = LoadImagePalette(raw, maxSize, count.ptr) ?: return@memScoped emptyList()
+
+		return List(count.value) { i -> Color(rawColors[i]) }
+	}
+
+	/**
+	 * Applies an alpha mask to the image using another image as the mask.
+	 * This operation sets the alpha channel of the image based on the brightness of the mask image.
+	 * @param other The image to use as the alpha mask.
+	 * @return A new Image object with the alpha mask applied.
+	 */
+	fun alphaMask(other: Image): Image = memScoped {
+		val copy = copyPtr()
+		ImageAlphaMask(copy, other.raw)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Clears the alpha channel of the image based on a specified color and threshold.
+	 * This operation sets the alpha channel to 0 for pixels that match the specified color within the threshold.
+	 * @param color The color to clear the alpha channel for.
+	 * @param threshold The threshold for color matching (0.0 to 1.0).
+	 * @return A new Image object with the alpha channel cleared.
+	 */
+	fun alphaClear(color: Color, threshold: Float): Image = memScoped {
+		require(threshold in 0.0F..1.0F) { "Threshold must be between 0.0 and 1.0" }
+
+		val copy = copyPtr()
+		ImageAlphaClear(copy, color.raw(), threshold)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
+	 * Premultiplies the alpha channel of the image.
+	 * This operation multiplies the RGB channels by the alpha channel.
+	 * @param other The image to premultiply the alpha channel with.
+	 * @return A new Image object with the premultiplied alpha channel.
+	 */
+	fun premultiplyAlpha(other: Image): Image = memScoped {
+		val copy = copyPtr()
+		ImageAlphaPremultiply(copy)
+		return Image(copy.pointed.readValue())
+	}
+
+	/**
 	 * Unloads the raw image from memory.
 	 *
 	 * **This should only be called if the image wasn't loaded from a file.**
