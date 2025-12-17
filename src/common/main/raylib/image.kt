@@ -4265,44 +4265,55 @@ class Image internal constructor(internal val raw: CValue<raylib.internal.Image>
     val height: Int
         get() = raw.useContents { height }
 
+	// a cache for the byte array representation of this image's data.
+	private var bytesCalculationCache: ByteArray? = null
+
 	/**
 	 * A byte array representation of this image's data.
 	 */
 	val bytes: ByteArray?
-		get() = raw.useContents {
-			val bpp = this@Image.format.bpp
-			val size = if (bpp != 0) width * height * bpp else {
-				when (this@Image.format) {
-					// 4x4 compressed
-					PictureFormat.COMPRESSED_DXT1_RGB,
-					PictureFormat.COMPRESSED_DXT1_RGBA,
-					PictureFormat.COMPRESSED_ETC1_RGB,
-					PictureFormat.COMPRESSED_ETC2_RGB,
-					PictureFormat.COMPRESSED_PVRT_RGB,
-					PictureFormat.COMPRESSED_PVRT_RGBA -> {
-						val blocksWide = (width + 3) / 4 // block width = 4
-						val blocksHigh = (height + 3) / 4 // block height = 4
-						blocksWide * blocksHigh * 8 // 1 byte per block
-					}
-					PictureFormat.COMPRESSED_DXT3_RGBA,
-					PictureFormat.COMPRESSED_DXT5_RGBA,
-					PictureFormat.COMPRESSED_ETC2_EAC_RGBA,
-					PictureFormat.COMPRESSED_ASTC_4X4_RGBA -> {
-						val blocksWide = (width + 3) / 4 // block width = 4
-						val blocksHigh = (height + 3) / 4 // blocks height = 4
-						blocksWide * blocksHigh * 16 // 2 bytes per block
-					}
-					// 8x8 compressed
-					PictureFormat.COMPRESSED_ASTC_8X8_RGBA -> {
-						val blocksWide = (width + 7) / 8 // block width = 8
-						val blocksHigh = (height + 7) / 8 // block height = 8
-						blocksWide * blocksHigh * 16 // 2 bytes per block
-					}
-					else -> error("format ${this@Image.format} is not configured properly; please report this bug")
-				}
+		get() {
+			if (bytesCalculationCache != null) {
+				return bytesCalculationCache
 			}
 
-			data?.readBytes(size)
+			bytesCalculationCache = raw.useContents {
+				val bpp = this@Image.format.bpp
+				val size = if (bpp != 0) width * height * bpp else {
+					when (this@Image.format) {
+						// 4x4 compressed
+						PictureFormat.COMPRESSED_DXT1_RGB,
+						PictureFormat.COMPRESSED_DXT1_RGBA,
+						PictureFormat.COMPRESSED_ETC1_RGB,
+						PictureFormat.COMPRESSED_ETC2_RGB,
+						PictureFormat.COMPRESSED_PVRT_RGB,
+						PictureFormat.COMPRESSED_PVRT_RGBA -> {
+							val blocksWide = (width + 3) / 4 // block width = 4
+							val blocksHigh = (height + 3) / 4 // block height = 4
+							blocksWide * blocksHigh * 8 // 1 byte per block
+						}
+						PictureFormat.COMPRESSED_DXT3_RGBA,
+						PictureFormat.COMPRESSED_DXT5_RGBA,
+						PictureFormat.COMPRESSED_ETC2_EAC_RGBA,
+						PictureFormat.COMPRESSED_ASTC_4X4_RGBA -> {
+							val blocksWide = (width + 3) / 4 // block width = 4
+							val blocksHigh = (height + 3) / 4 // blocks height = 4
+							blocksWide * blocksHigh * 16 // 2 bytes per block
+						}
+						// 8x8 compressed
+						PictureFormat.COMPRESSED_ASTC_8X8_RGBA -> {
+							val blocksWide = (width + 7) / 8 // block width = 8
+							val blocksHigh = (height + 7) / 8 // block height = 8
+							blocksWide * blocksHigh * 16 // 2 bytes per block
+						}
+						else -> error("format ${this@Image.format} is not configured properly; please report this bug")
+					}
+				}
+
+				data?.readBytes(size)
+			}
+
+			return bytesCalculationCache
 		}
 
     /**
@@ -4929,6 +4940,26 @@ class Image internal constructor(internal val raw: CValue<raylib.internal.Image>
 	 */
 	fun unload() {
 		UnloadImage(raw)
+	}
+
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (other !is Image) return false
+
+		if (this.width != other.width) return false
+		if (this.height != other.height) return false
+		if (this.format != other.format) return false
+		if (this.bytes?.contentEquals(other.bytes) == false) return false
+
+		return true
+	}
+
+	override fun hashCode(): Int {
+		var result = width
+		result = 31 * result + height
+		result = 31 * result + format.hashCode()
+		result = 31 * result + (bytes?.contentHashCode() ?: 0)
+		return result
 	}
 
 }

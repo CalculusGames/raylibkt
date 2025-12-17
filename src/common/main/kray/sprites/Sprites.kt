@@ -1,0 +1,53 @@
+package kray.sprites
+
+import kray.Kray
+import raylib.Canvas
+import raylib.drawImage
+import raylib.ensureDrawing
+
+// Canvas
+
+/**
+ * Draws the given [sprite] to the canvas at its current position or at the specified [x] and [y] coordinates.
+ * @param sprite The sprite to draw.
+ * @param x The x-coordinate to draw the sprite at. Defaults to the sprite's current x position.
+ * @param y The y-coordinate to draw the sprite at. Defaults to the sprite's current y position.
+ */
+fun Canvas.drawSprite(sprite: Sprite2D, x: Int = sprite.x, y: Int = sprite.y) {
+	ensureDrawing()
+	drawImage(sprite.raw, x, y)
+}
+
+// Kray
+
+private val registeredSprites = mutableSetOf<Sprite>()
+
+/**
+ * Gets an immutable copy of all sprites drawn to the canvas so far.
+ * @return A set of all drawn sprites.
+ */
+val Kray.drawnSprites: Set<Sprite>
+	get() = registeredSprites.toSet()
+
+/**
+ * Adds the given [sprite] to the Kray canvas at its current position or at the specified [x] and [y] coordinates.
+ * @param sprite The sprite to add.
+ * @param x The x-coordinate to add the sprite at. Defaults to the sprite's current x position.
+ * @param y The y-coordinate to add the sprite at. Defaults to the sprite's current y position.
+ */
+fun Kray.addSprite(sprite: Sprite2D, x: Int = sprite.x, y: Int = sprite.y) {
+	sprite.isDrawn = true
+	registeredSprites.add(sprite)
+	canvas.drawSprite(sprite, x, y)
+}
+
+/**
+ * Removes the given [sprite] from the Kray canvas.
+ * @param sprite The sprite to remove.
+ */
+fun Kray.removeSprite(sprite: Sprite) {
+	if (registeredSprites.remove(sprite)) {
+		if (sprite is Sprite2D)
+			sprite.isDrawn = false
+	}
+}

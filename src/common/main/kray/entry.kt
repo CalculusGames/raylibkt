@@ -1,7 +1,13 @@
 package kray
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kray.sprites.Sprite2D
+import kray.sprites.drawSprite
+import kray.sprites.drawnSprites
 import raylib.Window
 import raylib.Canvas
 
@@ -28,7 +34,7 @@ object Kray {
 	/**
 	 * The provided lifecycle loop for the application.
 	 */
-	var loop: (suspend Kray.() -> Unit)? = null
+	var loop: (suspend CoroutineScope.() -> Unit)? = null
 		private set
 
 	/**
@@ -40,16 +46,32 @@ object Kray {
 	/**
 	 * Sets the game loop.
 	 */
-	suspend fun loop(loop: suspend Kray.() -> Unit) {
+	suspend fun loop(logic: suspend CoroutineScope.() -> Unit) {
 		if (this.loop != null) throw IllegalStateException("Already looping")
-		this.loop = loop
+		this.loop = logic
 
 		coroutineScope {
-			launch {
-				while (!Window.shouldClose && !stopped) {
-					loop()
+			while (!Window.shouldClose && !stopped) {
+				logic()
+
+				// draw registered sprites
+				drawnSprites.forEach { sprite ->
+					if (sprite is Sprite2D && sprite.isDrawn) {
+						canvas.drawSprite(sprite, sprite.x, sprite.y)
+					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Runs the given [logic] on the IO dispatcher.
+	 * @param logic The logic to run.
+	 * @return A [suspend] [Unit].
+	 */
+	suspend fun io(logic: suspend CoroutineScope.() -> Unit) {
+		withContext(Dispatchers.IO) {
+			logic()
 		}
 	}
 
