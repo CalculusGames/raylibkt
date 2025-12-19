@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Companion</title>
+    <link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../../../ui-kit/ui-kit.min.js" defer="defer"></script>
+</head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="../../../../../index.html" tabindex="1">
+                    kray
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+1.0.0        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector native-like" data-active="" aria-pressed="true"
+                        data-filter=":/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option native-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":/commonMain"
+                                       data-filter=":/commonMain"/>
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    kray
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="kray::raylib/Shader.UniformLocation.Companion///PointingToDeclaration//-1958133601">
+  <div class="breadcrumbs"><a href="../../../../../index.html">kray</a><span class="delimiter">/</span><a href="../../../index.html">raylib</a><span class="delimiter">/</span><a href="../../index.html">Shader</a><span class="delimiter">/</span><a href="../index.html">UniformLocation</a><span class="delimiter">/</span><span class="current">Companion</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Companion</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">Companion</a></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="-412430890%2FProperties%2F-1958133601" anchor-label="BONES_MATRICES" id="-412430890%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-b-o-n-e-s_-m-a-t-r-i-c-e-s.html"><span>BONES_</span><wbr></wbr><span>MATRICES</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-412430890%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-b-o-n-e-s_-m-a-t-r-i-c-e-s.html">BONES_MATRICES</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Bone matrices uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2134637314%2FProperties%2F-1958133601" anchor-label="COLOR_AMBIENT" id="-2134637314%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-l-o-r_-a-m-b-i-e-n-t.html"><span>COLOR_</span><wbr></wbr><span>AMBIENT</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2134637314%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-l-o-r_-a-m-b-i-e-n-t.html">COLOR_AMBIENT</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Ambient color uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1549700980%2FProperties%2F-1958133601" anchor-label="COLOR_DIFFUSE" id="1549700980%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-l-o-r_-d-i-f-f-u-s-e.html"><span>COLOR_</span><wbr></wbr><span>DIFFUSE</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1549700980%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-l-o-r_-d-i-f-f-u-s-e.html">COLOR_DIFFUSE</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Diffuse (base) color uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-690597823%2FProperties%2F-1958133601" anchor-label="COLOR_SPECULAR" id="-690597823%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-l-o-r_-s-p-e-c-u-l-a-r.html"><span>COLOR_</span><wbr></wbr><span>SPECULAR</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-690597823%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-l-o-r_-s-p-e-c-u-l-a-r.html">COLOR_SPECULAR</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Specular color uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-645364220%2FProperties%2F-1958133601" anchor-label="MAP_ALBEDO" id="-645364220%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-p_-a-l-b-e-d-o.html"><span>MAP_</span><wbr></wbr><span>ALBEDO</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-645364220%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-p_-a-l-b-e-d-o.html">MAP_ALBEDO</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Albedo map uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2139331061%2FProperties%2F-1958133601" anchor-label="MAP_BRDF" id="-2139331061%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-p_-b-r-d-f.html"><span>MAP_</span><wbr></wbr><span>BRDF</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2139331061%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-p_-b-r-d-f.html">MAP_BRDF</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">BRDF lookup table uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-627480333%2FProperties%2F-1958133601" anchor-label="MAP_CUBIC" id="-627480333%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-p_-c-u-b-i-c.html"><span>MAP_</span><wbr></wbr><span>CUBIC</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-627480333%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-p_-c-u-b-i-c.html">MAP_CUBIC</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Cubic map uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-751119626%2FProperties%2F-1958133601" anchor-label="MAP_EMISSION" id="-751119626%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-p_-e-m-i-s-s-i-o-n.html"><span>MAP_</span><wbr></wbr><span>EMISSION</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-751119626%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-p_-e-m-i-s-s-i-o-n.html">MAP_EMISSION</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Emission map uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1484881750%2FProperties%2F-1958133601" anchor-label="MAP_HEIGHT" id="1484881750%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-p_-h-e-i-g-h-t.html"><span>MAP_</span><wbr></wbr><span>HEIGHT</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1484881750%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-p_-h-e-i-g-h-t.html">MAP_HEIGHT</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Height map uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1322817103%2FProperties%2F-1958133601" anchor-label="MAP_IRRADIANCE" id="-1322817103%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-p_-i-r-r-a-d-i-a-n-c-e.html"><span>MAP_</span><wbr></wbr><span>IRRADIANCE</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1322817103%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-p_-i-r-r-a-d-i-a-n-c-e.html">MAP_IRRADIANCE</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Irradiance map uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1836644129%2FProperties%2F-1958133601" anchor-label="MAP_METALNESS" id="-1836644129%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-p_-m-e-t-a-l-n-e-s-s.html"><span>MAP_</span><wbr></wbr><span>METALNESS</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1836644129%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-p_-m-e-t-a-l-n-e-s-s.html">MAP_METALNESS</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Metalness map uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1432882070%2FProperties%2F-1958133601" anchor-label="MAP_NORMAL" id="1432882070%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-p_-n-o-r-m-a-l.html"><span>MAP_</span><wbr></wbr><span>NORMAL</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1432882070%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-p_-n-o-r-m-a-l.html">MAP_NORMAL</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Normal map uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1790562288%2FProperties%2F-1958133601" anchor-label="MAP_OCCLUSION" id="-1790562288%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-p_-o-c-c-l-u-s-i-o-n.html"><span>MAP_</span><wbr></wbr><span>OCCLUSION</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1790562288%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-p_-o-c-c-l-u-s-i-o-n.html">MAP_OCCLUSION</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Occlusion map uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1092324990%2FProperties%2F-1958133601" anchor-label="MAP_PREFILTER" id="-1092324990%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-p_-p-r-e-f-i-l-t-e-r.html"><span>MAP_</span><wbr></wbr><span>PREFILTER</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1092324990%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-p_-p-r-e-f-i-l-t-e-r.html">MAP_PREFILTER</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Prefilter map uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1316652947%2FProperties%2F-1958133601" anchor-label="MAP_ROUGHNESS" id="-1316652947%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-p_-r-o-u-g-h-n-e-s-s.html"><span>MAP_</span><wbr></wbr><span>ROUGHNESS</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1316652947%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-p_-r-o-u-g-h-n-e-s-s.html">MAP_ROUGHNESS</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Roughness map uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1396028981%2FProperties%2F-1958133601" anchor-label="MATRIX_MODEL" id="1396028981%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-t-r-i-x_-m-o-d-e-l.html"><span>MATRIX_</span><wbr></wbr><span>MODEL</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1396028981%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-t-r-i-x_-m-o-d-e-l.html">MATRIX_MODEL</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Model matrix uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-738974857%2FProperties%2F-1958133601" anchor-label="MATRIX_MVP" id="-738974857%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-t-r-i-x_-m-v-p.html"><span>MATRIX_</span><wbr></wbr><span>MVP</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-738974857%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-t-r-i-x_-m-v-p.html">MATRIX_MVP</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">MVP matrix (Model-View-Projection) uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1877715083%2FProperties%2F-1958133601" anchor-label="MATRIX_NORMAL" id="-1877715083%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-t-r-i-x_-n-o-r-m-a-l.html"><span>MATRIX_</span><wbr></wbr><span>NORMAL</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1877715083%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-t-r-i-x_-n-o-r-m-a-l.html">MATRIX_NORMAL</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Normal matrix uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="825966477%2FProperties%2F-1958133601" anchor-label="MATRIX_PROJECTION" id="825966477%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-t-r-i-x_-p-r-o-j-e-c-t-i-o-n.html"><span>MATRIX_</span><wbr></wbr><span>PROJECTION</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="825966477%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-t-r-i-x_-p-r-o-j-e-c-t-i-o-n.html">MATRIX_PROJECTION</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Projection matrix uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1763947721%2FProperties%2F-1958133601" anchor-label="MATRIX_VIEW" id="-1763947721%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-a-t-r-i-x_-v-i-e-w.html"><span>MATRIX_</span><wbr></wbr><span>VIEW</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1763947721%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-a-t-r-i-x_-v-i-e-w.html">MATRIX_VIEW</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">View matrix uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-390560455%2FProperties%2F-1958133601" anchor-label="VECTOR_VIEW" id="-390560455%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-v-e-c-t-o-r_-v-i-e-w.html"><span>VECTOR_</span><wbr></wbr><span>VIEW</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-390560455%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-v-e-c-t-o-r_-v-i-e-w.html">VECTOR_VIEW</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">View-Projection matrix uniform location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1412953058%2FProperties%2F-1958133601" anchor-label="VERTEX_BONE_IDS" id="1412953058%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-v-e-r-t-e-x_-b-o-n-e_-i-d-s.html"><span>VERTEX_</span><wbr></wbr><span>BONE_</span><wbr></wbr><span>IDS</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1412953058%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-v-e-r-t-e-x_-b-o-n-e_-i-d-s.html">VERTEX_BONE_IDS</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Vertex bone IDs attribute location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1503080321%2FProperties%2F-1958133601" anchor-label="VERTEX_BONE_WEIGHTS" id="-1503080321%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-v-e-r-t-e-x_-b-o-n-e_-w-e-i-g-h-t-s.html"><span>VERTEX_</span><wbr></wbr><span>BONE_</span><wbr></wbr><span>WEIGHTS</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1503080321%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-v-e-r-t-e-x_-b-o-n-e_-w-e-i-g-h-t-s.html">VERTEX_BONE_WEIGHTS</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Vertex bone weights attribute location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1381253368%2FProperties%2F-1958133601" anchor-label="VERTEX_COLOR" id="1381253368%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-v-e-r-t-e-x_-c-o-l-o-r.html"><span>VERTEX_</span><wbr></wbr><span>COLOR</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1381253368%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-v-e-r-t-e-x_-c-o-l-o-r.html">VERTEX_COLOR</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Vertex color attribute location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1286757642%2FProperties%2F-1958133601" anchor-label="VERTEX_INSTANCE_ID" id="-1286757642%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-v-e-r-t-e-x_-i-n-s-t-a-n-c-e_-i-d.html"><span>VERTEX_</span><wbr></wbr><span>INSTANCE_</span><wbr></wbr><span>ID</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1286757642%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-v-e-r-t-e-x_-i-n-s-t-a-n-c-e_-i-d.html">VERTEX_INSTANCE_ID</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Vertex instance ID attribute location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="995042648%2FProperties%2F-1958133601" anchor-label="VERTEX_NORMAL" id="995042648%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-v-e-r-t-e-x_-n-o-r-m-a-l.html"><span>VERTEX_</span><wbr></wbr><span>NORMAL</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="995042648%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-v-e-r-t-e-x_-n-o-r-m-a-l.html">VERTEX_NORMAL</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Vertex normal attribute location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1209080534%2FProperties%2F-1958133601" anchor-label="VERTEX_POSITION" id="1209080534%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-v-e-r-t-e-x_-p-o-s-i-t-i-o-n.html"><span>VERTEX_</span><wbr></wbr><span>POSITION</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1209080534%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-v-e-r-t-e-x_-p-o-s-i-t-i-o-n.html">VERTEX_POSITION</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Vertex position attribute location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1705354026%2FProperties%2F-1958133601" anchor-label="VERTEX_TANGENT" id="-1705354026%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-v-e-r-t-e-x_-t-a-n-g-e-n-t.html"><span>VERTEX_</span><wbr></wbr><span>TANGENT</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1705354026%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-v-e-r-t-e-x_-t-a-n-g-e-n-t.html">VERTEX_TANGENT</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Vertex tangent attribute location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1555869304%2FProperties%2F-1958133601" anchor-label="VERTEX_TEXCOORD1" id="1555869304%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-v-e-r-t-e-x_-t-e-x-c-o-o-r-d1.html"><span>VERTEX_</span><wbr></wbr><span>TEXCOORD1</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1555869304%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-v-e-r-t-e-x_-t-e-x-c-o-o-r-d1.html">VERTEX_TEXCOORD1</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Vertex texture coordinates attribute location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1586889111%2FProperties%2F-1958133601" anchor-label="VERTEX_TEXCOORD2" id="1586889111%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-v-e-r-t-e-x_-t-e-x-c-o-o-r-d2.html"><span>VERTEX_</span><wbr></wbr><span>TEXCOORD2</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1586889111%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-v-e-r-t-e-x_-t-e-x-c-o-o-r-d2.html">VERTEX_TEXCOORD2</a><span class="token operator">: </span><a href="../index.html">Shader.UniformLocation</a></div><div class="brief "><p class="paragraph">Vertex texture coordinates 2 attribute location.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2025 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

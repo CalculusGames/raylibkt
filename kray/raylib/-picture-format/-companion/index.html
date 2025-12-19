@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Companion</title>
+    <link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../../ui-kit/ui-kit.min.js" defer="defer"></script>
+</head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="../../../../index.html" tabindex="1">
+                    kray
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+1.0.0        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector native-like" data-active="" aria-pressed="true"
+                        data-filter=":/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option native-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":/commonMain"
+                                       data-filter=":/commonMain"/>
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    kray
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="kray::raylib/PictureFormat.Companion///PointingToDeclaration//-1958133601">
+  <div class="breadcrumbs"><a href="../../../../index.html">kray</a><span class="delimiter">/</span><a href="../../index.html">raylib</a><span class="delimiter">/</span><a href="../index.html">PictureFormat</a><span class="delimiter">/</span><span class="current">Companion</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Companion</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">Companion</a></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="-1255728214%2FProperties%2F-1958133601" anchor-label="COMPRESSED_ASTC_4X4_RGBA" id="-1255728214%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-m-p-r-e-s-s-e-d_-a-s-t-c_4-x4_-r-g-b-a.html"><span>COMPRESSED_</span><wbr></wbr><span>ASTC_</span><wbr></wbr><span>4X4_</span><wbr></wbr><span>RGBA</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1255728214%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-m-p-r-e-s-s-e-d_-a-s-t-c_4-x4_-r-g-b-a.html">COMPRESSED_ASTC_4X4_RGBA</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">8 bpp for RGBA data in ASTC 4x4 format</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2698418%2FProperties%2F-1958133601" anchor-label="COMPRESSED_ASTC_8X8_RGBA" id="2698418%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-m-p-r-e-s-s-e-d_-a-s-t-c_8-x8_-r-g-b-a.html"><span>COMPRESSED_</span><wbr></wbr><span>ASTC_</span><wbr></wbr><span>8X8_</span><wbr></wbr><span>RGBA</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2698418%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-m-p-r-e-s-s-e-d_-a-s-t-c_8-x8_-r-g-b-a.html">COMPRESSED_ASTC_8X8_RGBA</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">2 bpp for RGBA data in ASTC 8x8 format</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1878814896%2FProperties%2F-1958133601" anchor-label="COMPRESSED_DXT1_RGB" id="-1878814896%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-m-p-r-e-s-s-e-d_-d-x-t1_-r-g-b.html"><span>COMPRESSED_</span><wbr></wbr><span>DXT1_</span><wbr></wbr><span>RGB</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1878814896%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-m-p-r-e-s-s-e-d_-d-x-t1_-r-g-b.html">COMPRESSED_DXT1_RGB</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">4 bpp (no alpha) for RGB data in DXT1 format</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1901544809%2FProperties%2F-1958133601" anchor-label="COMPRESSED_DXT1_RGBA" id="1901544809%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-m-p-r-e-s-s-e-d_-d-x-t1_-r-g-b-a.html"><span>COMPRESSED_</span><wbr></wbr><span>DXT1_</span><wbr></wbr><span>RGBA</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1901544809%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-m-p-r-e-s-s-e-d_-d-x-t1_-r-g-b-a.html">COMPRESSED_DXT1_RGBA</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">4 bpp (1 bit alpha) for RGBA data in DXT1 format</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1691822613%2FProperties%2F-1958133601" anchor-label="COMPRESSED_DXT3_RGBA" id="-1691822613%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-m-p-r-e-s-s-e-d_-d-x-t3_-r-g-b-a.html"><span>COMPRESSED_</span><wbr></wbr><span>DXT3_</span><wbr></wbr><span>RGBA</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1691822613%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-m-p-r-e-s-s-e-d_-d-x-t3_-r-g-b-a.html">COMPRESSED_DXT3_RGBA</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">8 bpp for RGBA data in DXT3 format</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-990222739%2FProperties%2F-1958133601" anchor-label="COMPRESSED_DXT5_RGBA" id="-990222739%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-m-p-r-e-s-s-e-d_-d-x-t5_-r-g-b-a.html"><span>COMPRESSED_</span><wbr></wbr><span>DXT5_</span><wbr></wbr><span>RGBA</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-990222739%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-m-p-r-e-s-s-e-d_-d-x-t5_-r-g-b-a.html">COMPRESSED_DXT5_RGBA</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">8 bpp for RGBA data in DXT5 format</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1985675388%2FProperties%2F-1958133601" anchor-label="COMPRESSED_ETC1_RGB" id="-1985675388%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-m-p-r-e-s-s-e-d_-e-t-c1_-r-g-b.html"><span>COMPRESSED_</span><wbr></wbr><span>ETC1_</span><wbr></wbr><span>RGB</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1985675388%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-m-p-r-e-s-s-e-d_-e-t-c1_-r-g-b.html">COMPRESSED_ETC1_RGB</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">4 bpp for RGB data in ETC1 format</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="438526558%2FProperties%2F-1958133601" anchor-label="COMPRESSED_ETC2_EAC_RGBA" id="438526558%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-m-p-r-e-s-s-e-d_-e-t-c2_-e-a-c_-r-g-b-a.html"><span>COMPRESSED_</span><wbr></wbr><span>ETC2_</span><wbr></wbr><span>EAC_</span><wbr></wbr><span>RGBA</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="438526558%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-m-p-r-e-s-s-e-d_-e-t-c2_-e-a-c_-r-g-b-a.html">COMPRESSED_ETC2_EAC_RGBA</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">8 bpp for RGBA data in ETC2/EAC format with 1-bit alpha</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1974359261%2FProperties%2F-1958133601" anchor-label="COMPRESSED_ETC2_RGB" id="-1974359261%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-m-p-r-e-s-s-e-d_-e-t-c2_-r-g-b.html"><span>COMPRESSED_</span><wbr></wbr><span>ETC2_</span><wbr></wbr><span>RGB</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1974359261%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-m-p-r-e-s-s-e-d_-e-t-c2_-r-g-b.html">COMPRESSED_ETC2_RGB</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">8 bpp for RGBA data in ETC2/EAC format</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1401538009%2FProperties%2F-1958133601" anchor-label="COMPRESSED_PVRT_RGB" id="1401538009%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-m-p-r-e-s-s-e-d_-p-v-r-t_-r-g-b.html"><span>COMPRESSED_</span><wbr></wbr><span>PVRT_</span><wbr></wbr><span>RGB</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1401538009%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-m-p-r-e-s-s-e-d_-p-v-r-t_-r-g-b.html">COMPRESSED_PVRT_RGB</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">4 bpp for RGB data in PVRT format</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="513269760%2FProperties%2F-1958133601" anchor-label="COMPRESSED_PVRT_RGBA" id="513269760%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-m-p-r-e-s-s-e-d_-p-v-r-t_-r-g-b-a.html"><span>COMPRESSED_</span><wbr></wbr><span>PVRT_</span><wbr></wbr><span>RGBA</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="513269760%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-m-p-r-e-s-s-e-d_-p-v-r-t_-r-g-b-a.html">COMPRESSED_PVRT_RGBA</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">4 bpp for RGBA data in PVRT format</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="402931718%2FProperties%2F-1958133601" anchor-label="UNCOMPRESSED_GRAY_ALPHA" id="402931718%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-g-r-a-y_-a-l-p-h-a.html"><span>UNCOMPRESSED_</span><wbr></wbr><span>GRAY_</span><wbr></wbr><span>ALPHA</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="402931718%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-g-r-a-y_-a-l-p-h-a.html">UNCOMPRESSED_GRAY_ALPHA</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">8*2 bpp (2 channels) for gray + alpha</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-982876885%2FProperties%2F-1958133601" anchor-label="UNCOMPRESSED_GRAYSCALE" id="-982876885%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-g-r-a-y-s-c-a-l-e.html"><span>UNCOMPRESSED_</span><wbr></wbr><span>GRAYSCALE</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-982876885%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-g-r-a-y-s-c-a-l-e.html">UNCOMPRESSED_GRAYSCALE</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">8 bit per pixel (no alpha)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="559469217%2FProperties%2F-1958133601" anchor-label="UNCOMPRESSED_R32" id="559469217%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r32.html"><span>UNCOMPRESSED_</span><wbr></wbr><span>R32</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="559469217%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r32.html">UNCOMPRESSED_R32</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">32 bpp for R32</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="374860934%2FProperties%2F-1958133601" anchor-label="UNCOMPRESSED_R32G32B32" id="374860934%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r32-g32-b32.html"><span>UNCOMPRESSED_</span><wbr></wbr><span>R32G32B32</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="374860934%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r32-g32-b32.html">UNCOMPRESSED_R32G32B32</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">32*3 bpp for R32G32</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1796811764%2FProperties%2F-1958133601" anchor-label="UNCOMPRESSED_R32G32B32A32" id="1796811764%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r32-g32-b32-a32.html"><span>UNCOMPRESSED_</span><wbr></wbr><span><span>R32G32B32A32</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1796811764%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r32-g32-b32-a32.html">UNCOMPRESSED_R32G32B32A32</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">32*3 bpp for R32G32B32</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="270022836%2FProperties%2F-1958133601" anchor-label="UNCOMPRESSED_R4G4B4A4" id="270022836%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r4-g4-b4-a4.html"><span>UNCOMPRESSED_</span><wbr></wbr><span>R4G4B4A4</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="270022836%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r4-g4-b4-a4.html">UNCOMPRESSED_R4G4B4A4</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">16 bpp for R4G4B4A4</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2076560844%2FProperties%2F-1958133601" anchor-label="UNCOMPRESSED_R5G5B5A1" id="-2076560844%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r5-g5-b5-a1.html"><span>UNCOMPRESSED_</span><wbr></wbr><span>R5G5B5A1</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2076560844%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r5-g5-b5-a1.html">UNCOMPRESSED_R5G5B5A1</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">16 bpp for R5G5B5A1</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1441432931%2FProperties%2F-1958133601" anchor-label="UNCOMPRESSED_R5G6B5" id="1441432931%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r5-g6-b5.html"><span>UNCOMPRESSED_</span><wbr></wbr><span>R5G6B5</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1441432931%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r5-g6-b5.html">UNCOMPRESSED_R5G6B5</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">16 bpp for R5G5B5</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1058967643%2FProperties%2F-1958133601" anchor-label="UNCOMPRESSED_R8G8B8" id="1058967643%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r8-g8-b8.html"><span>UNCOMPRESSED_</span><wbr></wbr><span>R8G8B8</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1058967643%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r8-g8-b8.html">UNCOMPRESSED_R8G8B8</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">24 bpp for R8G8B8</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-30060380%2FProperties%2F-1958133601" anchor-label="UNCOMPRESSED_R8G8B8A8" id="-30060380%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r8-g8-b8-a8.html"><span>UNCOMPRESSED_</span><wbr></wbr><span>R8G8B8A8</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-30060380%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-u-n-c-o-m-p-r-e-s-s-e-d_-r8-g8-b8-a8.html">UNCOMPRESSED_R8G8B8A8</a><span class="token operator">: </span><a href="../index.html">PictureFormat</a></div><div class="brief "><p class="paragraph">32 bpp for R8G8B8A8</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2025 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

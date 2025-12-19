@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Companion</title>
+    <link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../../../ui-kit/ui-kit.min.js" defer="defer"></script>
+</head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="../../../../../index.html" tabindex="1">
+                    kray
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+1.0.0        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector native-like" data-active="" aria-pressed="true"
+                        data-filter=":/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option native-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":/commonMain"
+                                       data-filter=":/commonMain"/>
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    kray
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="kray::raylib/Window.State.Companion///PointingToDeclaration//-1958133601">
+  <div class="breadcrumbs"><a href="../../../../../index.html">kray</a><span class="delimiter">/</span><a href="../../../index.html">raylib</a><span class="delimiter">/</span><a href="../../index.html">Window</a><span class="delimiter">/</span><a href="../index.html">State</a><span class="delimiter">/</span><span class="current">Companion</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Companion</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">Companion</a></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="1179379770%2FProperties%2F-1958133601" anchor-label="BORDERLESS_WINDOWED_MODE" id="1179379770%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-b-o-r-d-e-r-l-e-s-s_-w-i-n-d-o-w-e-d_-m-o-d-e.html"><span>BORDERLESS_</span><wbr></wbr><span>WINDOWED_</span><wbr></wbr><span>MODE</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1179379770%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-b-o-r-d-e-r-l-e-s-s_-w-i-n-d-o-w-e-d_-m-o-d-e.html">BORDERLESS_WINDOWED_MODE</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to run program in borderless windowed mode</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1688767104%2FProperties%2F-1958133601" anchor-label="FULLSCREEN_MODE" id="1688767104%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-f-u-l-l-s-c-r-e-e-n_-m-o-d-e.html"><span>FULLSCREEN_</span><wbr></wbr><span>MODE</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1688767104%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-f-u-l-l-s-c-r-e-e-n_-m-o-d-e.html">FULLSCREEN_MODE</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to run program in fullscreen</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1629040846%2FProperties%2F-1958133601" anchor-label="INTERLACED_HINT" id="-1629040846%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-i-n-t-e-r-l-a-c-e-d_-h-i-n-t.html"><span>INTERLACED_</span><wbr></wbr><span>HINT</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1629040846%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-i-n-t-e-r-l-a-c-e-d_-h-i-n-t.html">INTERLACED_HINT</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to try enabling interlaced video format (for V3D)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1071281994%2FProperties%2F-1958133601" anchor-label="MSAA_4X_HINT" id="1071281994%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-s-a-a_4-x_-h-i-n-t.html"><span>MSAA_</span><wbr></wbr><span>4X_</span><wbr></wbr><span>HINT</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1071281994%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-m-s-a-a_4-x_-h-i-n-t.html">MSAA_4X_HINT</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to try enabling MSAA 4X</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1468544126%2FProperties%2F-1958133601" anchor-label="VSYNC_HINT" id="1468544126%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-v-s-y-n-c_-h-i-n-t.html"><span>VSYNC_</span><wbr></wbr><span>HINT</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1468544126%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-v-s-y-n-c_-h-i-n-t.html">VSYNC_HINT</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to try enabling V-Sync on GPU</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-558994147%2FProperties%2F-1958133601" anchor-label="WINDOW_ALWAYS_RUN" id="-558994147%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-w-i-n-d-o-w_-a-l-w-a-y-s_-r-u-n.html"><span>WINDOW_</span><wbr></wbr><span>ALWAYS_</span><wbr></wbr><span>RUN</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-558994147%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-w-i-n-d-o-w_-a-l-w-a-y-s_-r-u-n.html">WINDOW_ALWAYS_RUN</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to allow windows running while minimized</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1578127346%2FProperties%2F-1958133601" anchor-label="WINDOW_HIDDEN" id="-1578127346%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-w-i-n-d-o-w_-h-i-d-d-e-n.html"><span>WINDOW_</span><wbr></wbr><span>HIDDEN</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1578127346%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-w-i-n-d-o-w_-h-i-d-d-e-n.html">WINDOW_HIDDEN</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to hide window</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-724532121%2FProperties%2F-1958133601" anchor-label="WINDOW_HIGHDPI" id="-724532121%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-w-i-n-d-o-w_-h-i-g-h-d-p-i.html"><span>WINDOW_</span><wbr></wbr><span>HIGHDPI</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-724532121%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-w-i-n-d-o-w_-h-i-g-h-d-p-i.html">WINDOW_HIGHDPI</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to support HighDPI</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="812702506%2FProperties%2F-1958133601" anchor-label="WINDOW_MAXIMIZED" id="812702506%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-w-i-n-d-o-w_-m-a-x-i-m-i-z-e-d.html"><span>WINDOW_</span><wbr></wbr><span>MAXIMIZED</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="812702506%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-w-i-n-d-o-w_-m-a-x-i-m-i-z-e-d.html">WINDOW_MAXIMIZED</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to maximize window (expanded to monitor)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-850641796%2FProperties%2F-1958133601" anchor-label="WINDOW_MINIMIZED" id="-850641796%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-w-i-n-d-o-w_-m-i-n-i-m-i-z-e-d.html"><span>WINDOW_</span><wbr></wbr><span>MINIMIZED</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-850641796%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-w-i-n-d-o-w_-m-i-n-i-m-i-z-e-d.html">WINDOW_MINIMIZED</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to minimize window (iconify)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1410329944%2FProperties%2F-1958133601" anchor-label="WINDOW_MOUSE_PASSTHROUGH" id="-1410329944%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-w-i-n-d-o-w_-m-o-u-s-e_-p-a-s-s-t-h-r-o-u-g-h.html"><span>WINDOW_</span><wbr></wbr><span>MOUSE_</span><wbr></wbr><span><span>PASSTHROUGH</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1410329944%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-w-i-n-d-o-w_-m-o-u-s-e_-p-a-s-s-t-h-r-o-u-g-h.html">WINDOW_MOUSE_PASSTHROUGH</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to support mouse passthrough, only supported when WINDOW_UNDECORATED</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1849363191%2FProperties%2F-1958133601" anchor-label="WINDOW_RESIZABLE" id="1849363191%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-w-i-n-d-o-w_-r-e-s-i-z-a-b-l-e.html"><span>WINDOW_</span><wbr></wbr><span>RESIZABLE</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1849363191%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-w-i-n-d-o-w_-r-e-s-i-z-a-b-l-e.html">WINDOW_RESIZABLE</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to allow resizable window</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1569797846%2FProperties%2F-1958133601" anchor-label="WINDOW_TOPMOST" id="-1569797846%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-w-i-n-d-o-w_-t-o-p-m-o-s-t.html"><span>WINDOW_</span><wbr></wbr><span>TOPMOST</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1569797846%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-w-i-n-d-o-w_-t-o-p-m-o-s-t.html">WINDOW_TOPMOST</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set the window to be always on top</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1224720144%2FProperties%2F-1958133601" anchor-label="WINDOW_TRANSPARENT" id="-1224720144%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-w-i-n-d-o-w_-t-r-a-n-s-p-a-r-e-n-t.html"><span>WINDOW_</span><wbr></wbr><span><span>TRANSPARENT</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1224720144%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-w-i-n-d-o-w_-t-r-a-n-s-p-a-r-e-n-t.html">WINDOW_TRANSPARENT</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to allow transparent framebuffer</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1967963324%2FProperties%2F-1958133601" anchor-label="WINDOW_UNDECORATED" id="-1967963324%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-w-i-n-d-o-w_-u-n-d-e-c-o-r-a-t-e-d.html"><span>WINDOW_</span><wbr></wbr><span><span>UNDECORATED</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1967963324%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-w-i-n-d-o-w_-u-n-d-e-c-o-r-a-t-e-d.html">WINDOW_UNDECORATED</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set to disable window decoration (frame and buttons)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1162048956%2FProperties%2F-1958133601" anchor-label="WINDOW_UNFOCUSED" id="-1162048956%2FProperties%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-w-i-n-d-o-w_-u-n-f-o-c-u-s-e-d.html"><span>WINDOW_</span><wbr></wbr><span>UNFOCUSED</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1162048956%2FProperties%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="-w-i-n-d-o-w_-u-n-f-o-c-u-s-e-d.html">WINDOW_UNFOCUSED</a><span class="token operator">: </span><a href="../index.html">Window.State</a></div><div class="brief "><p class="paragraph">Set the window to be non-focused</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="-2136818427%2FFunctions%2F-1958133601" anchor-label="from" id="-2136818427%2FFunctions%2F-1958133601" data-filterable-set=":/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":/commonMain" data-filterable-set=":/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="from.html"><span><span>from</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2136818427%2FFunctions%2F-1958133601"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="from.html"><span class="token function">from</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">values<span class="token operator">: </span>ERROR CLASS: Symbol not found for UInt</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><a href="../index.html">Window.State</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2025 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
