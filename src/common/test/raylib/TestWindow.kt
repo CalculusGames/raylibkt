@@ -92,7 +92,7 @@ class TestWindow {
 		}
 
 		// Hold for a moment to view
-		Window.delay(3000)
+		Window.delaySync(3000)
 
 		Window.close()
 	}

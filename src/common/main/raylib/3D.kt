@@ -4,11 +4,10 @@ package raylib
 
 import kotlinx.cinterop.*
 import kray.*
+import raylib.MaterialMap.Texture
 import raylib.Mesh.Companion.cubicMap
 import raylib.Mesh.Companion.heightMap
 import raylib.internal.*
-import kotlin.math.cos
-import kotlin.math.sin
 
 /**
  * A 4x4 matrix.
@@ -67,29 +66,8 @@ data class Matrix4(
 	 * @return The resulting matrix.
 	 */
 	fun multiply(b: Matrix4): Matrix4 {
-		val a = this
-
-		return Matrix4(
-			a.m0 * b.m0 + a.m4 * b.m1 + a.m8 * b.m2 + a.m12 * b.m3,
-			a.m1 * b.m0 + a.m5 * b.m1 + a.m9 * b.m2 + a.m13 * b.m3,
-			a.m2 * b.m0 + a.m6 * b.m1 + a.m10 * b.m2 + a.m14 * b.m3,
-			a.m3 * b.m0 + a.m7 * b.m1 + a.m11 * b.m2 + a.m15 * b.m3,
-
-			a.m0 * b.m4 + a.m4 * b.m5 + a.m8 * b.m6 + a.m12 * b.m7,
-			a.m1 * b.m4 + a.m5 * b.m5 + a.m9 * b.m6 + a.m13 * b.m7,
-			a.m2 * b.m4 + a.m6 * b.m5 + a.m10 * b.m6 + a.m14 * b.m7,
-			a.m3 * b.m4 + a.m7 * b.m5 + a.m11 * b.m6 + a.m15 * b.m7,
-
-			a.m0 * b.m8 + a.m4 * b.m9 + a.m8 * b.m10 + a.m12 * b.m11,
-			a.m1 * b.m8 + a.m5 * b.m9 + a.m9 * b.m10 + a.m13 * b.m11,
-			a.m2 * b.m8 + a.m6 * b.m9 + a.m10 * b.m10 + a.m14 * b.m11,
-			a.m3 * b.m8 + a.m7 * b.m9 + a.m11 * b.m10 + a.m15 * b.m11,
-
-			a.m0 * b.m12 + a.m4 * b.m13 + a.m8 * b.m14 + a.m12 * b.m15,
-			a.m1 * b.m12 + a.m5 * b.m13 + a.m9 * b.m14 + a.m13 * b.m15,
-			a.m2 * b.m12 + a.m6 * b.m13 + a.m10 * b.m14 + a.m14 * b.m15,
-			a.m3 * b.m12 + a.m7 * b.m13 + a.m11 * b.m14 + a.m15 * b.m15
-		)
+		val raw = MatrixMultiply(this.raw(), b.raw())
+		return raw.useContents { Matrix4(this) }
 	}
 
 	companion object {
@@ -115,12 +93,19 @@ data class Matrix4(
 		 * @return The translation matrix as a [Matrix4].
 		 */
 		fun getTranslationMatrix(position: Triple<Float, Float, Float>): Matrix4 {
-			return Matrix4(
-				1F, 0F, 0F, 0F,
-				0F, 1F, 0F, 0F,
-				0F, 0F, 1F, 0F,
-				position.first, position.second, position.third, 1F
-			)
+			val raw = MatrixTranslate(position.first, position.second, position.third)
+			return raw.useContents { Matrix4(this) }
+		}
+
+		/**
+		 * Generates a translation matrix given x, y, and z coordinates.
+		 * @param x The x coordinate.
+		 * @param y The y coordinate.
+		 * @param z The z coordinate.
+		 * @return The translation matrix as a [Matrix4].
+		 */
+		fun translate(x: Float, y: Float, z: Float): Matrix4 {
+			return getTranslationMatrix(x to y to z)
 		}
 
 		/**
@@ -130,19 +115,25 @@ data class Matrix4(
 		 * @return The rotation matrix as a [Matrix4].
 		 */
 		fun getRotationMatrix(axis: Triple<Float, Float, Float>, angle: Float): Matrix4 {
-			val x = axis.first
-			val y = axis.second
-			val z = axis.third
-			val c = cos(angle)
-			val s = sin(angle)
-			val t = 1 - c
+			val raw = MatrixRotate(cValue {
+				x = axis.first
+				y = axis.second
+				z = axis.third
+			}, angle)
 
-			return Matrix4(
-				t * x * x + c, t * x * y + s * z, t * x * z - s * y, 0F,
-				t * x * y - s * z, t * y * y + c, t * y * z + s * x, 0F,
-				t * x * z + s * y, t * y * z - s * x, t * z * z + c, 0F,
-				0F, 0F, 0F, 1F
-			)
+			return raw.useContents { Matrix4(this) }
+		}
+
+		/**
+		 * Generates a rotation matrix given x, y, z coordinates for the axis and an angle.
+		 * @param x The x coordinate of the axis.
+		 * @param y The y coordinate of the axis.
+		 * @param z The z coordinate of the axis.
+		 * @param angle The angle of rotation in radians.
+		 * @return The rotation matrix as a [Matrix4].
+		 */
+		fun rotate(x: Float, y: Float, z: Float, angle: Float): Matrix4 {
+			return getRotationMatrix(x to y to z, angle)
 		}
 
 		/**
@@ -151,12 +142,28 @@ data class Matrix4(
 		 * @return The scaling matrix as a [Matrix4].
 		 */
 		fun getScaleMatrix(scale: Triple<Float, Float, Float>): Matrix4 {
-			return Matrix4(
-				scale.first, 0F, 0F, 0F,
-				0F, scale.second, 0F, 0F,
-				0F, 0F, scale.third, 0F,
-				0F, 0F, 0F, 1F
-			)
+			val raw = MatrixScale(scale.first, scale.second, scale.third)
+			return raw.useContents { Matrix4(this) }
+		}
+
+		/**
+		 * Generates a scaling matrix given x, y, and z scale factors.
+		 * @param sx The x scale factor.
+		 * @param sy The y scale factor.
+		 * @param sz The z scale factor.
+		 * @return The scaling matrix as a [Matrix4].
+		 */
+		fun scale(sx: Float, sy: Float, sz: Float): Matrix4 {
+			return getScaleMatrix(sx to sy to sz)
+		}
+
+		/**
+		 * Generates a uniform scaling matrix given a single scale factor.
+		 * @param scale The uniform scale factor.
+		 * @return The scaling matrix as a [Matrix4].
+		 */
+		fun scale(scale: Float): Matrix4 {
+			return getScaleMatrix(scale to scale to scale)
 		}
 
 		/**
@@ -204,6 +211,7 @@ data class BoundingBox(
 	val min: Triple<Float, Float, Float>,
 	val max: Triple<Float, Float, Float>
 ) {
+
 	/**
 	 * Creates a [BoundingBox] from raw min and max coordinates.
 	 */
@@ -223,6 +231,60 @@ data class BoundingBox(
 		Triple(raw.min.x, raw.min.y, raw.min.z),
 		Triple(raw.max.x, raw.max.y, raw.max.z)
 	)
+
+	/**
+	 * The X coordinate of the smaller value for the bounding box vertex.
+	 */
+	val minX: Float
+		get() = min.first
+
+	/**
+	 * The Y coordinate of the smaller value for the bounding box vertex.
+	 */
+	val minY: Float
+		get() = min.second
+
+	/**
+	 * The Z coordinate of the smaller value for the bounding box vertex.
+	 */
+	val minZ: Float
+		get() = min.third
+
+	/**
+	 * The X coordinate of the bigger value for the bounding box vertex.
+	 */
+	val maxX: Float
+		get() = max.first
+
+	/**
+	 * The Y coordinate of the bigger value for the bounding box vertex.
+	 */
+	val maxY: Float
+		get() = max.second
+
+	/**
+	 * The Z coordinate of the bigger value for the bounding box vertex.
+	 */
+	val maxZ: Float
+		get() = max.third
+
+	/**
+	 * The width of this bounding box.
+	 */
+	val width: Float
+		get() = maxX - minX
+
+	/**
+	 * The height of this bounding box.
+	 */
+	val height: Float
+		get() = maxY - minY
+
+	/**
+	 * The depth of this bounding box.
+	 */
+	val depth: Float
+		get() = maxZ - minZ
 
 	internal fun raw(): CValue<raylib.internal.BoundingBox> = cValue<raylib.internal.BoundingBox> {
 		min.x = this@BoundingBox.min.first
@@ -250,15 +312,17 @@ fun Canvas.drawBoundingBox(box: BoundingBox, color: Color = Color.RED) {
  * Shaders are used to program the GPU's graphics pipeline. They allow for custom
  * rendering effects and can manipulate how objects are drawn on the screen.
  */
-class Shader(internal val raw: raylib.internal.Shader) {
+class Shader(internal val raw: CValue<raylib.internal.Shader>) {
 
 	/**
 	 * The ID of the shader program.
 	 */
 	var id: UInt
-		get() = raw.id
+		get() = raw.useContents { id }
 		set(value) {
-			raw.id = value
+			raw.useContents {
+				id = value
+			}
 		}
 
 	/**
@@ -267,143 +331,452 @@ class Shader(internal val raw: raylib.internal.Shader) {
 	var locs: List<Int>
 		get() {
 			val list = mutableListOf<Int>()
-			for (i in 0 until RL_MAX_SHADER_LOCATIONS) {
-				list.add(raw.locs?.get(i) ?: -1)
+			raw.useContents {
+				for (i in 0 until RL_MAX_SHADER_LOCATIONS) {
+					list.add(locs?.get(i) ?: -1)
+				}
 			}
+
 			return list
 		}
 		set(value) {
-			for (i in 0 until RL_MAX_SHADER_LOCATIONS) {
-				raw.locs?.set(i, value.getOrElse(i) { -1 })
+			raw.useContents {
+				for (i in 0 until RL_MAX_SHADER_LOCATIONS) {
+					locs?.set(i, value.getOrElse(i) { -1 })
+				}
 			}
 		}
-
-	internal fun asCValue(): CValue<raylib.internal.Shader> = cValue<raylib.internal.Shader> {
-		id = raw.id
-		locs = raw.locs
-	}
 
 	/**
 	 * Whether the shader is valid.
 	 */
 	val isValid: Boolean
-		get() = IsShaderValid(asCValue())
+		get() = IsShaderValid(raw)
 
 	/**
 	 * The data types supported for shader uniform variables.
 	 */
 	@Suppress("UNCHECKED_CAST")
-	enum class DataType(internal val value: UInt, internal val convert: NativePlacement.(Any) -> CValuesRef<*>) {
-		/**
-		 * The [Float] type.
-		 */
-		FLOAT(SHADER_UNIFORM_FLOAT, {
-			val v = alloc<FloatVar>()
-			v.value = it as Float
-			v.ptr
-		}),
+	class DataType private constructor(internal val value: UInt, internal val convert: NativePlacement.(Any) -> CValuesRef<*>) {
+		companion object {
+			/**
+			 * The [Float] type.
+			 */
+			val FLOAT: DataType by lazy {
+				DataType(SHADER_UNIFORM_FLOAT) {
+					val v = alloc<FloatVar>()
+					v.value = it as Float
+					v.ptr
+				}
+			}
 
-		/**
-		 * The [Pair] type with [Float].
-		 */
-		VEC2F(SHADER_UNIFORM_VEC2, {
-			val pair = it as Pair<Float, Float>
-			allocArrayOf(pair.first, pair.second)
-		}),
+			/**
+			 * The [Pair] type with [Float].
+			 */
+			val VEC2F: DataType by lazy {
+				DataType(SHADER_UNIFORM_VEC2) {
+					val pair = it as Pair<Float, Float>
+					allocArrayOf(pair.first, pair.second)
+				}
+			}
 
-		/**
-		 * The [Triple] type with [Float].
-		 */
-		VEC3F(SHADER_UNIFORM_VEC3, {
-			val triple = it as Triple<Float, Float, Float>
-			allocArrayOf(triple.first, triple.second, triple.third)
-		}),
+			/**
+			 * The [Triple] type with [Float].
+			 */
+			val VEC3F: DataType by lazy {
+				DataType(SHADER_UNIFORM_VEC3) {
+					val triple = it as Triple<Float, Float, Float>
+					allocArrayOf(triple.first, triple.second, triple.third)
+				}
+			}
 
-		/**
-		 * The [Quadruple] type with [Float].
-		 */
-		VEC4F(SHADER_UNIFORM_VEC4, {
-			val quad = it as Quadruple<Float, Float, Float, Float>
-			allocArrayOf(quad.first, quad.second, quad.third, quad.fourth)
-		}),
+			/**
+			 * The [Quadruple] type with [Float].
+			 */
+			val VEC4F: DataType by lazy {
+				DataType(SHADER_UNIFORM_VEC4) {
+					val quad = it as Quadruple<Float, Float, Float, Float>
+					allocArrayOf(quad.first, quad.second, quad.third, quad.fourth)
+				}
+			}
 
-		/**
-		 * The [Int] type.
-		 */
-		INTEGER(SHADER_UNIFORM_INT, {
-			val v = alloc<IntVar>()
-			v.value = it as Int
-			v.ptr
-		}),
+			/**
+			 * The [Int] type.
+			 */
+			val INTEGER: DataType by lazy {
+				DataType(SHADER_UNIFORM_INT) {
+					val v = alloc<IntVar>()
+					v.value = it as Int
+					v.ptr
+				}
+			}
 
-		/**
-		 * The [Pair] type with [Int].
-		 */
-		VEC2I(SHADER_UNIFORM_IVEC2, {
-			val pair = it as Pair<Int, Int>
-			allocArrayOf(pair.first, pair.second)
-		}),
+			/**
+			 * The [Pair] type with [Int].
+			 */
+			val VEC2I: DataType by lazy {
+				DataType(SHADER_UNIFORM_IVEC2) {
+					val pair = it as Pair<Int, Int>
+					allocArrayOf(pair.first, pair.second)
+				}
+			}
 
-		/**
-		 * The [Triple] type with [Int].
-		 */
-		VEC3I(SHADER_UNIFORM_IVEC3, {
-			val triple = it as Triple<Int, Int, Int>
-			allocArrayOf(triple.first, triple.second, triple.third)
-		}),
+			/**
+			 * The [Triple] type with [Int].
+			 */
+			val VEC3I: DataType by lazy {
+				DataType(SHADER_UNIFORM_IVEC3) {
+					val triple = it as Triple<Int, Int, Int>
+					allocArrayOf(triple.first, triple.second, triple.third)
+				}
+			}
 
-		/**
-		 * The [Quadruple] type with [Int].
-		 */
-		VEC4I(SHADER_UNIFORM_IVEC4, {
-			val quad = it as Quadruple<Int, Int, Int, Int>
-			allocArrayOf(quad.first, quad.second, quad.third, quad.fourth)
-		}),
+			/**
+			 * The [Quadruple] type with [Int].
+			 */
+			val VEC4I: DataType by lazy {
+				DataType(SHADER_UNIFORM_IVEC4) {
+					val quad = it as Quadruple<Int, Int, Int, Int>
+					allocArrayOf(quad.first, quad.second, quad.third, quad.fourth)
+				}
+			}
 
-		/**
-		 * The [UInt] type.
-		 */
-		UNSIGNED_INTEGER(SHADER_UNIFORM_UINT, {
-			val v = alloc<UIntVar>()
-			v.value = it as UInt
-			v.ptr
-		}),
+			/**
+			 * The [UInt] type.
+			 */
+			val UNSIGNED_INTEGER: DataType by lazy {
+				DataType(SHADER_UNIFORM_UINT) {
+					val v = alloc<UIntVar>()
+					v.value = it as UInt
+					v.ptr
+				}
+			}
 
-		/**
-		 * The [Pair] type with [UInt].
-		 */
-		VEC2U(SHADER_UNIFORM_UIVEC2, {
-			val pair = it as Pair<UInt, UInt>
-			allocArrayOf(pair.first, pair.second)
-		}),
+			/**
+			 * The [Pair] type with [UInt].
+			 */
+			val VEC2U: DataType by lazy {
+				DataType(SHADER_UNIFORM_UIVEC2) {
+					val pair = it as Pair<UInt, UInt>
+					allocArrayOf(pair.first, pair.second)
+				}
+			}
 
-		/**
-		 * The [Triple] type with [UInt].
-		 */
-		VEC3U(SHADER_UNIFORM_UIVEC3, {
-			val triple = it as Triple<UInt, UInt, UInt>
-			allocArrayOf(triple.first, triple.second, triple.third)
-		}),
+			/**
+			 * The [Triple] type with [UInt].
+			 */
+			val VEC3U: DataType by lazy {
+				DataType(SHADER_UNIFORM_UIVEC3) {
+					val triple = it as Triple<UInt, UInt, UInt>
+					allocArrayOf(triple.first, triple.second, triple.third)
+				}
+			}
 
-		/**
-		 * The [Quadruple] type with [UInt].
-		 */
-		VEC4U(SHADER_UNIFORM_UIVEC4, {
-			val quad = it as Quadruple<UInt, UInt, UInt, UInt>
-			allocArrayOf(quad.first, quad.second, quad.third, quad.fourth)
-		}),
+			/**
+			 * The [Quadruple] type with [UInt].
+			 */
+			val VEC4U: DataType by lazy {
+				DataType(SHADER_UNIFORM_UIVEC4) {
+					val quad = it as Quadruple<UInt, UInt, UInt, UInt>
+					allocArrayOf(quad.first, quad.second, quad.third, quad.fourth)
+				}
+			}
 
-		/**
-		 * The `sampler2d` type, used for 2D textures.
-		 *
-		 * This is represented as a [UInt] in raylib and corresponds to
-		 * the texture unit index.
-		 */
-		SAMPLER2D(SHADER_UNIFORM_SAMPLER2D, {
-			val v = alloc<UIntVar>()
-			v.value = it as UInt
-			v.ptr
-		})
+			/**
+			 * The `sampler2d` type, used for 2D textures.
+			 *
+			 * This is represented as a [UInt] in raylib and corresponds to
+			 * the texture unit index.
+			 */
+			val SAMPLER2D: DataType by lazy {
+				DataType(SHADER_UNIFORM_SAMPLER2D) {
+					val v = alloc<UIntVar>()
+					v.value = it as UInt
+					v.ptr
+				}
+			}
+		}
+	}
+
+	/**
+	 * Common shader uniform variable locations.
+	 * @property shaderName The standard name of the uniform variable in shaders.
+	 * This is not guarenteed in custom shaders.
+	 */
+	class UniformLocation private constructor(internal val value: UInt, val shaderName: String) {
+		companion object {
+			/**
+			 * Vertex position attribute location.
+			 *
+			 * Used to pass vertex position data to the shader.
+			 */
+			val VERTEX_POSITION: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_VERTEX_POSITION, RL_DEFAULT_SHADER_ATTRIB_NAME_POSITION)
+			}
+
+			/**
+			 * Vertex texture coordinates attribute location.
+			 *
+			 * Used for mapping textures onto 3D models.
+			 */
+			val VERTEX_TEXCOORD1: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_VERTEX_TEXCOORD01, RL_DEFAULT_SHADER_ATTRIB_NAME_TEXCOORD)
+			}
+
+
+			/**
+			 * Vertex texture coordinates 2 attribute location.
+			 *
+			 * Used for models with multiple texture coordinates, such as lightmaps.
+			 */
+			val VERTEX_TEXCOORD2: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_VERTEX_TEXCOORD02, RL_DEFAULT_SHADER_ATTRIB_NAME_TEXCOORD2)
+			}
+
+			/**
+			 * Vertex normal attribute location.
+			 *
+			 * Used for lighting calculations to determine how light interacts with the surface.
+			 */
+			val VERTEX_NORMAL: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_VERTEX_NORMAL, RL_DEFAULT_SHADER_ATTRIB_NAME_NORMAL)
+			}
+
+			/**
+			 * Vertex tangent attribute location.
+			 *
+			 * Used for advanced lighting calculations, such as normal mapping.
+			 */
+			val VERTEX_TANGENT: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_VERTEX_TANGENT, RL_DEFAULT_SHADER_ATTRIB_NAME_TANGENT)
+			}
+
+			/**
+			 * Vertex color attribute location.
+			 *
+			 * Used to pass per-vertex color data to the shader.
+			 */
+			val VERTEX_COLOR: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_VERTEX_COLOR, RL_DEFAULT_SHADER_ATTRIB_NAME_COLOR)
+			}
+
+			/**
+			 * MVP matrix (Model-View-Projection) uniform location.
+			 *
+			 * Used to transform vertices from model space to clip space.
+			 */
+			val MATRIX_MVP: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MATRIX_MVP, RL_DEFAULT_SHADER_UNIFORM_NAME_MVP)
+			}
+
+
+			/**
+			 * View matrix uniform location.
+			 *
+			 * Used to transform vertices from world space to view space.
+			 */
+			val MATRIX_VIEW: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MATRIX_VIEW, RL_DEFAULT_SHADER_UNIFORM_NAME_VIEW)
+			}
+
+			/**
+			 * Projection matrix uniform location.
+			 *
+			 * Used to transform vertices from world space to clip space.
+			 */
+			val MATRIX_PROJECTION: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MATRIX_PROJECTION, RL_DEFAULT_SHADER_UNIFORM_NAME_PROJECTION)
+			}
+
+			/**
+			 * Model matrix uniform location.
+			 *
+			 * Used to transform vertices from model space to world space.
+			 */
+			val MATRIX_MODEL: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MATRIX_MODEL, RL_DEFAULT_SHADER_UNIFORM_NAME_MODEL)
+			}
+
+			/**
+			 * Normal matrix uniform location.
+			 *
+			 * Used to transform normals for correct lighting calculations.
+			 */
+			val MATRIX_NORMAL: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MATRIX_NORMAL, RL_DEFAULT_SHADER_UNIFORM_NAME_NORMAL)
+			}
+
+			/**
+			 * View-Projection matrix uniform location.
+			 *
+			 * Used to transform vertices from world space to clip space.
+			 */
+			val VECTOR_VIEW: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_VECTOR_VIEW, RL_DEFAULT_SHADER_UNIFORM_NAME_VIEW)
+			}
+
+			/**
+			 * Diffuse (base) color uniform location.
+			 *
+			 * Used in lighting calculations for basic surface color.
+			 */
+			val COLOR_DIFFUSE: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_COLOR_DIFFUSE, RL_DEFAULT_SHADER_UNIFORM_NAME_COLOR)
+			}
+
+			/**
+			 * Specular color uniform location.
+			 *
+			 * Used in lighting calculations for shiny surfaces.
+			 */
+			val COLOR_SPECULAR: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_COLOR_SPECULAR, "specularColor")
+			}
+
+			/**
+			 * Ambient color uniform location.
+			 *
+			 * Used to simulate indirect lighting in a scene.
+			 */
+			val COLOR_AMBIENT: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_COLOR_AMBIENT, "ambientColor")
+			}
+
+			/**
+			 * Albedo map uniform location.
+			 *
+			 * Used to define the base color texture of a material.
+			 */
+			val MAP_ALBEDO: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MAP_ALBEDO, "albedoMap")
+			}
+
+			/**
+			 * Metalness map uniform location.
+			 *
+			 * Used to define the metallic properties of a material.
+			 */
+			val MAP_METALNESS: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MAP_METALNESS, "metalnessMap")
+			}
+
+			/**
+			 * Normal map uniform location.
+			 *
+			 * Used to define surface normals for lighting calculations.
+			 */
+			val MAP_NORMAL: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MAP_NORMAL, "mraMap")
+			}
+
+			/**
+			 * Roughness map uniform location.
+			 *
+			 * Used to define the roughness properties of a material.
+			 */
+			val MAP_ROUGHNESS: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MAP_ROUGHNESS, "roughnessMap")
+			}
+
+			/**
+			 * Occlusion map uniform location.
+			 *
+			 * Used to define ambient occlusion properties of a material.
+			 */
+			val MAP_OCCLUSION: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MAP_OCCLUSION, "occlusionMap")
+			}
+
+			/**
+			 * Emission map uniform location.
+			 *
+			 * Used to define self-illumination properties of a material.
+			 */
+			val MAP_EMISSION: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MAP_EMISSION, "emissionMap")
+			}
+
+			/**
+			 * Height map uniform location.
+			 *
+			 * Used to define height information for parallax mapping.
+			 */
+			val MAP_HEIGHT: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MAP_HEIGHT, "heightMap")
+			}
+
+			/**
+			 * Cubic map uniform location.
+			 *
+			 * Used for environment mapping with cube maps.
+			 */
+			val MAP_CUBIC: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MAP_CUBEMAP, "cubicMap")
+			}
+
+			/**
+			 * Irradiance map uniform location.
+			 *
+			 * Used for image-based lighting with irradiance maps.
+			 */
+			val MAP_IRRADIANCE: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MAP_IRRADIANCE, "irradianceMap")
+			}
+
+			/**
+			 * Prefilter map uniform location.
+			 *
+			 * Used for image-based lighting with prefiltered environment maps.
+			 */
+			val MAP_PREFILTER: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MAP_PREFILTER, "prefilterMap")
+			}
+
+			/**
+			 * BRDF lookup table uniform location.
+			 *
+			 * Used for physically based rendering (PBR) calculations.
+			 */
+			val MAP_BRDF: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_MAP_BRDF, "brdfMap")
+			}
+
+			/**
+			 * Vertex bone IDs attribute location.
+			 *
+			 * Used for skeletal animation to define which bones affect each vertex.
+			 */
+			val VERTEX_BONE_IDS: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_VERTEX_BONEIDS, "boneIds")
+			}
+
+			/**
+			 * Vertex bone weights attribute location.
+			 *
+			 * Used for skeletal animation to define influence of bones on vertices.
+			 */
+			val VERTEX_BONE_WEIGHTS: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_VERTEX_BONEWEIGHTS, "boneWeights")
+			}
+
+			/**
+			 * Bone matrices uniform location.
+			 *
+			 * Used for skeletal animation to pass bone transformation matrices to the shader.
+			 */
+			val BONES_MATRICES: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_BONE_MATRICES, "bonesTransform")
+			}
+
+			/**
+			 * Vertex instance ID attribute location.
+			 *
+			 * Used for instanced rendering to differentiate between instances.
+			 */
+			val VERTEX_INSTANCE_ID: UniformLocation by lazy {
+				UniformLocation(SHADER_LOC_VERTEX_INSTANCE_TX, "instanceId")
+			}
+		}
 	}
 
 	// shader uniform variable utilities
@@ -415,7 +788,97 @@ class Shader(internal val raw: raylib.internal.Shader) {
 	 * @return The location of the uniform variable, or -1 if not found.
 	 */
 	fun getLocation(uniformName: String): Int {
-		return GetShaderLocation(asCValue(), uniformName)
+		return GetShaderLocation(raw, uniformName)
+	}
+
+	/**
+	 * Sets the location of a shader uniform variable at the given index.
+	 * @param index The index of the uniform variable.
+	 * @param location The location to set.
+	 */
+	fun setLocation(index: Int, location: Int) {
+		raw.useContents {
+			locs?.set(index, location)
+		}
+	}
+
+	/**
+	 * Sets the location of a shader uniform variable.
+	 * @param uniformLocation The [UniformLocation] of the uniform variable.
+	 * @param location The location to set.
+	 */
+	fun setLocation(uniformLocation: UniformLocation, location: Int) {
+		setLocation(uniformLocation.value.toInt(), location)
+	}
+
+
+	/**
+	 * Sets the location of a shader uniform variable by name.
+	 * @param uniformLocation The [UniformLocation] of the uniform variable.
+	 * @param uniformName The name of the uniform variable.
+	 * You can find the uniform names in the shader code.
+	 */
+	fun setLocation(uniformLocation: UniformLocation, uniformName: String) {
+		val location = getLocation(uniformName)
+		setLocation(uniformLocation, location)
+	}
+
+	/**
+	 * Sets the locations of multiple shader uniform variables by name.
+	 * @param uniformLocations A map of [UniformLocation]s to their corresponding uniform names.
+	 */
+	fun setLocations(uniformLocations: Map<UniformLocation, String>) {
+		for ((uniformLocation, uniformName) in uniformLocations) {
+			setLocation(uniformLocation, uniformName)
+		}
+	}
+
+	/**
+	 * Gets the location of a shader uniform variable at its default name.
+	 * @param uniformLocation The [UniformLocation] of the uniform variable.
+	 * @return The location of the uniform variable, or -1 if not found.
+	 */
+	fun getDefaultLocation(uniformLocation: UniformLocation): Int {
+		return getLocation(uniformLocation.shaderName)
+	}
+
+	/**
+	 * Sets the location of a shader uniform variable to its default name.
+	 * @param uniformLocation The [UniformLocation] of the uniform variable.
+	 */
+	fun setDefaultLocation(uniformLocation: UniformLocation) {
+		setLocation(uniformLocation, uniformLocation.shaderName)
+	}
+
+	/**
+	 * Sets the locations of multiple shader uniform variables to their default names.
+	 * @param uniformLocations The [UniformLocation]s of the uniform variables.
+	 */
+	fun setDefaultLocations(vararg uniformLocations: UniformLocation) {
+		for (uniformLocation in uniformLocations) {
+			setDefaultLocation(uniformLocation)
+		}
+	}
+
+	/**
+	 * Sets the locations of multiple shader uniform variables to their default names.
+	 * @param uniformLocations The [UniformLocation]s of the uniform variables.
+	 */
+	fun setDefaultLocations(uniformLocations: Iterable<UniformLocation>) {
+		for (uniformLocation in uniformLocations) {
+			setDefaultLocation(uniformLocation)
+		}
+	}
+
+	/**
+	 * Gets the location of a shader uniform variable at the given index.
+	 * @param index The index of the uniform variable.
+	 * @return The location of the uniform variable, or -1 if not found.
+	 */
+	fun getLocationAt(index: Int): Int {
+		return raw.useContents {
+			locs?.get(index) ?: -1
+		}
 	}
 
 	/**
@@ -425,7 +888,29 @@ class Shader(internal val raw: raylib.internal.Shader) {
 	 * @return The location of the attribute variable, or -1 if not found.
 	 */
 	fun getAttributeLocation(attributeName: String): Int {
-		return GetShaderLocationAttrib(asCValue(), attributeName)
+		return GetShaderLocationAttrib(raw, attributeName)
+	}
+
+	/**
+	 * Checks if a shader has a specific attribute variable.
+	 * @param attributeName The name of the attribute variable.
+	 * You can find the attribute names in the shader code.
+	 * @return `true` if the attribute variable exists, `false` otherwise.
+	 */
+	fun hasAttribute(attributeName: String): Boolean {
+		return getAttributeLocation(attributeName) != -1
+	}
+
+	// shader uniform variable values
+
+	/**
+	 * Checks if a shader has a specific uniform variable.
+	 * @param uniformName The name of the uniform variable.
+	 * You can find the uniform names in the shader code.
+	 * @return `true` if the uniform variable exists, `false` otherwise.
+	 */
+	fun hasValue(uniformName: String): Boolean {
+		return getLocation(uniformName) != -1
 	}
 
 	/**
@@ -437,7 +922,17 @@ class Shader(internal val raw: raylib.internal.Shader) {
 	 */
 	fun setValue(location: Int, value: Any, type: DataType) = memScoped {
 		val rawValue = type.convert(this, value)
-		SetShaderValue(asCValue(), location, rawValue, type.value.toInt())
+		SetShaderValue(raw, location, rawValue, type.value.toInt())
+	}
+	/**
+	 * Sets a value for a shader uniform variable by name.
+	 * @param uniformName The name of the uniform variable.
+	 * You can find the uniform names in the shader code.
+	 * @param value The value to set. Supported types are from the [DataType] enum.
+	 * @param type The type of the uniform variable.
+	 */
+	fun setValue(uniformName: String, value: Any, type: DataType) {
+		setValue(getLocation(uniformName), value, type)
 	}
 
 	/**
@@ -447,7 +942,16 @@ class Shader(internal val raw: raylib.internal.Shader) {
 	 * @param value The matrix value to set.
 	 */
 	fun setValue(location: Int, value: Matrix4) {
-		SetShaderValueMatrix(asCValue(), location, value.raw())
+		SetShaderValueMatrix(raw, location, value.raw())
+	}
+	/**
+	 * Sets a matrix value for a shader uniform variable by name.
+	 * @param uniformName The name of the uniform variable.
+	 * You can find the uniform names in the shader code.
+	 * @param value The matrix value to set.
+	 */
+	fun setValue(uniformName: String, value: Matrix4) {
+		setValue(getLocation(uniformName), value)
 	}
 
 	/**
@@ -457,32 +961,8 @@ class Shader(internal val raw: raylib.internal.Shader) {
 	 * @param value The texture value to set.
 	 */
 	fun setValue(location: Int, value: Texture2D) {
-		SetShaderValueTexture(asCValue(), location, value.raw())
+		SetShaderValueTexture(raw, location, value.raw())
 	}
-
-	/**
-	 * Sets a value for a shader uniform variable by name.
-	 * @param uniformName The name of the uniform variable.
-	 * You can find the uniform names in the shader code.
-	 * @param value The value to set. Supported types are from the [DataType] enum.
-	 * @param type The type of the uniform variable.
-	 */
-	fun setValue(uniformName: String, value: Any, type: DataType) {
-		val location = getLocation(uniformName)
-		setValue(location, value, type)
-	}
-
-	/**
-	 * Sets a matrix value for a shader uniform variable by name.
-	 * @param uniformName The name of the uniform variable.
-	 * You can find the uniform names in the shader code.
-	 * @param value The matrix value to set.
-	 */
-	fun setValue(uniformName: String, value: Matrix4) {
-		val location = getLocation(uniformName)
-		setValue(location, value)
-	}
-
 	/**
 	 * Sets a texture value for a shader uniform variable by name.
 	 * @param uniformName The name of the uniform variable.
@@ -490,11 +970,31 @@ class Shader(internal val raw: raylib.internal.Shader) {
 	 * @param value The texture value to set.
 	 */
 	fun setValue(uniformName: String, value: Texture2D) {
-		val location = getLocation(uniformName)
-		setValue(location, value)
+		setValue(getLocation(uniformName), value)
 	}
 
 	/// common types
+
+	/**
+	 * Sets a boolean value for a shader uniform variable.
+	 * @param location The location of the uniform variable.
+	 * You can get the location using [getLocation].
+	 * @param value The boolean value to set.
+	 */
+	fun setValue(location: Int, value: Boolean) {
+		val intValue = if (value) 1 else 0
+		setValue(location, intValue, DataType.INTEGER)
+	}
+	/**
+	 * Sets a boolean value for a shader uniform variable by name.
+	 * @param uniformName The name of the uniform variable.
+	 * You can find the uniform names in the shader code.
+	 * @param value The boolean value to set.
+	 */
+	fun setValue(uniformName: String, value: Boolean) {
+		val intValue = if (value) 1 else 0
+		setValue(uniformName, intValue, DataType.INTEGER)
+	}
 
 	/**
 	 * Sets a float value for a shader uniform variable.
@@ -510,6 +1010,15 @@ class Shader(internal val raw: raylib.internal.Shader) {
 	 * @param value The float value to set.
 	 */
 	fun setValue(uniformName: String, value: Float) = setValue(uniformName, value, DataType.FLOAT)
+	/**
+	 * Sets a double value for a shader uniform variable. Performs conversion to float.
+	 * @param location The location of the uniform variable.
+	 * You can get the location using [getLocation].
+	 * @param value The double value to set.
+	 */
+	fun setValue(location: Int, value: Double) {
+		setValue(location, value.toFloat(), DataType.FLOAT)
+	}
 
 	/**
 	 * Sets an integer value for a shader uniform variable.
@@ -588,7 +1097,80 @@ class Shader(internal val raw: raylib.internal.Shader) {
 	 */
 	fun setValue(uniformName: String, value: Quadruple<Float, Float, Float, Float>) = setValue(uniformName, value, DataType.VEC4F)
 
-	// other
+	/**
+	 * Sets an int array value for a shader uniform variable.
+	 * @param location The location of the uniform variable.
+	 * You can get the location using [getLocation].
+	 * @param value The int array value to set. Supported sizes are 2, 3, and 4.
+	 */
+	fun setValue(location: Int, value: IntArray) {
+		when (value.size) {
+			2 -> setValue(location, Pair(value[0], value[1]), DataType.VEC2I)
+			3 -> setValue(location, Triple(value[0], value[1], value[2]), DataType.VEC3I)
+			4 -> setValue(location, Quadruple(value[0], value[1], value[2], value[3]), DataType.VEC4I)
+			else -> error("Unsupported int array size: ${value.size}")
+		}
+	}
+	/**
+	 * Sets an int array value for a shader uniform variable by name.
+	 * @param uniformName The name of the uniform variable.
+	 * You can find the uniform names in the shader code.
+	 * @param value The int array value to set. Supported sizes are 2, 3, and 4.
+	 */
+	fun setValue(uniformName: String, value: IntArray) {
+		return setValue(getLocation(uniformName), value)
+	}
+
+	/**
+	 * Sets a float array value for a shader uniform variable.
+	 * @param location The location of the uniform variable.
+	 * You can get the location using [getLocation].
+	 * @param value The float array value to set. Supported sizes are 2, 3, and 4.
+	 */
+	fun setValue(location: Int, value: FloatArray) {
+		when (value.size) {
+			2 -> setValue(location, Pair(value[0], value[1]), DataType.VEC2F)
+			3 -> setValue(location, Triple(value[0], value[1], value[2]), DataType.VEC3F)
+			4 -> setValue(location, Quadruple(value[0], value[1], value[2], value[3]), DataType.VEC4F)
+			else -> error("Unsupported float array size: ${value.size}")
+		}
+	}
+	/**
+	 * Sets a float array value for a shader uniform variable by name.
+	 * @param uniformName The name of the uniform variable.
+	 * You can find the uniform names in the shader code.
+	 * @param value The float array value to set. Supported sizes are 2, 3, and 4.
+	 */
+	fun setValue(uniformName: String, value: FloatArray) {
+		return setValue(getLocation(uniformName), value)
+	}
+
+	/// other
+
+	/**
+	 * Sets a color value for a shader uniform variable.
+	 * @param location The location of the uniform variable.
+	 * You can get the location using [getLocation].
+	 * @param value The color value to set.
+	 */
+	fun setValue(location: Int, value: Color) {
+		setValue(location, Quadruple(
+			value.r.toFloat()/255F,
+			value.g.toFloat()/255F,
+			value.b.toFloat()/255F,
+			value.a.toFloat()/255F
+		), DataType.VEC4F)
+	}
+	/**
+	 * Sets a color value for a shader uniform variable by name.
+	 * @param uniformName The name of the uniform variable.
+	 * You can find the uniform names in the shader code.
+	 * @param value The color value to set.
+	 */
+	fun setValue(uniformName: String, value: Color) {
+		val location = getLocation(uniformName)
+		setValue(location, value)
+	}
 
 	companion object {
 		/**
@@ -605,8 +1187,8 @@ class Shader(internal val raw: raylib.internal.Shader) {
 		 * @return The loaded [Shader].
 		 */
 		fun load(vsFileName: String, fsFileName: String): Shader {
-			val rawShader = LoadShader(vsFileName, fsFileName)
-			return rawShader.useContents { Shader(this) }
+			val rawShader = LoadShader(vsFileName.inAppDir(), fsFileName.inAppDir())
+			return Shader(rawShader)
 		}
 
 		/**
@@ -617,12 +1199,22 @@ class Shader(internal val raw: raylib.internal.Shader) {
 		 */
 		fun loadInMemory(vsCode: String, fsCode: String): Shader {
 			val rawShader = LoadShaderFromMemory(vsCode, fsCode)
-			return rawShader.useContents { Shader(this) }
+			return Shader(rawShader)
 		}
 	}
 
+	/**
+	 * Unloads the shader from VRAM.
+	 *
+	 * This function should be called when the shader is no longer needed
+	 * to free up resources.
+	 */
+	fun unload() {
+		UnloadShader(raw)
+	}
+
 	override fun hashCode(): Int {
-		var result = raw.id.hashCode()
+		var result = id.hashCode()
 		result = 31 * result + locs.hashCode()
 		return result
 	}
@@ -631,7 +1223,7 @@ class Shader(internal val raw: raylib.internal.Shader) {
 		if (this === other) return true
 		if (other !is Shader) return false
 
-		return raw.id == other.raw.id && locs == other.locs
+		return id == other.id && locs == other.locs
 	}
 }
 
@@ -640,7 +1232,7 @@ class Shader(internal val raw: raylib.internal.Shader) {
  * @param shader The shader to start using.
  */
 fun Canvas.startShader(shader: Shader) {
-	BeginShaderMode(shader.asCValue())
+	BeginShaderMode(shader.raw)
 }
 
 /**
@@ -711,86 +1303,99 @@ data class MaterialMap(
 	/**
 	 * The types of material maps.
 	 */
-	enum class Type(internal val value: UInt) {
-		/**
-		 * Albedo (diffuse) texture map.
-		 *
-		 * Used to define the base color of the material. For example, the color of a wall,
-		 * floor, or any other surface.
-		 */
-		ALBEDO(MATERIAL_MAP_ALBEDO),
-		/**
-		 * Metalness texture map.
-		 *
-		 * Used to define the metallic properties of the material. For example, whether
-		 * the surface is metallic or non-metallic.
-		 */
-		METALNESS(MATERIAL_MAP_METALNESS),
-		/**
-		 * Normal texture map.
-		 *
-		 * Used to define the surface normals for lighting calculations. For example,
-		 * simulating bumps, dents, and other surface details.
-		 */
-		NORMAL(MATERIAL_MAP_NORMAL),
-		/**
-		 * Roughness texture map.
-		 *
-		 * Used to define the roughness properties of the material. For example, how
-		 * shiny or matte the surface appears.
-		 */
-		ROUGHNESS(MATERIAL_MAP_ROUGHNESS),
-		/**
-		 * Ambient Occlusion (AO) texture map.
-		 *
-		 * Used to define the ambient occlusion properties of the material. For example,
-		 * shadows in crevices and corners where light is occluded.
-		 */
-		AO(MATERIAL_MAP_OCCLUSION),
-		/**
-		 * Emission texture map.
-		 *
-		 * Used to define the emissive properties of the material. For example,
-		 * glowing surfaces, light sources, etc.
-		 */
-		EMISSION(MATERIAL_MAP_EMISSION),
-		/**
-		 * Height (displacement) texture map.
-		 *
-		 * Used to define the height or displacement properties of the material.
-		 * This map can be used to create parallax effects or simulate surface
-		 * details.
-		 */
-		HEIGHT(MATERIAL_MAP_HEIGHT),
-		/**
-		 * Cubemap texture map.
-		 *
-		 * Used for environment mapping, reflections, and skyboxes. For example,
-		 * simulating reflective surfaces like water or shiny metals.
-		 */
-		CUBEMAP(MATERIAL_MAP_CUBEMAP),
-		/**
-		 * Irradiance texture map.
-		 *
-		 * Used for image-based lighting (IBL) to simulate diffuse lighting from
-		 * the environment.
-		 */
-		IRRADIANCE(MATERIAL_MAP_IRRADIANCE),
-		/**
-		 * Prefilter texture map.
-		 *
-		 * Used for image-based lighting (IBL) to simulate specular reflections
-		 * from the environment.
-		 */
-		PREFILTER(MATERIAL_MAP_PREFILTER),
-		/**
-		 * BRDF lookup texture map.
-		 *
-		 * Used for physically based rendering (PBR) to simulate how light
-		 * interacts with surfaces. For example, simulating realistic reflections
-		 * and highlights.
-		 */
-		BRDF(MATERIAL_MAP_BRDF)
+	value class Texture private constructor(internal val value: UInt) {
+
+		companion object {
+			/**
+			 * Albedo (diffuse) texture map.
+			 *
+			 * Used to define the base color of the material. For example, the color of a wall,
+			 * floor, or any other surface.
+			 */
+			val ALBEDO = Texture(0U)
+
+			/**
+			 * Metalness texture map.
+			 *
+			 * Used to define the metallic properties of the material. For example, whether
+			 * the surface is metallic or non-metallic.
+			 */
+			val METALNESS = Texture(1U)
+
+			/**
+			 * Normal texture map.
+			 *
+			 * Used to define the surface normals for lighting calculations. For example,
+			 * simulating bumps, dents, and other surface details.
+			 */
+			val NORMAL = Texture(2U)
+
+			/**
+			 * Roughness texture map.
+			 *
+			 * Used to define the roughness properties of the material. For example, how
+			 * shiny or matte the surface appears.
+			 */
+			val ROUGHNESS = Texture(3U)
+
+			/**
+			 * Ambient Occlusion (AO) texture map.
+			 *
+			 * Used to define the ambient occlusion properties of the material. For example,
+			 * shadows in crevices and corners where light is occluded.
+			 */
+			val AO = Texture(4U)
+
+			/**
+			 * Emission texture map.
+			 *
+			 * Used to define the emissive properties of the material. For example,
+			 * glowing surfaces, light sources, etc.
+			 */
+			val EMISSION = Texture(5U)
+
+			/**
+			 * Height (displacement) texture map.
+			 *
+			 * Used to define the height or displacement properties of the material.
+			 * This map can be used to create parallax effects or simulate surface
+			 * details.
+			 */
+			val HEIGHT = Texture(6U)
+
+			/**
+			 * Cubemap texture map.
+			 *
+			 * Used for environment mapping, reflections, and skyboxes. For example,
+			 * simulating reflective surfaces like water or shiny metals.
+			 */
+			val CUBEMAP = Texture(7U)
+
+			/**
+			 * Irradiance texture map.
+			 *
+			 * Used for image-based lighting (IBL) to simulate diffuse lighting from
+			 * the environment.
+			 */
+			val IRRADIANCE = Texture(8U)
+
+			/**
+			 * Prefilter texture map.
+			 *
+			 * Used for image-based lighting (IBL) to simulate specular reflections
+			 * from the environment.
+			 */
+			val PREFILTER = Texture(9U)
+
+			/**
+			 * BRDF lookup texture map.
+			 *
+			 * Used for physically based rendering (PBR) to simulate how light
+			 * interacts with surfaces. For example, simulating realistic reflections
+			 * and highlights.
+			 */
+			val BRDF = Texture(10U)
+		}
 	}
 }
 
@@ -799,17 +1404,20 @@ data class MaterialMap(
  *
  * Materials define the appearance of 3D models by combining shaders and textures.
  */
-class Material(internal val raw: raylib.internal.Material) {
+class Material(internal val raw: CPointer<raylib.internal.Material>) {
 
 	/**
 	 * The shader associated with the material.
 	 */
 	var shader: Shader
-		get() = Shader(raw.shader)
+		get() = Shader(raw.pointed.shader.readValue())
 		set(value) {
-			raw.shader.id = value.id
-			for (i in 0 until RL_MAX_SHADER_LOCATIONS) {
-				raw.shader.locs?.set(i, value.locs.getOrElse(i) { -1 })
+			val shader = raw.pointed.shader
+			value.raw.useContents {
+				shader.id = this.id
+				for (i in 0 until RL_MAX_SHADER_LOCATIONS) {
+					shader.locs?.set(i, locs?.get(i) ?: -1)
+				}
 			}
 		}
 
@@ -819,16 +1427,17 @@ class Material(internal val raw: raylib.internal.Material) {
 	var maps: List<MaterialMap>
 		get() {
 			val list = mutableListOf<MaterialMap>()
-			raw.apply {
+			raw.pointed.apply {
 				for (i in 0 until MAX_MATERIAL_MAPS) {
 					val raw = maps?.get(i)
 					if (raw != null) list.add(MaterialMap(raw))
 				}
 			}
+
 			return list
 		}
 		set(value) {
-			raw.apply {
+			raw.pointed.apply {
 				for (i in 0 until MAX_MATERIAL_MAPS) {
 					if (i < value.size) {
 						val map = value[i].raw()
@@ -862,51 +1471,56 @@ class Material(internal val raw: raylib.internal.Material) {
 
 	/**
 	 * Sets the color of a material map directly.
-	 * This matches the C pattern: `material.maps[MATERIAL_MAP_DIFFUSE].color = RED`
+	 * This matches the C pattern: `material.maps[index].color = RED`
 	 *
-	 * @param mapType The type of material map (e.g., ALBEDO/DIFFUSE)
+	 * @param index The index of the material map
 	 * @param color The color to set
 	 */
-	fun setMapColor(mapType: MaterialMap.Type, color: Color) {
-		val index = mapType.value.toInt()
-		val map = raw.maps?.get(index)
-		if (map != null) {
-			map.color.r = color.r
-			map.color.g = color.g
-			map.color.b = color.b
-			map.color.a = color.a
-		}
-	}
-
-	internal fun asCValue(): CValue<raylib.internal.Material> = cValue<raylib.internal.Material> {
-		shader.id = raw.shader.id
-		shader.locs = raw.shader.locs
-		maps = raw.maps
-		for (i in 0 until 4) {
-			params[i] = raw.params[i]
+	fun setMapColor(index: Int, color: Color) {
+		raw.pointed.apply {
+			val map = maps?.get(index)
+			if (map != null) {
+				map.color.r = color.r
+				map.color.g = color.g
+				map.color.b = color.b
+				map.color.a = color.a
+			}
 		}
 	}
 
 	/**
-	 * Draw-safe view used for drawMesh and drawModel paths.
-	 * Currently identical to asCValue, but kept separate so we can
-	 * evolve export vs draw semantics independently.
+	 * Sets the color of a material map directly.
+	 * This matches the C pattern: `material.maps[mapType].color = RED`
+	 *
+	 * @param mapType The type of material map (e.g., ALBEDO/DIFFUSE)
+	 * @param color The color to set
 	 */
-	internal fun asDrawCValue(): CValue<raylib.internal.Material> = asCValue()
+	fun setMapColor(mapType: Texture, color: Color) {
+		setMapColor(mapType.value.toInt(), color)
+	}
 
 	/**
 	 * Whether the material is valid.
 	 */
 	val isValid: Boolean
-		get() = IsMaterialValid(asCValue())
+		get() = IsMaterialValid(raw.pointed.readValue())
+
+	/**
+	 * Sets a texture map for the material.
+	 * @param index The index of the material map.
+	 * @param texture The texture to set for the material map.
+	 */
+	fun setTextureMap(index: Int, texture: Texture2D) = memScoped {
+		SetMaterialTexture(raw, index, texture.raw())
+	}
 
 	/**
 	 * Sets a texture map for the material.
 	 * @param mapType The type of the material map.
 	 * @param texture The texture to set for the material map.
 	 */
-	fun setTextureMap(mapType: MaterialMap.Type, texture: Texture2D) {
-		SetMaterialTexture(raw.ptr, mapType.value.toInt(), texture.raw())
+	fun setTextureMap(mapType: Texture, texture: Texture2D) {
+		setTextureMap(mapType.value.toInt(), texture)
 	}
 
 	companion object {
@@ -921,7 +1535,21 @@ class Material(internal val raw: raylib.internal.Material) {
 		 * Loads the default material.
 		 * @return The default material.
 		 */
-		fun default() = LoadMaterialDefault().useContents { Material(this) }
+		fun default(): Material {
+			val default = LoadMaterialDefault()
+			val ptr = nativeHeap.alloc<raylib.internal.Material>()
+			default.useContents {
+				ptr.shader.id = shader.id
+				ptr.shader.locs = shader.locs
+				ptr.maps = maps
+				ptr.params[0] = params[0]
+				ptr.params[1] = params[1]
+				ptr.params[2] = params[2]
+				ptr.params[3] = params[3]
+			}
+
+			return Material(ptr.ptr)
+		}
 
 		/**
 		 * Loads materials from a file.
@@ -933,7 +1561,8 @@ class Material(internal val raw: raylib.internal.Material) {
 			val materials = LoadMaterials(fileName.inAppDir(), count.ptr)
 
 			List(count.value) { i ->
-				Material(materials?.get(i) ?: default().raw)
+				val material = materials?.get(i)?.ptr ?: default().raw
+				Material(material)
 			}
 		}
 
@@ -949,19 +1578,19 @@ class Material(internal val raw: raylib.internal.Material) {
 /**
  * Represents a raylib mesh.
  */
-class Mesh(internal val raw: raylib.internal.Mesh) {
+class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 
 	/**
 	 * The number of vertices on the mesh.
 	 */
 	val vertexCount: Int
-		get() = raw.vertexCount
+		get() = raw.useContents { vertexCount }
 
 	/**
 	 * The number of triangle objects on the mesh.
 	 */
 	val triangleCount: Int
-		get() = raw.triangleCount
+		get() = raw.useContents { triangleCount }
 
 	/**
 	 * The vertices of the mesh.
@@ -971,7 +1600,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		get() {
 			val list = mutableListOf<Vertex>()
 
-			raw.apply {
+			raw.useContents {
 				var vi = 0
 				var ti = 0
 				var ti2 = 0
@@ -1010,7 +1639,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 			return list
 		}
 		set(value) {
-			raw.apply {
+			raw.useContents {
 				// free old arrays if they exist
 				vertices?.let { nativeHeap.free(it.rawValue) }
 				texcoords?.let { nativeHeap.free(it.rawValue) }
@@ -1018,6 +1647,8 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 				normals?.let { nativeHeap.free(it.rawValue) }
 				tangents?.let { nativeHeap.free(it.rawValue) }
 				colors?.let { nativeHeap.free(it.rawValue) }
+
+				vertexCount = value.size
 
 				// vertices
 				val vArray = nativeHeap.allocArray<FloatVarOf<Float>>(value.size * 3) { i ->
@@ -1101,7 +1732,6 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		val currentVertices = vertices.toMutableList()
 		currentVertices.add(vertex)
 		vertices = currentVertices
-		raw.vertexCount = currentVertices.size
 	}
 
 	/**
@@ -1113,7 +1743,6 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		if (index in currentVertices.indices) {
 			currentVertices.removeAt(index)
 			vertices = currentVertices
-			raw.vertexCount = currentVertices.size
 		}
 	}
 
@@ -1149,17 +1778,19 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 	var animatedVertices: List<Triple<Float, Float, Float>>
 		get() {
 			val list = mutableListOf<Triple<Float, Float, Float>>()
-			for (i in 0 until raw.vertexCount * 3 step 3) {
-				val x = raw.animVertices?.get(i) ?: 0F
-				val y = raw.animVertices?.get(i + 1) ?: 0F
-				val z = raw.animVertices?.get(i + 2) ?: 0F
-				list.add(Triple(x, y, z))
+			raw.useContents {
+				for (i in 0 until vertexCount * 3 step 3) {
+					val x = animVertices?.get(i) ?: 0F
+					val y = animVertices?.get(i + 1) ?: 0F
+					val z = animVertices?.get(i + 2) ?: 0F
+					list.add(Triple(x, y, z))
+				}
 			}
 
 			return list
 		}
 		set(value) {
-			raw.apply {
+			raw.useContents {
 				// free old array if it exists
 				animVertices?.let { nativeHeap.free(it.rawValue) }
 
@@ -1183,17 +1814,19 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 	var animatedNormals: List<Triple<Float, Float, Float>>
 		get() {
 			val list = mutableListOf<Triple<Float, Float, Float>>()
-			for (i in 0 until raw.vertexCount * 3 step 3) {
-				val x = raw.animNormals?.get(i) ?: 0F
-				val y = raw.animNormals?.get(i + 1) ?: 0F
-				val z = raw.animNormals?.get(i + 2) ?: 0F
-				list.add(Triple(x, y, z))
+			raw.useContents {
+				for (i in 0 until vertexCount * 3 step 3) {
+					val x = animNormals?.get(i) ?: 0F
+					val y = animNormals?.get(i + 1) ?: 0F
+					val z = animNormals?.get(i + 2) ?: 0F
+					list.add(Triple(x, y, z))
+				}
 			}
 
 			return list
 		}
 		set(value) {
-			raw.apply {
+			raw.useContents {
 				// free old array if it exists
 				animNormals?.let { nativeHeap.free(it.rawValue) }
 
@@ -1215,7 +1848,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 	 * The number of bones in the mesh.
 	 */
 	val boneCount: Int
-		get() = raw.boneCount
+		get() = raw.useContents { boneCount }
 
 	/**
 	 * The bone IDs affecting each vertex of the mesh.
@@ -1225,11 +1858,12 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 	val boneWeights: List<Float>
 		get() {
 			val list = mutableListOf<Float>()
-			raw.apply {
+			raw.useContents {
 				for (i in 0 until vertexCount * 4) {
 					boneWeights?.get(i)?.let { list.add(it) }
 				}
 			}
+
 			return list
 		}
 
@@ -1241,7 +1875,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 	 * @return The bone ID, or 0 if the vertex is not found in the mesh.
 	 */
 	fun getBoneId(vertexIndex: Int, boneIndex: Int): Int {
-		return raw.boneIds?.get(vertexIndex * 4 + boneIndex)?.toInt() ?: 0
+		return raw.useContents { boneIds?.get(vertexIndex * 4 + boneIndex)?.toInt() ?: 0 }
 	}
 
 	/**
@@ -1264,11 +1898,12 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 	val boneMatrices: List<Matrix4>
 		get() {
 			val list = mutableListOf<Matrix4>()
-			raw.apply {
+			raw.useContents {
 				for (i in 0 until boneCount) {
 					boneMatrices?.get(i)?.let { list.add(Matrix4(it)) }
 				}
 			}
+
 			return list
 		}
 
@@ -1278,7 +1913,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 	 * @return The bone transformation matrix, or null if the bone index is invalid.
 	 */
 	fun getTransformForBone(boneIndex: Int): Matrix4? {
-		return raw.boneMatrices?.get(boneIndex)?.let { Matrix4(it) }
+		return raw.useContents { boneMatrices?.get(boneIndex)?.let { Matrix4(it) } }
 	}
 
 	/**
@@ -1322,49 +1957,23 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 			return map
 		}
 
-	@Suppress("DuplicatedCode")
-	internal fun asCValue(): CValue<raylib.internal.Mesh> = cValue<raylib.internal.Mesh> {
-		// Mirror the native Mesh struct from raylib.h
-		vertexCount = raw.vertexCount
-		triangleCount = raw.triangleCount
-
-		vertices = raw.vertices
-		texcoords = raw.texcoords
-		texcoords2 = raw.texcoords2
-		normals = raw.normals
-		tangents = raw.tangents
-		colors = raw.colors
-		indices = raw.indices
-
-		animVertices = raw.animVertices
-		animNormals = raw.animNormals
-		boneIds = raw.boneIds
-		boneWeights = raw.boneWeights
-		boneMatrices = raw.boneMatrices
-		boneCount = raw.boneCount
-
-		vaoId = raw.vaoId
-		vboId = raw.vboId
-	}
-
-	/**
-	 * Draw-safe view for drawMesh.
-	 * Uses the same layout as asCValue but kept separate so we can
-	 * tweak behavior for draw-only scenarios if needed.
-	 */
-	internal fun asDrawCValue(): CValue<raylib.internal.Mesh> = asCValue()
-
 	/**
 	 * The bounding box of the mesh.
 	 */
 	val boundingBox: BoundingBox
-		get() = GetMeshBoundingBox(asCValue()).useContents { BoundingBox(this) }
+		get() = GetMeshBoundingBox(raw).useContents { BoundingBox(this) }
 
 	/**
 	 * Uploads the mesh data to the GPU.
+	 *
+	 * This method is usually called automatically, especially by the generation
+	 * functions in the [Mesh] companion object. However, if you manually modify
+	 * the mesh data (e.g., vertices, normals, texture coordinates), you should call
+	 * this method to ensure that the changes are reflected in the GPU memory.
+	 *
 	 * @param dynamic Whether the mesh is dynamic (i.e., will be updated frequently).
 	 */
-	fun upload(dynamic: Boolean = true) {
+	fun upload(dynamic: Boolean = true) = memScoped {
 		UploadMesh(raw.ptr, dynamic)
 	}
 
@@ -1380,12 +1989,15 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 	val tangents: List<Quadruple<Float, Float, Float, Float>>
 		get() {
 			val list = mutableListOf<Quadruple<Float, Float, Float, Float>>()
-			for (i in 0 until raw.vertexCount * 4 step 4) {
-				val x = raw.tangents?.get(i) ?: 0F
-				val y = raw.tangents?.get(i + 1) ?: 0F
-				val z = raw.tangents?.get(i + 2) ?: 0F
-				val w = raw.tangents?.get(i + 3) ?: 0F
-				list.add(Quadruple(x, y, z, w))
+
+			raw.useContents {
+				for (i in 0 until vertexCount * 4 step 4) {
+					val x = tangents?.get(i) ?: 0F
+					val y = tangents?.get(i + 1) ?: 0F
+					val z = tangents?.get(i + 2) ?: 0F
+					val w = tangents?.get(i + 3) ?: 0F
+					list.add(Quadruple(x, y, z, w))
+				}
 			}
 
 			return list
@@ -1399,7 +2011,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 	 * techniques such as normal mapping. They are used to determine how light interacts
 	 * with the surface of the mesh.
 	 */
-	fun createTangents() {
+	fun createTangents() = memScoped {
 		GenMeshTangents(raw.ptr)
 	}
 
@@ -1410,7 +2022,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 	 * @param fileName The name of the file to export to.
 	 */
 	fun export(fileName: String) {
-		ExportMesh(asCValue(), fileName.inAppDir())
+		ExportMesh(raw, fileName.inAppDir())
 	}
 
 	/**
@@ -1431,7 +2043,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 	 * @param fileName The name of the file to export to.
 	 */
 	fun exportAsCode(fileName: String) {
-		ExportMeshAsCode(asCValue(), fileName.inAppDir())
+		ExportMeshAsCode(raw, fileName.inAppDir())
 	}
 
 	/**
@@ -1445,6 +2057,17 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		exportAsCode(file.absolutePath)
 	}
 
+	/**
+	 * Generates various standard 3D meshes.
+	 *
+	 * When generating a mesh using these functions, the mesh data is automatically
+	 * uploaded to the GPU. Therefore, there is no need to call [upload] manually.
+	 * As a result, the generated meshes are ready for rendering immediately after creation.
+	 * However, you **should not** call this method in the [Window.lifecycle] block,
+	 * as it will **repeatedly generate and upload the mesh on every frame**, leading to
+	 * performance issues. Instead, generate the mesh once outside the lifecycle block
+	 * and reuse it as needed.
+	 */
 	companion object {
 
 		/**
@@ -1455,7 +2078,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		 */
 		fun poly(sides: Int, radius: Float): Mesh {
 			val raw = GenMeshPoly(sides, radius)
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1468,7 +2091,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		 */
 		fun plane(width: Float, length: Float, resX: Int, resZ: Int): Mesh {
 			val raw = GenMeshPlane(width, length, resX, resZ)
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1478,7 +2101,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		 */
 		fun cube(size: Float): Mesh {
 			val raw = GenMeshCube(size, size, size)
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1490,7 +2113,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		 */
 		fun rectPrism(width: Float, height: Float, length: Float): Mesh {
 			val raw = GenMeshCube(width, height, length)
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1504,9 +2127,9 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		 * which improves the sphere's roundness.
 		 * @return The generated mesh.
 		 */
-		fun sphere(radius: Float, rings: Int, slices: Int): Mesh {
+		fun sphere(radius: Float, rings: Int, slices: Int = 16): Mesh {
 			val raw = GenMeshSphere(radius, rings, slices)
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1520,9 +2143,9 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		 * which improves the hemisphere's roundness.
 		 * @return The generated mesh.
 		 */
-		fun hemiSphere(radius: Float, rings: Int, slices: Int): Mesh {
+		fun hemiSphere(radius: Float, rings: Int, slices: Int = 16): Mesh {
 			val raw = GenMeshHemiSphere(radius, rings, slices)
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1534,9 +2157,9 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		 * the main axis, which improves the cylinder's roundness.
 		 * @return The generated mesh.
 		 */
-		fun cylinder(radius: Float, height: Float, slices: Int): Mesh {
+		fun cylinder(radius: Float, height: Float, slices: Int = 16): Mesh {
 			val raw = GenMeshCylinder(radius, height, slices)
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1545,12 +2168,12 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		 * @param height The height of the cone.
 		 * @param slices The number of slices of the cone.
 		 * Increasing the number of slices increases the number of subdivisions around
-		 * the main axis, which improves the cone's roundness.
+		 * the main axis, which improves the cone's roundness. Default is 16.
 		 * @return The generated mesh.
 		 */
-		fun cone(radius: Float, height: Float, slices: Int): Mesh {
+		fun cone(radius: Float, height: Float, slices: Int = 16): Mesh {
 			val raw = GenMeshCone(radius, height, slices)
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1567,7 +2190,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		 */
 		fun torus(radius: Float, size: Float, radSeg: Int, sides: Int): Mesh {
 			val raw = GenMeshTorus(radius, size, radSeg, sides)
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1584,7 +2207,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		 */
 		fun knot(radius: Float, size: Float, radSeg: Int, sides: Int): Mesh {
 			val raw = GenMeshKnot(radius, size, radSeg, sides)
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1602,7 +2225,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 			depth: Float = 1F
 		): Mesh {
 			val raw = GenMeshHeightmap(heightMap.raw, (width to height to depth).toVector3())
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1616,7 +2239,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 			size: Triple<Float, Float, Float>
 		): Mesh {
 			val raw = GenMeshHeightmap(heightMap.raw, size.toVector3())
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1627,7 +2250,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		 */
 		fun cubicMap(cubicMap: Image, cubeSize: Float): Mesh {
 			val raw = GenMeshCubicmap(cubicMap.raw, (cubeSize to cubeSize to cubeSize).toVector3())
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1640,7 +2263,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		 */
 		fun cubicMap(cubicMap: Image, width: Float, height: Float, depth: Float): Mesh {
 			val raw = GenMeshCubicmap(cubicMap.raw, (width to height to depth).toVector3())
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 
 		/**
@@ -1651,7 +2274,7 @@ class Mesh(internal val raw: raylib.internal.Mesh) {
 		 */
 		fun cubicMap(cubicMap: Image, cubeSize: Triple<Float, Float, Float>): Mesh {
 			val raw = GenMeshCubicmap(cubicMap.raw, cubeSize.toVector3())
-			return raw.useContents { Mesh(this) }
+			return Mesh(raw)
 		}
 	}
 }
@@ -1677,13 +2300,13 @@ fun Canvas.drawMesh(
 	x: Float,
 	y: Float,
 	z: Float,
-	rotX: Float,
-	rotY: Float,
-	rotZ: Float,
-	rotAngle: Float,
-	scaleX: Float,
-	scaleY: Float,
-	scaleZ: Float
+	rotX: Float = 0F,
+	rotY: Float = 0F,
+	rotZ: Float = 0F,
+	rotAngle: Float = 0F,
+	scaleX: Float = 0F,
+	scaleY: Float = 0F,
+	scaleZ: Float = 0F
 ) {
 	ensureDrawing()
 	val radians = rotAngle * (PI / 180F)
@@ -1718,13 +2341,13 @@ fun Canvas.drawMesh(
 	x: Int,
 	y: Int,
 	z: Int,
-	rotX: Float,
-	rotY: Float,
-	rotZ: Float,
-	rotAngle: Float,
-	scaleX: Float,
-	scaleY: Float,
-	scaleZ: Float
+	rotX: Float = 0F,
+	rotY: Float = 0F,
+	rotZ: Float = 0F,
+	rotAngle: Float = 0F,
+	scaleX: Float = 1F,
+	scaleY: Float = 1F,
+	scaleZ: Float = 1F
 ) {
 	drawMesh(
 		mesh, material,
@@ -1771,11 +2394,8 @@ fun Canvas.drawMesh(
  */
 fun Canvas.drawMesh(mesh: Mesh, material: Material, transform: Matrix4) {
 	ensureDrawing()
-	val meshValue = mesh.asDrawCValue()
-	val materialValue = material.asDrawCValue()
-	val transformValue = transform.raw()
 
-	DrawMesh(meshValue, materialValue, transformValue)
+	DrawMesh(mesh.raw, material.raw.pointed.readValue(), transform.raw())
 }
 
 /**
@@ -1806,8 +2426,17 @@ fun Canvas.drawMesh(mesh: Mesh, material: Material, transformations: List<Matrix
 			m14 = matrix.m14
 			m15 = matrix.m15
 		}
-		DrawMeshInstanced(mesh.asCValue(), material.asCValue(), array, transformations.size)
+		DrawMeshInstanced(mesh.raw, material.raw.pointed.readValue(), array, transformations.size)
 	}
+}
+
+/**
+ * Draws a 3D mesh on the canvas with identity transform (at origin).
+ * @param mesh The mesh to draw.
+ * @param material The material to apply to the mesh.
+ */
+fun Canvas.drawMesh(mesh: Mesh, material: Material) {
+	drawMesh(mesh, material, Matrix4.IDENTITY)
 }
 
 /**
@@ -1823,37 +2452,39 @@ fun Canvas.drawMesh(mesh: Mesh, material: Material, vararg transformations: Matr
 /**
  * Represents a raylib model.
  */
-class Model(internal val raw: raylib.internal.Model) {
+class Model(internal val raw: CValue<raylib.internal.Model>) {
 	/**
 	 * The model transformation matrix.
 	 */
 	@Suppress("DuplicatedCode")
 	var transform: Matrix4
-		get() = Matrix4(raw.transform)
+		get() = raw.useContents { Matrix4(transform) }
 		set(value) {
-			raw.transform.m0 = value.m0
-			raw.transform.m1 = value.m1
-			raw.transform.m2 = value.m2
-			raw.transform.m3 = value.m3
-			raw.transform.m4 = value.m4
-			raw.transform.m5 = value.m5
-			raw.transform.m6 = value.m6
-			raw.transform.m7 = value.m7
-			raw.transform.m8 = value.m8
-			raw.transform.m9 = value.m9
-			raw.transform.m10 = value.m10
-			raw.transform.m11 = value.m11
-			raw.transform.m12 = value.m12
-			raw.transform.m13 = value.m13
-			raw.transform.m14 = value.m14
-			raw.transform.m15 = value.m15
+			raw.useContents {
+				transform.m0 = value.m0
+				transform.m1 = value.m1
+				transform.m2 = value.m2
+				transform.m3 = value.m3
+				transform.m4 = value.m4
+				transform.m5 = value.m5
+				transform.m6 = value.m6
+				transform.m7 = value.m7
+				transform.m8 = value.m8
+				transform.m9 = value.m9
+				transform.m10 = value.m10
+				transform.m11 = value.m11
+				transform.m12 = value.m12
+				transform.m13 = value.m13
+				transform.m14 = value.m14
+				transform.m15 = value.m15
+			}
 		}
 
 	/**
 	 * The number of meshes in the model.
 	 */
 	val meshCount: Int
-		get() = raw.meshCount
+		get() = raw.useContents { meshCount }
 
 	/**
 	 * The meshes in the model.
@@ -1861,32 +2492,38 @@ class Model(internal val raw: raylib.internal.Model) {
 	var meshes: List<Mesh>
 		get() {
 			val list = mutableListOf<Mesh>()
-			for (i in 0 until meshCount) {
-				raw.meshes?.get(i)?.let { list.add(Mesh(it)) }
+			raw.useContents {
+				for (i in 0 until meshCount) {
+					meshes?.get(i)?.let { list.add(Mesh(it.readValue())) }
+				}
 			}
+
 			return list
 		}
 		set(value) {
-			raw.apply {
+			raw.useContents {
 				// free old array if it exists
 				meshes?.let { nativeHeap.free(it.rawValue) }
 
-				val array = nativeHeap.allocArray<raylib.internal.Mesh>(value.size) { i ->
+				val array = nativeHeap.allocArray<raylib.internal.Mesh>(value.size) newMesh@{ i ->
 					val mesh = value[i].raw
-					vertices = mesh.vertices
-					texcoords = mesh.texcoords
-					texcoords2 = mesh.texcoords2
-					normals = mesh.normals
-					tangents = mesh.tangents
-					colors = mesh.colors
-					indices = mesh.indices
-					animVertices = mesh.animVertices
-					animNormals = mesh.animNormals
-					boneIds = mesh.boneIds
-					boneWeights = mesh.boneWeights
-					vertexCount = mesh.vertexCount
-					triangleCount = mesh.triangleCount
-					vaoId = mesh.vaoId
+
+					mesh.useContents {
+						this@newMesh.vertices = vertices
+						this@newMesh.texcoords = texcoords
+						this@newMesh.texcoords2 = texcoords2
+						this@newMesh.normals = normals
+						this@newMesh.tangents = tangents
+						this@newMesh.colors = colors
+						this@newMesh.indices = indices
+						this@newMesh.animVertices = animVertices
+						this@newMesh.animNormals = animNormals
+						this@newMesh.boneIds = boneIds
+						this@newMesh.boneWeights = boneWeights
+						this@newMesh.vertexCount = vertexCount
+						this@newMesh.triangleCount = triangleCount
+						this@newMesh.vaoId = vaoId
+					}
 				}
 
 				meshes = array
@@ -1898,7 +2535,7 @@ class Model(internal val raw: raylib.internal.Model) {
 	 * The number of materials in the model.
 	 */
 	val materialCount: Int
-		get() = raw.materialCount
+		get() = raw.useContents { materialCount }
 
 	/**
 	 * The materials in the model.
@@ -1906,21 +2543,29 @@ class Model(internal val raw: raylib.internal.Model) {
 	var materials: List<Material>
 		get() {
 			val list = mutableListOf<Material>()
-			for (i in 0 until materialCount) {
-				raw.materials?.get(i)?.let { list.add(Material(it)) }
+			raw.useContents {
+				for (i in 0 until materialCount) {
+					materials?.get(i)?.let {
+						list.add(Material(it.ptr))
+					}
+				}
 			}
+
 			return list
 		}
 		set(value) {
-			raw.apply {
+			raw.useContents {
 				// free old array if it exists
 				materials?.let { nativeHeap.free(it.rawValue) }
 
-				val array = nativeHeap.allocArray<raylib.internal.Material>(value.size) { i ->
+				val array = nativeHeap.allocArray<raylib.internal.Material>(value.size) newMaterial@{ i ->
 					val material = value[i].raw
-					shader.id = material.shader.id
-					shader.locs = material.shader.locs
-					maps = material.maps
+
+					material.pointed.apply {
+						this@newMaterial.shader.id = shader.id
+						this@newMaterial.shader.locs = shader.locs
+						this@newMaterial.maps = maps
+					}
 				}
 
 				materials = array
@@ -1971,7 +2616,7 @@ class Model(internal val raw: raylib.internal.Model) {
 			val meshList = meshes
 			val materialList = materials
 
-			return raw.run {
+			return raw.useContents {
 				List(meshCount) { i ->
 					val materialIndex = meshMaterial?.get(i) ?: 0
 					val clampedIndex = materialIndex.coerceIn(0, materialCount - 1)
@@ -1985,14 +2630,17 @@ class Model(internal val raw: raylib.internal.Model) {
 		meshes = currentMeshes
 		materials = currentMaterials
 
-		raw.meshMaterial = raw.meshMaterial?.let {
-			val newArray = nativeHeap.allocArray<IntVarOf<Int>>(currentMeshes.size) { i ->
+		raw.useContents {
+			meshMaterial = meshMaterial?.let {
+				val newArray = nativeHeap.allocArray<IntVarOf<Int>>(currentMeshes.size) { i ->
+					this.value = if (i < currentMaterials.size) i else 0
+				}
+
+				nativeHeap.free(it.rawValue)
+				newArray
+			} ?: nativeHeap.allocArray<IntVarOf<Int>>(currentMeshes.size) { i ->
 				this.value = if (i < currentMaterials.size) i else 0
 			}
-			nativeHeap.free(it.rawValue)
-			newArray
-		} ?: nativeHeap.allocArray<IntVarOf<Int>>(currentMeshes.size) { i ->
-			this.value = if (i < currentMaterials.size) i else 0
 		}
 	}
 
@@ -2042,49 +2690,33 @@ class Model(internal val raw: raylib.internal.Model) {
 		}
 	}
 
-	internal fun asCValue(): CValue<raylib.internal.Model> = cValue<raylib.internal.Model> {
-		transform.m0 = raw.transform.m0
-		transform.m1 = raw.transform.m1
-		transform.m2 = raw.transform.m2
-		transform.m3 = raw.transform.m3
-		transform.m4 = raw.transform.m4
-		transform.m5 = raw.transform.m5
-		transform.m6 = raw.transform.m6
-		transform.m7 = raw.transform.m7
-		transform.m8 = raw.transform.m8
-		transform.m9 = raw.transform.m9
-		transform.m10 = raw.transform.m10
-		transform.m11 = raw.transform.m11
-		transform.m12 = raw.transform.m12
-		transform.m13 = raw.transform.m13
-		transform.m14 = raw.transform.m14
-		transform.m15 = raw.transform.m15
-
-		meshes = raw.meshes
-		materials = raw.materials
-		meshMaterial = raw.meshMaterial
-		meshCount = raw.meshCount
-		materialCount = raw.materialCount
-	}
-
 	/**
 	 * Whether the model is valid.
 	 */
 	val isValid: Boolean
-		get() = IsModelValid(asCValue())
+		get() = IsModelValid(raw)
+
+	internal var boundingBoxCache: BoundingBox? = null
 
 	/**
 	 * The bounding box of the model.
 	 */
 	val boundingBox: BoundingBox
-		get() = GetModelBoundingBox(asCValue()).useContents { BoundingBox(this) }
+		get() {
+			if (boundingBoxCache != null) return boundingBoxCache!!
+
+			boundingBoxCache = GetModelBoundingBox(raw)
+				.useContents { BoundingBox(this) }
+
+			return boundingBoxCache!!
+		}
 
 	/**
 	 * Sets the material for a specific mesh in the model.
 	 * @param meshId The ID of the mesh to set the material for.
 	 * @param materialId The ID of the material to set.
 	 */
-	fun setMeshMaterial(meshId: Int, materialId: Int) {
+	fun setMeshMaterial(meshId: Int, materialId: Int) = memScoped {
 		SetModelMeshMaterial(raw.ptr, meshId, materialId)
 	}
 
@@ -2121,7 +2753,7 @@ class Model(internal val raw: raylib.internal.Model) {
 		 */
 		fun load(path: String): Model {
 			val raw = LoadModel(path.inAppDir())
-			return raw.useContents { Model(this) }
+			return Model(raw)
 		}
 
 		/**
@@ -2137,8 +2769,8 @@ class Model(internal val raw: raylib.internal.Model) {
 		 * @return The created [Model].
 		 */
 		fun fromMesh(mesh: Mesh): Model {
-			val raw = LoadModelFromMesh(mesh.asCValue())
-			return raw.useContents { Model(this) }
+			val raw = LoadModelFromMesh(mesh.raw)
+			return Model(raw)
 		}
 	}
 
@@ -2162,7 +2794,7 @@ fun Canvas.drawModel(
 	tint: Color = Color.WHITE
 ) {
 	ensureDrawing()
-	DrawModel(model.asCValue(), (x to y to z).toVector3(), scale, tint.raw())
+	DrawModel(model.raw, (x to y to z).toVector3(), scale, tint.raw())
 }
 
 /**
@@ -2179,7 +2811,7 @@ fun Canvas.drawModel(
 	tint: Color = Color.WHITE
 ) {
 	ensureDrawing()
-	DrawModel(model.asCValue(), position.toVector3(), scale, tint.raw())
+	DrawModel(model.raw, position.toVector3(), scale, tint.raw())
 }
 
 /**
@@ -2213,7 +2845,7 @@ fun Canvas.drawModel(
 ) {
 	ensureDrawing()
 	DrawModelEx(
-		model.asCValue(),
+		model.raw,
 		(x to y to z).toVector3(),
 		(rotX to rotY to rotZ).toVector3(),
 		rotAngle,
@@ -2249,7 +2881,7 @@ fun Canvas.drawModel(
 ) {
 	ensureDrawing()
 	DrawModelEx(
-		model.asCValue(),
+		model.raw,
 		(x to y to z).toVector3(),
 		(rotX to rotY to rotZ).toVector3(),
 		rotAngle,
@@ -2281,7 +2913,7 @@ fun Canvas.drawModel(
 ) {
 	ensureDrawing()
 	DrawModelEx(
-		model.asCValue(),
+		model.raw,
 		position.toVector3(),
 		rotation.toVector3(),
 		rotAngle,
@@ -2309,7 +2941,7 @@ fun Canvas.drawModel(
 ) {
 	ensureDrawing()
 	DrawModelEx(
-		model.asCValue(),
+		model.raw,
 		position.toVector3(),
 		rotation.toVector3(),
 		rotAngle,
@@ -2338,7 +2970,7 @@ fun Canvas.drawModelWires(
 	tint: Color = Color.BLACK
 ) {
 	ensureDrawing()
-	DrawModelWires(model.asCValue(), (x to y to z).toVector3(), scale, tint.raw())
+	DrawModelWires(model.raw, (x to y to z).toVector3(), scale, tint.raw())
 }
 
 /**
@@ -2357,7 +2989,7 @@ fun Canvas.drawModelWires(
 	tint: Color = Color.BLACK
 ) {
 	ensureDrawing()
-	DrawModelWires(model.asCValue(), position.toVector3(), scale, tint.raw())
+	DrawModelWires(model.raw, position.toVector3(), scale, tint.raw())
 }
 
 /**
@@ -2393,7 +3025,7 @@ fun Canvas.drawModelWires(
 ) {
 	ensureDrawing()
 	DrawModelWiresEx(
-		model.asCValue(),
+		model.raw,
 		(x to y to z).toVector3(),
 		(rotX to rotY to rotZ).toVector3(),
 		rotAngle,
@@ -2425,7 +3057,7 @@ fun Canvas.drawModelWires(
 ) {
 	ensureDrawing()
 	DrawModelWiresEx(
-		model.asCValue(),
+		model.raw,
 		position.toVector3(),
 		rotation.toVector3(),
 		rotAngle,
