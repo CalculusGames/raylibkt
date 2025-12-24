@@ -2932,11 +2932,17 @@ class Model(internal val raw: CValue<raylib.internal.Model>) {
 		/**
 		 * Creates a model from the specified mesh.
 		 * @param mesh The mesh to create the model from.
+		 * @param material The material to apply to the model. If null, the material is not set.
 		 * @return The created [Model].
 		 */
-		fun fromMesh(mesh: Mesh): Model {
+		fun fromMesh(mesh: Mesh, material: Material? = null): Model {
 			val raw = LoadModelFromMesh(mesh.raw)
-			return Model(raw)
+			val model = Model(raw)
+			if (material != null) {
+				model.setMaterial(0, material)
+			}
+
+			return model
 		}
 	}
 

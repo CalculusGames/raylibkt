@@ -74,8 +74,7 @@ class Test3D {
 		val material = Material.default()
 		material.setMapColor(MaterialMap.Texture.ALBEDO, Color.RED)
 
-		val model = Model.fromMesh(Mesh.cylinder(3F, 5F))
-		model.setMaterial(0, material)
+		val model = Model.fromMesh(Mesh.cylinder(3F, 5F), material)
 
 		Window.fps = 60
 		Window.lifecycleForFrames(60 * 5) {
