@@ -1137,6 +1137,7 @@ $dokka.location:raylib/Color.Companion/TOMATO/#/PointingToDeclaration/kray/rayl
 $dokka.location:raylib/Color.Companion/TOOLBOX/#/PointingToDeclaration/kray/raylib/-color/-companion/-t-o-o-l-b-o-x.html
 $dokka.location:raylib/Color.Companion/TOPAZ/#/PointingToDeclaration/kray/raylib/-color/-companion/-t-o-p-a-z.html
 $dokka.location:raylib/Color.Companion/TRACTOR_RED/#/PointingToDeclaration/kray/raylib/-color/-companion/-t-r-a-c-t-o-r_-r-e-d.html
+$dokka.location:raylib/Color.Companion/TRANSPARENT/#/PointingToDeclaration/kray/raylib/-color/-companion/-t-r-a-n-s-p-a-r-e-n-t.html
 $dokka.location:raylib/Color.Companion/TROLLEY_GREY/#/PointingToDeclaration/kray/raylib/-color/-companion/-t-r-o-l-l-e-y_-g-r-e-y.html
 $dokka.location:raylib/Color.Companion/TROPICAL_RAIN_FOREST/#/PointingToDeclaration/kray/raylib/-color/-companion/-t-r-o-p-i-c-a-l_-r-a-i-n_-f-o-r-e-s-t.html
 $dokka.location:raylib/Color.Companion/TRUE_BLUE/#/PointingToDeclaration/kray/raylib/-color/-companion/-t-r-u-e_-b-l-u-e.html
@@ -1619,7 +1620,7 @@ $dokka.location:raylib/Mesh/upload/#kotlin.Boolean/PointingToDeclaration/kray/r
 $dokka.location:raylib/Mesh/vertexCount/#/PointingToDeclaration/kray/raylib/-mesh/vertex-count.html
 $dokka.location:raylib/Mesh/vertices/#/PointingToDeclaration/kray/raylib/-mesh/vertices.html
 $dokka.location:raylib/Model.Companion///PointingToDeclaration/kray/raylib/-model/-companion/index.html
-$dokka.location:raylib/Model.Companion/fromMesh/#raylib.Mesh/PointingToDeclaration/kray/raylib/-model/-companion/from-mesh.html
+$dokka.location:raylib/Model.Companion/fromMesh/#raylib.Mesh#raylib.Material?/PointingToDeclaration/kray/raylib/-model/-companion/from-mesh.html
 $dokka.location:raylib/Model.Companion/load/#kotlin.String/PointingToDeclaration/kray/raylib/-model/-companion/load.html
 $dokka.location:raylib/Model.Companion/load/#raylib.File/PointingToDeclaration/kray/raylib/-model/-companion/load.html
 $dokka.location:raylib/Model///PointingToDeclaration/kray/raylib/-model/index.html
