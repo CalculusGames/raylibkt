@@ -34,31 +34,31 @@ class Test3D {
 				line3(10, 10, 10, 20, 20, 20, Color.GREEN)
 
 				// Test 3D circle
-				circle3(0, 0, 0, 5f, 1f, 0f, 0f, 0f, Color.BLUE)
+				circle3(0f, 0f, 0f, 5f, 1f, 0f, 0f, 0f, Color.BLUE)
 
 				// Test 3D triangle
-				triangle3(0, 0, 0, 5, 0, 0, 2, 5, 0, Color.YELLOW)
-				triangleStrip3(Color.ORANGE, Triple(0, 0, 0), Triple(5, 0, 0), Triple(2, 5, 0), Triple(7, 5, 0))
+				triangle3(0f, 0f, 0f, 5f, 0f, 0f, 2f, 5f, 0f, Color.YELLOW)
+				triangleStrip3(Color.ORANGE, Triple(0f, 0f, 0f), Triple(5f, 0f, 0f), Triple(2f, 5f, 0f), Triple(7f, 5f, 0f))
 
 				// Test rectangular prism
-				rectPrism(0, 0, 0, 5f, 5f, 5f, Color.PURPLE)
-				fillRectPrism(10, 0, 0, 5f, 5f, 5f, Color.MAGENTA)
+				rectPrism(0f, 0f, 0f, 5f, 5f, 5f, Color.PURPLE)
+				fillRectPrism(10f, 0f, 0f, 5f, 5f, 5f, Color.MAGENTA)
 
 				// Test sphere
-				sphere(0, 10, 0, 3f, Color.CYAN)
-				fillSphere(10, 10, 0, 3f, Color.PINK)
-				fillSphere(20, 10, 0, 3f, 16, 16, Color.LIME)
+				sphere(0f, 10f, 0f, 3f, Color.CYAN)
+				fillSphere(10f, 10f, 0f, 3f, Color.PINK)
+				fillSphere(20f, 10f, 0f, 3f, 16, 16, Color.LIME)
 
 				// Test cylinder (wireframe and filled)
-				cylinder(0, 20, 0, 0, 25, 0, 2f, 2f, 8, Color.BROWN)
-				fillCylinder(10, 20, 0, 10, 25, 0, 2f, 2f, 8, Color.VIOLET)
+				cylinder(0f, 20f, 0f, 0f, 25f, 0f, 2f, 2f, 8, Color.BROWN)
+				fillCylinder(10f, 20f, 0f, 10f, 25f, 0f, 2f, 2f, 8, Color.VIOLET)
 
 				// Test capsule
-				capsule(0, 30, 0, 0, 35, 0, 2f, 8, 8, Color.BLUE)
-				fillCapsule(10, 30, 0, 10, 35, 0, 2f, 8, 8, Color.GREEN)
+				capsule(0f, 30f, 0f, 0f, 35f, 0f, 2f, 8, 8, Color.BLUE)
+				fillCapsule(10f, 30f, 0f, 10f, 35f, 0f, 2f, 8, 8, Color.GREEN)
 
 				// Test plane/rect3
-				rect3(0, 40, 0, 10f, 8f, Color.GOLD)
+				rect3(0f, 40f, 0f, 10f, 8f, Color.GOLD)
 
 				// Test grid
 				grid(10, 1f)

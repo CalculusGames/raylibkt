@@ -14,9 +14,9 @@ import raylib.ensureDrawing
  * @param x The x-coordinate to draw the sprite at. Defaults to the sprite's current x position.
  * @param y The y-coordinate to draw the sprite at. Defaults to the sprite's current y position.
  */
-fun Canvas.drawSprite(sprite: Sprite2D, x: Int = sprite.x, y: Int = sprite.y) {
+fun Canvas.drawSprite(sprite: Sprite2D, x: Float = sprite.x, y: Float = sprite.y) {
 	ensureDrawing()
-	drawImage(sprite.raw, x, y)
+	drawImage(sprite.raw, x.toInt(), y.toInt())
 }
 
 /**
@@ -26,14 +26,14 @@ fun Canvas.drawSprite(sprite: Sprite2D, x: Int = sprite.x, y: Int = sprite.y) {
  * @param y The y-coordinate to draw the sprite at. Defaults to the sprite's current y position.
  * @param z The z-coordinate to draw the sprite at. Defaults to the sprite's current z position.
  */
-fun Canvas.drawSprite(sprite : Sprite3D, x: Int = sprite.x, y: Int = sprite.y, z: Int = sprite.z) {
+fun Canvas.drawSprite(sprite : Sprite3D, x: Float = sprite.x, y: Float = sprite.y, z: Float = sprite.z) {
 	ensureDrawing()
 	drawModel(sprite.raw, x, y, z)
 }
 
 // Kray
 
-private val registeredSprites = mutableSetOf<Sprite<*>>()
+internal val registeredSprites = mutableSetOf<Sprite<*>>()
 
 /**
  * Gets an immutable copy of all sprites drawn to the canvas so far.
@@ -48,7 +48,7 @@ val Kray.drawnSprites: Set<Sprite<*>>
  * @param x The x-coordinate to add the sprite at. Defaults to the sprite's current x position.
  * @param y The y-coordinate to add the sprite at. Defaults to the sprite's current y position.
  */
-fun Kray.addSprite(sprite: Sprite2D, x: Int = sprite.x, y: Int = sprite.y) {
+fun Kray.addSprite(sprite: Sprite2D, x: Float = sprite.x, y: Float = sprite.y) {
 	sprite.isDrawn = true
 	registeredSprites.add(sprite)
 	canvas.drawSprite(sprite, x, y)

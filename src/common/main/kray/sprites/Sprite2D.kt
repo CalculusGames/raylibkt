@@ -9,8 +9,8 @@ import raylib.Image
  */
 class Sprite2D(internal var raw: Image) : Sprite<Image>, Positionable2D, Sizeable2D {
 
-	override var x: Int = 0
-	override var y: Int = 0
+	override var x: Float = 0F
+	override var y: Float = 0F
 	override val width: Int
 		get() = raw.width
 	override val height: Int

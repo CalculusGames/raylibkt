@@ -1,10 +1,12 @@
 package kray.sprites
 
+import kray.Positionable
+
 /**
  * Represents a sprite in the Kray game engine. Either 2D or 3D.
- * @param T The type of the sprite (e.g., Image for 2D sprites).
+ * @param T The type of the sprite (e.g., Image for 2D sprites, Model for 3D sprites).
  */
-interface Sprite<T> {
+interface Sprite<T> : Positionable {
 
 	/**
 	 * Whether the sprite has been drawn to the canvas this frame.

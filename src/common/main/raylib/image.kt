@@ -2,6 +2,7 @@
 package raylib
 
 import kotlinx.cinterop.*
+import kray.rectangle
 import kray.toVector2
 import raylib.internal.*
 
@@ -4579,19 +4580,26 @@ class Image internal constructor(internal val raw: CValue<raylib.internal.Image>
 	 * @param color The color of the outline.
 	 * @return A new Image object with the rectangle drawn on the image.
 	 */
-	fun rect(x: Int, y: Int, width: Int, height: Int, thick: Int, color: Color): Image = memScoped {
+	fun rect(x: Float, y: Float, width: Float, height: Float, thick: Int, color: Color): Image = memScoped {
 		val copy = copyPtr()
 		ImageDrawRectangleLines(
-			copy,
-			cValue {
-				this.x = x.toFloat()
-				this.y = y.toFloat()
-				this.width = width.toFloat()
-				this.height = height.toFloat()
-			}, thick, color.raw()
+			copy, rectangle(x, y, width, height), thick, color.raw()
 		)
 		return Image(copy.pointed.readValue())
 	}
+
+	/**
+	 * Draws a rectangle outline on the image.
+	 * @param x The X coordinate of the top-left corner.
+	 * @param y The Y coordinate of the top-left corner.
+	 * @param width The width of the rectangle.
+	 * @param height The height of the rectangle.
+	 * @param thick The thickness of the outline.
+	 * @param color The color of the outline.
+	 * @return A new Image object with the rectangle drawn on the image.
+	 */
+	fun rect(x: Int, y: Int, width: Int, height: Int, thick: Int, color: Color): Image =
+		rect(x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat(), thick, color)
 
 	/**
 	 * Draws a filled rectangle on the image.
@@ -4746,7 +4754,7 @@ class Image internal constructor(internal val raw: CValue<raylib.internal.Image>
 		}
 		ImageDrawTriangleStrip(copy, array, points.size, color.raw())
 
-		return Image(copy.pointed.readValue())
+		return@memScoped Image(copy.pointed.readValue())
 	}
 
 	/**
@@ -4775,26 +4783,15 @@ class Image internal constructor(internal val raw: CValue<raylib.internal.Image>
 	 */
 	fun draw(
 		src: Image,
-		sx: Int, sy: Int, sw: Int, sh: Int,
-		dx: Int, dy: Int, dw: Int, dh: Int,
+		sx: Float, sy: Float, sw: Int, sh: Int,
+		dx: Float, dy: Float, dw: Int, dh: Int,
 		tint: Color = Color.WHITE
 	): Image = memScoped {
 		val copy = copyPtr()
 		val srcCopy = ptrOf(src).pointed.readValue()
 
-		val srcRect = cValue<Rectangle> {
-			x = sx.toFloat()
-			y = sy.toFloat()
-			width = sw.toFloat()
-			height = sh.toFloat()
-		}
-
-		val destRect = cValue<Rectangle> {
-			x = dx.toFloat()
-			y = dy.toFloat()
-			width = dw.toFloat()
-			height = dh.toFloat()
-		}
+		val srcRect = rectangle(sx, sy, sw.toFloat(), sh.toFloat())
+		val destRect = rectangle(dx, dy, dw.toFloat(), dh.toFloat())
 
 		ImageDraw(copy, srcCopy, srcRect, destRect, tint.raw())
 		return Image(copy.pointed.readValue())
@@ -4809,9 +4806,9 @@ class Image internal constructor(internal val raw: CValue<raylib.internal.Image>
 	 * @param tint The color to tint the drawn image. Default is white (no tint).
 	 * @return A new Image object with the source image drawn onto it.
 	 */
-	fun draw(src: Image, x: Int, y: Int, tint: Color = Color.WHITE): Image = draw(
+	fun draw(src: Image, x: Float, y: Float, tint: Color = Color.WHITE): Image = draw(
 		src,
-		0, 0, src.width, src.height,
+		0F, 0F, src.width, src.height,
 		x, y, this.width, this.height,
 		tint
 	)
@@ -4851,14 +4848,9 @@ class Image internal constructor(internal val raw: CValue<raylib.internal.Image>
 	 * @param height The height of the crop rectangle.
 	 * @return A new Image object that is cropped.
 	 */
-	fun crop(x: Int, y: Int, width: Int, height: Int): Image = memScoped {
+	fun crop(x: Float, y: Float, width: Float, height: Float): Image = memScoped {
 		val copy = copyPtr()
-		val rect = cValue<Rectangle> {
-			this.x = x.toFloat()
-			this.y = y.toFloat()
-			this.width = width.toFloat()
-			this.height = height.toFloat()
-		}
+		val rect = rectangle(x, y, width, height)
 		ImageCrop(copy, rect)
 		return Image(copy.pointed.readValue())
 	}

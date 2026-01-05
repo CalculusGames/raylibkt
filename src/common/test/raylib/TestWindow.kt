@@ -73,7 +73,7 @@ class TestWindow {
 
 			// Test rectangles
 			rect(400, 50, 80, 60, Color.BLACK)
-			rect(500, 50, 80, 60, 3, Color.BLUE)
+			rect(500, 50, 80, 60, 3f, Color.BLUE)
 			fillRect(400, 150, 80, 60, Color.MAROON)
 			fillRect(500, 150, 80, 60, 45f, Color.GREEN)
 			fillRectGradient(400, 250, 80, 60, Color.RED, Color.YELLOW, Color.ORANGE, Color.BLUE)

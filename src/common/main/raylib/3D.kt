@@ -2959,6 +2959,27 @@ class Model(internal val raw: CValue<raylib.internal.Model>) {
  */
 fun Canvas.drawModel(
 	model: Model,
+	x: Float,
+	y: Float,
+	z: Float,
+	scale: Float = 1F,
+	tint: Color = Color.WHITE
+) {
+	ensureDrawing()
+	DrawModel(model.raw, (x to y to z).toVector3(), scale, tint.raw())
+}
+
+/**
+ * Draws a 3D model on the canvas.
+ * @param model The model to draw.
+ * @param x The X coordinate of the model position.
+ * @param y The Y Coordinate of the model position.
+ * @param z The Z coordinate of the model position.
+ * @param scale The scale of the model.
+ * @param tint The tint color to apply to the model.
+ */
+fun Canvas.drawModel(
+	model: Model,
 	x: Int,
 	y: Int,
 	z: Int,
@@ -2978,7 +2999,7 @@ fun Canvas.drawModel(
  */
 fun Canvas.drawModel(
 	model: Model,
-	position: Triple<Int, Int, Int>,
+	position: Triple<Float, Float, Float>,
 	scale: Float = 1F,
 	tint: Color = Color.WHITE
 ) {
@@ -3003,9 +3024,9 @@ fun Canvas.drawModel(
  */
 fun Canvas.drawModel(
 	model: Model,
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	rotX: Float,
 	rotY: Float,
 	rotZ: Float,
@@ -3286,9 +3307,9 @@ fun Canvas.line3(
  * @param color The color of the circle outline.
  */
 fun Canvas.circle3(
-	cx: Int,
-	cy: Int,
-	cz: Int,
+	cx: Float,
+	cy: Float,
+	cz: Float,
 	radius: Float,
 	rotX: Float,
 	rotY: Float,
@@ -3319,15 +3340,15 @@ fun Canvas.circle3(
  * @param color The color of the triange outline.
  */
 fun Canvas.triangle3(
-	x1: Int,
-	y1: Int,
-	z1: Int,
-	x2: Int,
-	y2: Int,
-	z2: Int,
-	x3: Int,
-	y3: Int,
-	z3: Int,
+	x1: Float,
+	y1: Float,
+	z1: Float,
+	x2: Float,
+	y2: Float,
+	z2: Float,
+	x3: Float,
+	y3: Float,
+	z3: Float,
 	color: Color = Color.BLACK
 ) {
 	ensureDrawing()
@@ -3344,15 +3365,15 @@ fun Canvas.triangle3(
  * @param color The color of the triangle strip.
  * @param points The list of points making up the triangle strip.
  */
-fun Canvas.triangleStrip3(color: Color = Color.BLACK, points: List<Triple<Int, Int, Int>>) {
+fun Canvas.triangleStrip3(color: Color = Color.BLACK, points: List<Triple<Float, Float, Float>>) {
 	if (points.size < 3) return
 	ensureDrawing()
 
 	val array = memScoped {
 		allocArray<Vector3>(points.size) { i ->
-			x = points[i].first.toFloat()
-			y = points[i].second.toFloat()
-			z = points[i].third.toFloat()
+			x = points[i].first
+			y = points[i].second
+			z = points[i].third
 		}
 	}
 
@@ -3364,7 +3385,7 @@ fun Canvas.triangleStrip3(color: Color = Color.BLACK, points: List<Triple<Int, I
  * @param color The color of the triangle strip.
  * @param points The vararg points making up the triangle strip.
  */
-fun Canvas.triangleStrip3(color: Color = Color.BLACK, vararg points: Triple<Int, Int, Int>) {
+fun Canvas.triangleStrip3(color: Color = Color.BLACK, vararg points: Triple<Float, Float, Float>) {
 	triangleStrip3(color, points.toList())
 }
 
@@ -3379,9 +3400,9 @@ fun Canvas.triangleStrip3(color: Color = Color.BLACK, vararg points: Triple<Int,
  * @param color The color of the prism wires.
  */
 fun Canvas.rectPrism(
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	width: Float,
 	height: Float,
 	length: Float,
@@ -3408,9 +3429,9 @@ fun Canvas.rectPrism(
  * @param color The color of the rectangle.
  */
 fun Canvas.fillRectPrism(
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	width: Float,
 	height: Float,
 	length: Float,
@@ -3435,9 +3456,9 @@ fun Canvas.fillRectPrism(
  * @param color The color of the sphere wires.
  */
 fun Canvas.sphere(
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	radius: Float,
 	color: Color = Color.BLACK
 ) {
@@ -3464,9 +3485,9 @@ fun Canvas.sphere(
  * @param color The color of the sphere wires.
  */
 fun Canvas.sphere(
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	radius: Float,
 	rings: Int = 8,
 	slices: Int = 8,
@@ -3491,9 +3512,9 @@ fun Canvas.sphere(
  * @param color The color of the sphere.
  */
 fun Canvas.fillSphere(
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	radius: Float,
 	color: Color
 ) {
@@ -3518,9 +3539,9 @@ fun Canvas.fillSphere(
  * @param color The color of the sphere.
  */
 fun Canvas.fillSphere(
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	radius: Float,
 	rings: Int = 8,
 	slices: Int = 8,
@@ -3547,9 +3568,9 @@ fun Canvas.fillSphere(
  * @param color The color of the cylinder wires.
  */
 fun Canvas.cylinder(
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	radiusTop: Float,
 	radiusBottom: Float = radiusTop,
 	height: Float,
@@ -3576,9 +3597,9 @@ fun Canvas.cylinder(
  * @param color The color of the cylinder wires.
  */
 fun Canvas.cylinder(
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	radius: Float,
 	height: Float,
 	color: Color = Color.BLACK
@@ -3599,9 +3620,9 @@ fun Canvas.cylinder(
  * @param color The color of the cylinder wires.
  */
 fun Canvas.cylinder(
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	radiusTop: Float,
 	radiusBottom: Float = radiusTop,
 	height: Float,
@@ -3634,12 +3655,12 @@ fun Canvas.cylinder(
  * @param color The color of the cylinder.
  */
 fun Canvas.cylinder(
-	x1: Int,
-	y1: Int,
-	z1: Int,
-	x2: Int,
-	y2: Int,
-	z2: Int,
+	x1: Float,
+	y1: Float,
+	z1: Float,
+	x2: Float,
+	y2: Float,
+	z2: Float,
 	radiusTop: Float,
 	radiusBottom: Float = radiusTop,
 	sides: Int = 8,
@@ -3667,9 +3688,9 @@ fun Canvas.cylinder(
  * @param color The color of the cylinder.
  */
 fun Canvas.fillCylinder(
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	radiusTop: Float,
 	radiusBottom: Float = radiusTop,
 	height: Float,
@@ -3696,9 +3717,9 @@ fun Canvas.fillCylinder(
  * @param color The color of the cylinder.
  */
 fun Canvas.fillCylinder(
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	radius: Float,
 	height: Float,
 	color: Color = Color.BLACK
@@ -3719,9 +3740,9 @@ fun Canvas.fillCylinder(
  * @param color The color of the cylinder.
  */
 fun Canvas.fillCylinder(
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	radiusTop: Float,
 	radiusBottom: Float = radiusTop,
 	height: Float,
@@ -3754,12 +3775,12 @@ fun Canvas.fillCylinder(
  * @param color The color of the cylinder.
  */
 fun Canvas.fillCylinder(
-	x1: Int,
-	y1: Int,
-	z1: Int,
-	x2: Int,
-	y2: Int,
-	z2: Int,
+	x1: Float,
+	y1: Float,
+	z1: Float,
+	x2: Float,
+	y2: Float,
+	z2: Float,
 	radiusTop: Float,
 	radiusBottom: Float = radiusTop,
 	sides: Int = 8,
@@ -3792,12 +3813,12 @@ fun Canvas.fillCylinder(
  * @param color The color of the capsule wires.
  */
 fun Canvas.capsule(
-	x1: Int,
-	y1: Int,
-	z1: Int,
-	x2: Int,
-	y2: Int,
-	z2: Int,
+	x1: Float,
+	y1: Float,
+	z1: Float,
+	x2: Float,
+	y2: Float,
+	z2: Float,
 	radius: Float,
 	slices: Int = 8,
 	rings: Int = 8,
@@ -3830,12 +3851,12 @@ fun Canvas.capsule(
  * @param color The color of the capsule.
  */
 fun Canvas.fillCapsule(
-	x1: Int,
-	y1: Int,
-	z1: Int,
-	x2: Int,
-	y2: Int,
-	z2: Int,
+	x1: Float,
+	y1: Float,
+	z1: Float,
+	x2: Float,
+	y2: Float,
+	z2: Float,
 	radius: Float,
 	slices: Int = 8,
 	rings: Int = 8,
@@ -3862,9 +3883,9 @@ fun Canvas.fillCapsule(
  * @param color The color of the rectangle.
  */
 fun Canvas.rect3(
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	width: Float,
 	height: Float,
 	color: Color = Color.BLACK
@@ -3888,9 +3909,9 @@ fun Canvas.rect3(
  * @param color The color of the ray.
  */
 fun Canvas.ray(
-	px: Int,
-	py: Int,
-	pz: Int,
+	px: Float,
+	py: Float,
+	pz: Float,
 	dx: Float,
 	dy: Float,
 	dz: Float,
@@ -3899,9 +3920,9 @@ fun Canvas.ray(
 	ensureDrawing()
 	DrawRay(
 		cValue<Ray> {
-			position.x = px.toFloat()
-			position.y = py.toFloat()
-			position.z = pz.toFloat()
+			position.x = px
+			position.y = py
+			position.z = pz
 			direction.x = dx
 			direction.y = dy
 			direction.z = dz
@@ -3933,9 +3954,9 @@ fun Canvas.grid(slices: Int = 10, spacing: Float = 1F) {
 fun Canvas.billboard(
 	camera: Camera3D,
 	texture: Texture2D,
-	x: Int,
-	y: Int,
-	z: Int,
+	x: Float,
+	y: Float,
+	z: Float,
 	scale: Float = 1F,
 	tint: Color = Color.WHITE
 ) {

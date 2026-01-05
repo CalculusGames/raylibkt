@@ -6,6 +6,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.allocArray
 import kotlinx.cinterop.cValue
 import kotlinx.cinterop.memScoped
+import kray.rectangle
 import kray.toVector2
 import raylib.internal.*
 
@@ -142,10 +143,41 @@ fun Canvas.fillCircleGradient(cx: Int, cy: Int, radius: Float, inner: Color, out
  * @param segments The number of segments to use for drawing the arc (more segments = smoother arc, typically >= 6)
  * @param color The color of the arc
  */
-fun Canvas.arc(cx: Int, cy: Int, radius: Float, startAngle: Float, endAngle: Float, segments: Int = 6, color: Color = Color.BLACK) {
+fun Canvas.arc(cx: Float, cy: Float, radius: Float, startAngle: Float, endAngle: Float, segments: Int = 6, color: Color = Color.BLACK) {
 	ensureDrawing()
 
 	DrawCircleSectorLines(
+		(cx to cy).toVector2(), radius, startAngle, endAngle, segments, color.raw()
+	)
+}
+
+/**
+ * Draws an arc outline on the canvas.
+ * @param cx The X coordinate of the arc center
+ * @param cy The Y coordinate of the arc center
+ * @param radius The radius of the arc
+ * @param startAngle The starting angle of the arc in degrees
+ * @param endAngle The ending angle of the arc in degrees
+ * @param segments The number of segments to use for drawing the arc (more segments = smoother arc, typically >= 6)
+ * @param color The color of the arc
+ */
+fun Canvas.arc(cx: Int, cy: Int, radius: Float, startAngle: Float, endAngle: Float, segments: Int = 6, color: Color = Color.BLACK) {
+	arc(cx.toFloat(), cy.toFloat(), radius, startAngle, endAngle, segments, color)
+}
+
+/**
+ * Draws an arc on the canvas as a filled sector.
+ * @param cx The X coordinate of the arc center
+ * @param cy The Y coordinate of the arc center
+ * @param radius The radius of the arc
+ * @param startAngle The starting angle of the arc in degrees
+ * @param endAngle The ending angle of the arc in degrees
+ * @param segments The number of segments to use for drawing the arc (more segments = smoother arc, typically >= 6)
+ * @param color The color of the arc
+ */
+fun Canvas.fillArc(cx: Float, cy: Float, radius: Float, startAngle: Float, endAngle: Float, segments: Int = 6, color: Color = Color.BLACK) {
+	ensureDrawing()
+	DrawCircleSector(
 		(cx to cy).toVector2(), radius, startAngle, endAngle, segments, color.raw()
 	)
 }
@@ -161,10 +193,7 @@ fun Canvas.arc(cx: Int, cy: Int, radius: Float, startAngle: Float, endAngle: Flo
  * @param color The color of the arc
  */
 fun Canvas.fillArc(cx: Int, cy: Int, radius: Float, startAngle: Float, endAngle: Float, segments: Int = 6, color: Color = Color.BLACK) {
-	ensureDrawing()
-	DrawCircleSector(
-		(cx to cy).toVector2(), radius, startAngle, endAngle, segments, color.raw()
-	)
+	fillArc(cx.toFloat(), cy.toFloat(), radius, startAngle, endAngle, segments, color)
 }
 
 /**
@@ -205,8 +234,8 @@ fun Canvas.fillEllipse(cx: Int, cy: Int, hradius: Float, vradius: Float, color: 
  * @param color The color of the ring
  */
 fun Canvas.ring(
-	cx: Int,
-	cy: Int,
+	cx: Float,
+	cy: Float,
 	iradius: Float,
 	oradius: Float,
 	startAngle: Float,
@@ -216,6 +245,46 @@ fun Canvas.ring(
 ) {
 	ensureDrawing()
 	DrawRingLines(
+		(cx to cy).toVector2(), iradius, oradius, startAngle, endAngle, segments, color.raw()
+	)
+}
+
+fun Canvas.ring(
+	cx: Int,
+	cy: Int,
+	iradius: Float,
+	oradius: Float,
+	startAngle: Float,
+	endAngle: Float,
+	segments: Int = 6,
+	color: Color = Color.BLACK
+) {
+	ring(cx.toFloat(), cy.toFloat(), iradius, oradius, startAngle, endAngle, segments, color)
+}
+
+/**
+ * Draws a filled ring on the canvas, in between two radii.
+ * @param cx The X coordinate of the ring center
+ * @param cy The Y coordinate of the ring center
+ * @param iradius The inner radius of the ring
+ * @param oradius The outer radius of the ring
+ * @param startAngle The starting angle of the ring in degrees
+ * @param endAngle The ending angle of the ring in degrees
+ * @param segments The number of segments to use for drawing the ring (more segments = smoother ring, typically >= 6)
+ * @param color The color of the ring
+ */
+fun Canvas.fillRing(
+	cx: Float,
+	cy: Float,
+	iradius: Float,
+	oradius: Float,
+	startAngle: Float,
+	endAngle: Float,
+	segments: Int = 6,
+	color: Color = Color.BLACK
+) {
+	ensureDrawing()
+	DrawRing(
 		(cx to cy).toVector2(), iradius, oradius, startAngle, endAngle, segments, color.raw()
 	)
 }
@@ -241,10 +310,7 @@ fun Canvas.fillRing(
 	segments: Int = 6,
 	color: Color = Color.BLACK
 ) {
-	ensureDrawing()
-	DrawRing(
-		(cx to cy).toVector2(), iradius, oradius, startAngle, endAngle, segments, color.raw()
-	)
+	fillRing(cx.toFloat(), cy.toFloat(), iradius, oradius, startAngle, endAngle, segments, color)
 }
 
 /**
@@ -269,18 +335,26 @@ fun Canvas.rect(x: Int, y: Int, width: Int, height: Int, color: Color = Color.BL
  * @param lineThick The thickness of the rectangle lines
  * @param color The color of the rectangle
  */
-fun Canvas.rect(x: Int, y: Int, width: Int, height: Int, lineThick: Int, color: Color = Color.BLACK) {
+fun Canvas.rect(x: Float, y: Float, width: Float, height: Float, lineThick: Float, color: Color = Color.BLACK) {
 	ensureDrawing()
 	DrawRectangleLinesEx(
-		cValue {
-			this.x = x.toFloat()
-			this.y = y.toFloat()
-			this.width = width.toFloat()
-			this.height = height.toFloat()
-		},
-		lineThick.toFloat(),
+		rectangle(x, y, width, height),
+		lineThick,
 		color.raw()
 	)
+}
+
+/**
+ * Draws a rectangle outline on the canvas with specified line thickness.
+ * @param x The X coordinate of the rectangle top-left corner
+ * @param y The Y coordinate of the rectangle top-left corner
+ * @param width The width of the rectangle
+ * @param height The height of the rectangle
+ * @param lineThick The thickness of the rectangle lines
+ * @param color The color of the rectangle
+ */
+fun Canvas.rect(x: Int, y: Int, width: Int, height: Int, lineThick: Float, color: Color = Color.BLACK) {
+	rect(x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat(), lineThick, color)
 }
 
 /**
@@ -305,19 +379,27 @@ fun Canvas.fillRect(x: Int, y: Int, width: Int, height: Int, color: Color = Colo
  * @param rotation The rotation of the rectangle in degrees
  * @param color The color of the rectangle
  */
-fun Canvas.fillRect(x: Int, y: Int, width: Int, height: Int, rotation: Float, color: Color = Color.BLACK) {
+fun Canvas.fillRect(x: Float, y: Float, width: Float, height: Float, rotation: Float, color: Color = Color.BLACK) {
 	ensureDrawing()
 	DrawRectanglePro(
-		cValue {
-			this.x = x.toFloat()
-			this.y = y.toFloat()
-			this.width = width.toFloat()
-			this.height = height.toFloat()
-		},
+		rectangle(x, y, width, height),
 		((width / 2F) to (height / 2F)).toVector2(),
 		rotation,
 		color.raw()
 	)
+}
+
+/**
+ * Draws a rotated filled rectangle on the canvas.
+ * @param x The X coordinate of the rectangle top-left corner
+ * @param y The Y coordinate of the rectangle top-left corner
+ * @param width The width of the rectangle
+ * @param height The height of the rectangle
+ * @param rotation The rotation of the rectangle in degrees
+ * @param color The color of the rectangle
+ */
+fun Canvas.fillRect(x: Int, y: Int, width: Int, height: Int, rotation: Float, color: Color = Color.BLACK) {
+	fillRect(x.toFloat(), y.toFloat(), width.toFloat(), height.toFloat(), rotation, color)
 }
 
 /**
@@ -359,6 +441,37 @@ fun Canvas.fillRectGradient(
  * @param bottomRight The color of the bottom-right corner
  */
 fun Canvas.fillRectGradient(
+	x: Float,
+	y: Float,
+	width: Float,
+	height: Float,
+	topLeft: Color,
+	bottomLeft: Color,
+	topRight: Color,
+	bottomRight: Color
+) {
+	ensureDrawing()
+	DrawRectangleGradientEx(
+		rectangle(x, y, width, height),
+		topLeft.raw(),
+		bottomLeft.raw(),
+		topRight.raw(),
+		bottomRight.raw()
+	)
+}
+
+/**
+ * Draws a filled rectangle with a four-corner gradient on the canvas.
+ * @param x The X coordinate of the rectangle top-left corner
+ * @param y The Y coordinate of the rectangle top-left corner
+ * @param width The width of the rectangle
+ * @param height The height of the rectangle
+ * @param topLeft The color of the top-left corner
+ * @param bottomLeft The color of the bottom-left corner
+ * @param topRight The color of the top-right corner
+ * @param bottomRight The color of the bottom-right corner
+ */
+fun Canvas.fillRectGradient(
 	x: Int,
 	y: Int,
 	width: Int,
@@ -368,18 +481,15 @@ fun Canvas.fillRectGradient(
 	topRight: Color,
 	bottomRight: Color
 ) {
-	ensureDrawing()
-	DrawRectangleGradientEx(
-		cValue {
-			this.x = x.toFloat()
-			this.y = y.toFloat()
-			this.width = width.toFloat()
-			this.height = height.toFloat()
-		},
-		topLeft.raw(),
-		bottomLeft.raw(),
-		topRight.raw(),
-		bottomRight.raw()
+	fillRectGradient(
+		x.toFloat(),
+		y.toFloat(),
+		width.toFloat(),
+		height.toFloat(),
+		topLeft,
+		bottomLeft,
+		topRight,
+		bottomRight
 	)
 }
 
@@ -394,22 +504,17 @@ fun Canvas.fillRectGradient(
  * @param color The color of the rectangle
  */
 fun Canvas.roundRect(
-	x: Int,
-	y: Int,
-	width: Int,
-	height: Int,
+	x: Float,
+	y: Float,
+	width: Float,
+	height: Float,
 	roundness: Float,
 	segments: Int = 0,
 	color: Color = Color.BLACK
 ) {
 	ensureDrawing()
 	DrawRectangleRoundedLines(
-		cValue {
-			this.x = x.toFloat()
-			this.y = y.toFloat()
-			this.width = width.toFloat()
-			this.height = height.toFloat()
-		},
+		rectangle(x, y, width, height),
 		roundness, segments, color.raw()
 	)
 }
@@ -426,24 +531,45 @@ fun Canvas.roundRect(
  * @param color The color of the rectangle
  */
 fun Canvas.roundRect(
-	x: Int,
-	y: Int,
-	width: Int,
-	height: Int,
+	x: Float,
+	y: Float,
+	width: Float,
+	height: Float,
 	roundness: Float,
-	lineThick: Int,
+	lineThick: Float,
 	segments: Int = 0,
 	color: Color = Color.BLACK
 ) {
 	ensureDrawing()
 	DrawRectangleRoundedLinesEx(
-		cValue {
-			this.x = x.toFloat()
-			this.y = y.toFloat()
-			this.width = width.toFloat()
-			this.height = height.toFloat()
-		},
-		roundness, segments, lineThick.toFloat(), color.raw()
+		rectangle(x, y, width, height),
+		roundness, segments, lineThick, color.raw()
+	)
+}
+
+/**
+ * Draws a filled rounded rectangle on the canvas.
+ * @param x The X coordinate of the rectangle top-left corner
+ * @param y The Y coordinate of the rectangle top-left corner
+ * @param width The width of the rectangle
+ * @param height The height of the rectangle
+ * @param roundness The roundness of the rectangle corners as a percentage (0.0 - 1.0)
+ * @param segments The number of segments to use for drawing the rounded
+ * @param color The color of the rectangle
+ */
+fun Canvas.fillRoundRect(
+	x: Float,
+	y: Float,
+	width: Float,
+	height: Float,
+	roundness: Float,
+	segments: Int = 0,
+	color: Color = Color.BLACK
+) {
+	ensureDrawing()
+	DrawRectangleRounded(
+		rectangle(x, y, width, height),
+		roundness, segments, color.raw()
 	)
 }
 
@@ -466,15 +592,14 @@ fun Canvas.fillRoundRect(
 	segments: Int = 0,
 	color: Color = Color.BLACK
 ) {
-	ensureDrawing()
-	DrawRectangleRounded(
-		cValue {
-			this.x = x.toFloat()
-			this.y = y.toFloat()
-			this.width = width.toFloat()
-			this.height = height.toFloat()
-		},
-		roundness, segments, color.raw()
+	fillRoundRect(
+		x.toFloat(),
+		y.toFloat(),
+		width.toFloat(),
+		height.toFloat(),
+		roundness,
+		segments,
+		color
 	)
 }
 
@@ -602,8 +727,8 @@ fun Canvas.triangleStrip(color: Color = Color.BLACK, vararg points: Pair<Int, In
  * @param color The color of the polygon
  */
 fun Canvas.polygon(
-	cx: Int,
-	cy: Int,
+	cx: Float,
+	cy: Float,
 	sides: Int,
 	radius: Float,
 	rotation: Float = 0f,
@@ -623,12 +748,32 @@ fun Canvas.polygon(
  * @param sides The number of sides of the polygon (minimum 3)
  * @param radius The radius of the polygon
  * @param rotation The rotation of the polygon in degrees
- * @param lineThick The thickness of the polygon lines
  * @param color The color of the polygon
  */
 fun Canvas.polygon(
 	cx: Int,
 	cy: Int,
+	sides: Int,
+	radius: Float,
+	rotation: Float = 0f,
+	color: Color = Color.BLACK
+) {
+	polygon(cx.toFloat(), cy.toFloat(), sides, radius, rotation, color)
+}
+
+/**
+ * Draws a polygon outline on the canvas.
+ * @param cx The X coordinate of the polygon center
+ * @param cy The Y coordinate of the polygon center
+ * @param sides The number of sides of the polygon (minimum 3)
+ * @param radius The radius of the polygon
+ * @param rotation The rotation of the polygon in degrees
+ * @param lineThick The thickness of the polygon lines
+ * @param color The color of the polygon
+ */
+fun Canvas.polygon(
+	cx: Float,
+	cy: Float,
 	sides: Int,
 	radius: Float,
 	rotation: Float = 0f,
@@ -652,8 +797,8 @@ fun Canvas.polygon(
  * @param color The color of the polygon
  */
 fun Canvas.fillPolygon(
-	cx: Int,
-	cy: Int,
+	cx: Float,
+	cy: Float,
 	sides: Int,
 	radius: Float,
 	rotation: Float = 0f,
@@ -664,6 +809,26 @@ fun Canvas.fillPolygon(
 	DrawPoly(
 		(cx to cy).toVector2(), sides, radius, rotation, color.raw()
 	)
+}
+
+/**
+ * Draws a filled polygon on the canvas.
+ * @param cx The X coordinate of the polygon center
+ * @param cy The Y coordinate of the polygon center
+ * @param sides The number of sides of the polygon (minimum 3)
+ * @param radius The radius of the polygon
+ * @param rotation The rotation of the polygon in degrees
+ * @param color The color of the polygon
+ */
+fun Canvas.fillPolygon(
+	cx: Int,
+	cy: Int,
+	sides: Int,
+	radius: Float,
+	rotation: Float = 0f,
+	color: Color = Color.BLACK
+) {
+	fillPolygon(cx.toFloat(), cy.toFloat(), sides, radius, rotation, color)
 }
 
 /**

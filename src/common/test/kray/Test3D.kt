@@ -61,7 +61,7 @@ class Test3D {
 		if (Window.isHeadless) return
 		assertFalse { Window.isHeadless }
 
-		Window.open(800, 600, "Test Mesh")
+		Window.open(800, 600, "Test Model")
 
 		val camera = Camera3D(
 			20f to 30f to 20f,

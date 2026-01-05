@@ -95,8 +95,8 @@ class Font(internal val raw: CValue<raylib.internal.Font>) {
  * @param rotation The rotation angle in degrees. Default is 0.
  */
 fun Canvas.drawText(
-	x: Int,
-	y: Int,
+	x: Float,
+	y: Float,
 	text: String,
 	color: Color = Color.WHITE,
 	fontSize: Int = font.baseSize,

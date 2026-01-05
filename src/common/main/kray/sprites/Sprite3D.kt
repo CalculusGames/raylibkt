@@ -9,9 +9,9 @@ import raylib.Model
  */
 class Sprite3D(internal var raw: Model) : Sprite<Model>, Positionable3D, Sizeable3D {
 
-	override var x: Int = 0
-	override var y: Int = 0
-	override var z: Int = 0
+	override var x: Float = 0F
+	override var y: Float = 0F
+	override var z: Float = 0F
 	override val width: Int
 		get() = raw.boundingBox.width.toInt()
 	override val height: Int
