@@ -3,6 +3,7 @@
 package kray
 
 import kotlinx.cinterop.*
+import platform.posix.snprintf
 import raylib.internal.Vector2
 import raylib.internal.Vector3
 
@@ -185,3 +186,44 @@ fun rectangle(x: Float, y: Float, width: Float, height: Float): CValue<raylib.in
 		this.width = width
 		this.height = height
 	}
+
+// text
+
+/**
+ * Formats a number using the specified format, using it as the sole parameter.
+ * @param format The format to use.
+ * @return The formatted string
+ */
+fun Int.formatAs(format: String): String = memScoped {
+	val size = this@formatAs.toString().length + 1
+	val buf = allocArray<ByteVar>(size + 1)
+	snprintf(buf, size.toULong(), format, this@formatAs)
+
+	return buf.toKString()
+}
+
+/**
+ * Formats a number using the specified format, using it as the sole parameter.
+ * @param format The format to use.
+ * @return The formatted string
+ */
+fun Float.formatAs(format: String): String = memScoped {
+	val size = this@formatAs.toString().length + 1
+	val buf = allocArray<ByteVar>(size + 1)
+	snprintf(buf, size.toULong(), format, this@formatAs)
+
+	return buf.toKString()
+}
+
+/**
+ * Formats a number using the specified format, using it as the sole parameter.
+ * @param format The format to use.
+ * @return The formatted string
+ */
+fun Double.formatAs(format: String): String = memScoped {
+	val size = this@formatAs.toString().length + 1
+	val buf = allocArray<ByteVar>(size + 1)
+	snprintf(buf, size.toULong(), format, this@formatAs)
+
+	return buf.toKString()
+}

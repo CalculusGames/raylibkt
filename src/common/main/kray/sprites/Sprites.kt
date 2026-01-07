@@ -4,6 +4,7 @@ import kray.Kray
 import raylib.Canvas
 import raylib.drawImage
 import raylib.drawModel
+import raylib.drawTexture
 import raylib.ensureDrawing
 
 // Canvas
@@ -16,7 +17,7 @@ import raylib.ensureDrawing
  */
 fun Canvas.drawSprite(sprite: Sprite2D, x: Float = sprite.x, y: Float = sprite.y) {
 	ensureDrawing()
-	drawImage(sprite.raw, x.toInt(), y.toInt())
+	drawTexture(sprite.raw, x.toInt(), y.toInt())
 }
 
 /**
@@ -48,10 +49,13 @@ val Kray.drawnSprites: Set<Sprite<*>>
  * @param x The x-coordinate to add the sprite at. Defaults to the sprite's current x position.
  * @param y The y-coordinate to add the sprite at. Defaults to the sprite's current y position.
  */
-fun Kray.addSprite(sprite: Sprite2D, x: Float = sprite.x, y: Float = sprite.y) {
-	sprite.isDrawn = true
+fun Kray.addSprite(sprite: Sprite<*>, x: Float = sprite.x, y: Float = sprite.y) {
 	registeredSprites.add(sprite)
-	canvas.drawSprite(sprite, x, y)
+
+	if (sprite is Sprite2D)
+		sprite.isDrawn = true
+	if (sprite is Sprite3D)
+		sprite.isDrawn = true
 }
 
 /**

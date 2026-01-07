@@ -3,11 +3,13 @@ package kray.sprites
 import kray.Positionable2D
 import kray.Sizeable2D
 import raylib.Image
+import raylib.Texture2D
+import raylib.load
 
 /**
  * Represents a sprite in the Kray game engine.
  */
-class Sprite2D(internal var raw: Image) : Sprite<Image>, Positionable2D, Sizeable2D {
+class Sprite2D(internal var raw: Texture2D) : Sprite<Texture2D>, Positionable2D, Sizeable2D {
 
 	override var x: Float = 0F
 	override var y: Float = 0F
@@ -30,7 +32,7 @@ class Sprite2D(internal var raw: Image) : Sprite<Image>, Positionable2D, Sizeabl
 		internal set
 
 	/**
-	 * An immutable list of all costumes (images) associated with this sprite.
+	 * An immutable list of all costumes (textures) associated with this sprite.
 	 */
 	override val costumes = mutableListOf(raw)
 
@@ -38,7 +40,8 @@ class Sprite2D(internal var raw: Image) : Sprite<Image>, Positionable2D, Sizeabl
 		if (newWidth <= 0 || newHeight <= 0)
 			throw IllegalArgumentException("Width and height must be positive integers.")
 
-		raw = raw.resize(newWidth, newHeight)
+		val image = Image.load(raw)
+		raw = Texture2D.load(image.resize(newWidth, newHeight))
 		return this
 	}
 
@@ -50,10 +53,10 @@ class Sprite2D(internal var raw: Image) : Sprite<Image>, Positionable2D, Sizeabl
 		currentCostumeIndex = index
 	}
 
-	override fun switchTo(costume: Image) {
+	override fun switchTo(costume: Texture2D) {
 		val index = costumes.indexOf(costume)
 		if (index == -1) {
-			throw IllegalArgumentException("The provided image is not a costume of this sprite.")
+			throw IllegalArgumentException("The provided texture is not a costume of this sprite.")
 		}
 
 		raw = costume
@@ -80,7 +83,7 @@ class Sprite2D(internal var raw: Image) : Sprite<Image>, Positionable2D, Sizeabl
 		currentCostumeIndex = prevIndex
 	}
 
-	override fun setCurrentCostume(costume: Image) {
+	override fun setCurrentCostume(costume: Texture2D) {
 		val index = costumes.indexOf(costume)
 		if (index == -1) {
 			addCostume(costume)
@@ -94,12 +97,31 @@ class Sprite2D(internal var raw: Image) : Sprite<Image>, Positionable2D, Sizeabl
 
 	companion object {
 		/**
-		 * Creates a [Sprite2D] from the given [resolver] function that provides an [Image].
-		 * @param resolver The function that provides the [Image].
+		 * Creates a [Sprite2D] from the given [resolver] function that provides an [Texture2D].
+		 * @param resolver The function that provides the [Texture2D].
 		 * @return A new [Sprite2D] instance.
 		 */
-		fun from(resolver: () -> Image): Sprite2D {
+		fun from(resolver: () -> Texture2D): Sprite2D {
 			return Sprite2D(resolver())
+		}
+
+		/**
+		 * Creates a [Sprite2D] from the given [texture].
+		 * @param texture The [Texture2D] to create the sprite from.
+		 * @return A new [Sprite2D] instance.
+		 */
+		fun from(texture: Texture2D): Sprite2D {
+			return Sprite2D(texture)
+		}
+
+		/**
+		 * Creates a [Sprite2D] from the given [image].
+		 * @param image The [Image] to create the sprite from.
+		 * @return A new [Sprite2D] instance.
+		 */
+		fun from(image: Image): Sprite2D {
+			val texture = Texture2D.load(image)
+			return Sprite2D(texture)
 		}
 	}
 }
