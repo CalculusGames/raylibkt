@@ -3,7 +3,10 @@
 package raylib
 
 import kotlinx.cinterop.*
+import kray.Positionable2D
+import kray.sprites.Sprite2D
 import kray.to
+import kray.toVector2
 import kray.toVector3
 import platform.posix.getenv
 import platform.posix.usleep
@@ -549,80 +552,307 @@ object Canvas {
 
 /**
  * Represents a 2D Camera in raylib.
- * @property delta Displacement from the target position
- * @property target The camera's target and the origin of the rotation and zoom
- * @property rotation Camera rotation in degrees
- * @property zoom Camera zoom scale
  */
-class Camera2D(
-	var delta: Pair<Float, Float> = 0F to 0F,
-	var target: Pair<Float, Float> = 0F to 0F,
-	var rotation: Float = 0F,
-	var zoom: Float = 1.0F
-) {
+class Camera2D(internal val raw: raylib.internal.Camera2D) {
 
 	/**
 	 * Creates a new 2D Camera.
-	 * @param dx The X coordinate of the displacement from the target
-	 * @param dy The Y coordinate of the displacement from the target
+	 * @param offset The offset of the camera
+	 * @param target The coordinates of the camera's target
+	 * @param rotation Camera rotation in degrees
+	 * @param zoom Camera zoom scale
+	 */
+	constructor(
+		offset: Pair<Float, Float> = 0F to 0F,
+		target: Pair<Float, Float> = 0F to 0F,
+		rotation: Float = 0F, zoom: Float = 1F
+	) : this(nativeHeap.alloc {
+		this.offset.x = offset.first
+		this.offset.y = offset.second
+		this.target.x = target.first
+		this.target.y = target.second
+		this.rotation = rotation
+		this.zoom = zoom
+	})
+
+	/**
+	 * Creates a new 2D Camera.
+	 * @param ox The X coordinate of the offset
+	 * @param oy The Y coordinate of the offset
 	 * @param targetX The X coordinate of the camera's target
 	 * @param targetY The Y coordinate of the camera's target
 	 * @param rotation Camera rotation in radians
 	 * @param zoom Camera zoom scale
 	 */
 	constructor(
-		dx: Float = 0F, dy: Float = 0F,
+		ox: Float = 0F, oy: Float = 0F,
 		targetX: Float = 0F, targetY: Float = 0F,
 		rotation: Float = 0F, zoom: Float = 1F
-	) : this(
-		dx to dy,
-		targetX to targetY,
-		rotation, zoom
-	)
+	) : this(nativeHeap.alloc {
+		offset.x = ox
+		offset.y = oy
+		target.x = targetX
+		target.y = targetY
+		this.rotation = rotation
+		this.zoom = zoom
+	})
 
 	/**
-	 * The X coordinate of the displacement from the target.
+	 * Screen position where the target appears.
 	 */
-	var dx: Float
-		get() = delta.first
+	var offset: Pair<Float, Float>
+		get() = raw.offset.x to raw.offset.y
 		set(value) {
-			delta = value to delta.second
+			raw.offset.x = value.first
+			raw.offset.y = value.second
 		}
 
 	/**
-	 * The Y coordinate of the displacement from the target.
+	 * The X coordinate of the position for the target.
 	 */
-	var dy: Float
-		get() = delta.second
+	var offsetX: Float
+		get() = raw.offset.x
 		set(value) {
-			delta = delta.first to value
+			raw.offset.x = value
+		}
+
+	/**
+	 * The Y coordinate of the position for the target.
+	 */
+	var offsetY: Float
+		get() = raw.offset.y
+		set(value) {
+			raw.offset.y = value
+		}
+
+	/**
+	 * The camera's target and the origin of the rotation and zoom
+	 */
+	var target: Pair<Float, Float>
+		get() = raw.target.x to raw.target.y
+		set(value) {
+			raw.target.x = value.first
+			raw.target.y = value.second
 		}
 
 	/**
 	 * The X coordinate of the camera's target.
 	 */
 	var targetX: Float
-		get() = target.first
+		get() = raw.target.x
 		set(value) {
-			target = value to target.second
+			raw.target.x = value
 		}
 
 	/**
 	 * The Y coordinate of the camera's target.
 	 */
 	var targetY: Float
-		get() = target.second
+		get() = raw.target.y
 		set(value) {
-			target = target.first to value
+			raw.target.y = value
 		}
 
-	internal fun raw(): CValue<raylib.internal.Camera2D> = cValue {
-		offset.x = dx
-		offset.y = dy
-		target.x = targetX
-		target.y = targetY
-		this.rotation = rotation
-		this.zoom = zoom
+	/**
+	 * Camera rotation, in degrees.
+	 */
+	var rotation: Float
+		get() = raw.rotation
+		set(value) {
+			raw.rotation = value
+		}
+
+	/**
+	 * Camera zoom scale
+	 */
+	var zoom: Float
+		get() = raw.zoom
+		set(value) {
+			raw.zoom = value
+		}
+
+	/**
+	 * Updates the camera to follow the sprite's center position directly.
+	 * @param sprite The sprite to follow
+	 */
+	fun followCenter(sprite: Sprite2D) {
+		offset = Window.screenWidth / 2F to Window.screenHeight / 2F
+		target = sprite.x + (sprite.width / 2F) to sprite.y + (sprite.height / 2F)
+	}
+
+	/**
+	 * Updates the camera so that it only moves when the sprite approaches screen edges.
+	 * Creates a "dead zone" in the center where camera doesn't move. Higher bbox values
+	 * means the camera moves more often.
+	 * @param sprite The sprite to follow
+	 * @param bboxX The proportion of the dead screen on the X plane. Default is 0.2.
+	 * @param bboxY The proportion of the dead screen on the Y plane. Default is 0.2.
+	 */
+	fun followPlayerBoundsPush(sprite: Sprite2D, bboxX: Float = 0.2F, bboxY: Float = 0.2F) {
+		val width = Window.screenWidth.toFloat()
+		val height = Window.screenHeight.toFloat()
+
+		val min = screenToWorld((1 - bboxX) * 0.5F * width, (1 - bboxY) * 0.5F * height)
+		val max = screenToWorld((1 + bboxX) * 0.5F * width, (1 + bboxY) * 0.5F * height)
+
+		offset = (1 - bboxX) * 0.5F * width to (1 - bboxY) * 0.5F * height
+
+		if (sprite.x < min.first) targetX = sprite.x
+		if (sprite.y < min.second) targetY = sprite.y
+		if (sprite.x + sprite.width > max.first) targetX = min.first + (sprite.x - max.first)
+		if (sprite.y + sprite.height > max.second) targetY = min.second + (sprite.y - max.second)
+	}
+
+	/**
+	 * The camera's transformation matrix.
+	 */
+	val matrix: Matrix4
+		get() {
+			val raw = GetCameraMatrix2D(raw.readValue())
+			return raw.useContents { Matrix4(this) }
+		}
+
+	/**
+	 * Converts world coordinates to screen coordinates based on the camera's transformation.
+	 * @param position The screen position as a pair of floats (x, y).
+	 * @return The corresponding world position as a pair of floats (x, y).
+	 */
+	fun worldToScreen(position: Pair<Float, Float>): Pair<Float, Float> {
+		val screenPos = GetWorldToScreen2D(position.toVector2(), raw.readValue())
+		return screenPos.useContents { x to y }
+	}
+
+	/**
+	 * Converts world coordinates to screen coordinates based on the camera's transformation.
+	 * @param x The X coordinate of the world position.
+	 * @param y The Y coordinate of the world position.
+	 * @return The corresponding screen position as a pair of floats (x, y).
+	 */
+	fun worldToScreen(x: Float, y: Float): Pair<Float, Float> {
+		return worldToScreen(x to y)
+	}
+
+	/**
+	 * Converts world coordinates to screen coordinates based on the camera's transformation.
+	 * @param x The X coordinate of the world position.
+	 * @param y The Y coordinate of the world position.
+	 * @return The corresponding screen position as a pair of floats (x, y).
+	 */
+	fun worldToScreen(x: Int, y: Int): Pair<Float, Float> {
+		return worldToScreen(x.toFloat(), y.toFloat())
+	}
+
+	/**
+	 * Converts screen coordinates to world coordinates based on the camera's transformation.
+	 * @param position The screen position as a pair of floats (x, y).
+	 * @return The corresponding world position as a pair of floats (x, y).
+	 */
+	fun screenToWorld(position: Pair<Float, Float>): Pair<Float, Float> {
+		val screenPos = GetScreenToWorld2D(position.toVector2(), raw.readValue())
+		return screenPos.useContents { x to y }
+	}
+
+	/**
+	 * Converts screen coordinates to world coordinates based on the camera's transformation.
+	 * @param x The X coordinate of the screen position
+	 * @param y The Y coordinate of the screen position
+	 * @return The corresponding world position as a pair of floats (x, y).
+	 */
+	fun screenToWorld(x: Float, y: Float): Pair<Float, Float> {
+		return screenToWorld(x to y)
+	}
+
+	/**
+	 * Converts screen coordinates to world coordinates based on the camera's transformation.
+	 * @param x The X coordinate of the screen position
+	 * @param y The Y coordinate of the screen position
+	 * @return The corresponding world position as a pair of floats (x, y).
+	 */
+	fun screenToWorld(x: Int, y: Int): Pair<Float, Float> {
+		return screenToWorld(x.toFloat(), y.toFloat())
+	}
+
+	/**
+	 * The top-left corner of the camera as world coordinates.
+	 */
+	val topLeft: Pair<Float, Float>
+		get() = screenToWorld(0, 0)
+
+	/**
+	 * The top-left corner of the camera as world coordinates.
+	 */
+	val topRight: Pair<Float, Float>
+		get() = screenToWorld(Window.screenWidth, 0)
+
+	/**
+	 * The bottom-right corner of the camera as world coordinates.
+	 */
+	val bottomRight: Pair<Float, Float>
+		get() = screenToWorld(Window.screenWidth, Window.screenHeight)
+
+	/**
+	 * The bottom-left corner of the camera as world coordinates.
+	 */
+	val bottomLeft: Pair<Float, Float>
+		get() = screenToWorld(0, Window.screenHeight)
+
+	companion object {
+
+		/**
+		 * Creates a Camera2D on top of a specific target.
+		 * @param x The X coordinate of the target.
+		 * @param y The Y coordinate of the target
+		 * @return A Camera2D instance.
+		 */
+		fun on(x: Int, y: Int) = Camera2D(
+			offset = 0F to 0F,
+			target = x.toFloat() to y.toFloat(),
+			rotation = 0F,
+			zoom = 1F
+		)
+
+		/**
+		 * Creates a Camera2D on top of a specific target.
+		 * @param x The X coordinate of the target.
+		 * @param y The Y coordinate of the target
+		 * @return A Camera2D instance.
+		 */
+		fun on(x: Float, y: Float) = Camera2D(
+			offset = 0F to 0F,
+			target = x to y,
+			rotation = 0F,
+			zoom = 1F
+		)
+
+		/**
+		 * Creates a Camera2D on top of a specific target.
+		 * @param target The target to use.
+		 * @return A Camera2D instance.
+		 */
+		fun on(target: Positionable2D) = Camera2D(
+			offset = 0F to 0F,
+			target = target.x to target.y,
+			rotation = 0F,
+			zoom = 1F
+		)
+
+		/**
+		 * Creates a Camera2D that follows the sprite's center directly.
+		 * @param sprite The sprite to follow
+		 * @return A Camera2D instance
+		 */
+		fun center(sprite: Sprite2D) = Camera2D(
+			offset = Window.screenWidth / 2F to Window.screenHeight / 2F,
+			target = sprite.x + (sprite.width / 2F) to sprite.y + (sprite.height / 2F),
+			rotation = 0F,
+			zoom = 1F
+		)
+
+
+	}
+
+	override fun toString(): String {
+		return "Camera2D(offset=($offsetX, $offsetY), target=($targetX, $targetY), rotation=$rotation, zoom=$zoom)"
 	}
 
 }
@@ -631,8 +861,8 @@ class Camera2D(
  * Starts a 2D camera on the current window.
  * @param camera The camera to use
  */
-fun Canvas.start2D(camera: Camera2D) {
-	BeginMode2D(camera.raw())
+fun Canvas.start2D(camera: Camera2D) = memScoped {
+	BeginMode2D(camera.raw.readValue())
 }
 
 /**
@@ -830,8 +1060,8 @@ class Camera3D(
 			rotation = rotation.first to rotation.second to value
 		}
 
-	internal fun NativePlacement.raw(): CPointer<raylib.internal.Camera3D>
-		= alloc<raylib.internal.Camera3D> {
+	internal fun raw(scope: NativePlacement): CPointer<raylib.internal.Camera3D>
+		= scope.alloc<raylib.internal.Camera3D> {
 			position.x = x
 			position.y = y
 			position.z = z
@@ -845,26 +1075,22 @@ class Camera3D(
 			this.projection = this@Camera3D.projection.value.toInt()
 		}.ptr
 
-	internal fun raw(): CValue<raylib.internal.Camera3D> = cValue {
-		position.x = x
-		position.y = y
-		position.z = z
-		target.x = targetX
-		target.y = targetY
-		target.z = targetZ
-		up.x = rotX
-		up.y = rotY
-		up.z = rotZ
-		this.fovy = this@Camera3D.fovy
-		this.projection = this@Camera3D.projection.value.toInt()
-	}
+	/**
+	 * The camera's transformation matrix.
+	 */
+	val matrix: Matrix4
+		get() = memScoped {
+			val ptr = raw(this)
+			val raw = GetCameraMatrix(ptr.pointed.readValue())
+			return raw.useContents { Matrix4(this) }
+		}
 
 	/**
 	 * Updates the camera's current mode.
 	 * @param mode The new camera mode to set
 	 */
 	fun update(mode: CameraMode3D): Unit = memScoped {
-		val cameraPtr = raw()
+		val cameraPtr = raw(this)
 		UpdateCamera(cameraPtr, mode.value.toInt())
 
 		// read back values
@@ -895,7 +1121,7 @@ class Camera3D(
 		drotX: Float = 0F, drotY: Float = 0F, drotZ: Float = 0F,
 		zoom: Float = 1F
 	): Unit = memScoped {
-		val cameraPtr = raw()
+		val cameraPtr = raw(this)
 		UpdateCameraPro(
 			cameraPtr,
 			(dx to dy to dz).toVector3(),
@@ -925,7 +1151,7 @@ class Camera3D(
 		deltaRot: Triple<Float, Float, Float> = 0F to 0F to 0F,
 		zoom: Float = 1F
 	): Unit = memScoped {
-		val cameraPtr = raw()
+		val cameraPtr = raw(this)
 		UpdateCameraPro(
 			cameraPtr,
 			delta.toVector3(),
@@ -943,14 +1169,48 @@ class Camera3D(
 		rotY = cameraPtr.pointed.up.y
 		rotZ = cameraPtr.pointed.up.z
 	}
+
+	/**
+	 * Converts world coordinates to screen coordinates based on the camera's transformation.
+	 * @param position The world position as a triple of floats (x, y, z).
+	 * @return The corresponding screen position as a pair of floats (x, y).
+	 */
+	fun worldToScreen(position: Triple<Float, Float, Float>): Pair<Float, Float> = memScoped {
+		val ptr = raw(this)
+		val screenPos = GetWorldToScreen(position.toVector3(), ptr.pointed.readValue())
+		return screenPos.useContents { x to y }
+	}
+
+	/**
+	 * Converts world coordinates to screen coordinates based on the camera's transformation.
+	 * @param x The X coordinate of the world position.
+	 * @param y The Y coordinate of the world position.
+	 * @param z The Z coordinate of the world position.
+	 * @return The corresponding screen position as a pair of floats (x, y).
+	 */
+	fun worldToScreen(x: Float, y: Float, z: Float): Pair<Float, Float> {
+		return worldToScreen(x to y to z)
+	}
+
+	/**
+	 * Converts world coordinates to screen coordinates based on the camera's transformation.
+	 * @param x The X coordinate of the world position.
+	 * @param y The Y coordinate of the world position.
+	 * @param z The Z coordinate of the world position.
+	 * @return The corresponding screen position as a pair of floats (x, y).
+	 */
+	fun worldToScreen(x: Int, y: Int, z: Int): Pair<Float, Float> {
+		return worldToScreen(x.toFloat(), y.toFloat(), z.toFloat())
+	}
 }
 
 /**
  * Starts a 3D camera on the current window.
  * @param camera The camera to use
  */
-fun Canvas.start3D(camera: Camera3D) {
-	BeginMode3D(camera.raw())
+fun Canvas.start3D(camera: Camera3D) = memScoped {
+	val ptr = camera.raw(this)
+	BeginMode3D(ptr.pointed.readValue())
 }
 
 /**

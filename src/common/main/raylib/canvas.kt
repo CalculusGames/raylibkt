@@ -28,6 +28,16 @@ fun Canvas.draw(x: Int, y: Int, color: Color = Color.BLACK) {
 }
 
 /**
+ * Draws a pixel on the canvas.
+ * @param x The X coord to draw at
+ * @param y The Y coord to draw at
+ * @param color The color of the pixel
+ */
+fun Canvas.draw(x: Float, y: Float, color: Color = Color.BLACK) {
+	draw(x.toInt(), y.toInt(), color)
+}
+
+/**
  * Draws a line on the canvas.
  * @param x1 The X coordinate of the first point
  * @param y1 The Y coordinate of the second point
@@ -38,6 +48,28 @@ fun Canvas.draw(x: Int, y: Int, color: Color = Color.BLACK) {
 fun Canvas.line(x1: Int, y1: Int, x2: Int, y2: Int, color: Color = Color.BLACK) {
 	ensureDrawing()
 	DrawLine(x1, y1, x2, y2, color.raw())
+}
+
+/**
+ * Draws a line on the canvas.
+ * @param x1 The X coordinate of the first point
+ * @param y1 The Y coordinate of the second point
+ * @param x2 The X coordinate of the first point
+ * @param y2 The Y coordinate of the second point
+ * @param color The color of the line
+ */
+fun Canvas.line(x1: Float, y1: Float, x2: Float, y2: Float, color: Color = Color.BLACK) {
+	line(x1.toInt(), y1.toInt(), x2.toInt(), y2.toInt(), color)
+}
+
+/**
+ * Draws a line on the canvas.
+ * @param pos1 The coordinates of the first point
+ * @param pos2 The coordinates of the second point
+ * @param color The color of the line
+ */
+fun Canvas.line(pos1: Pair<Float, Float>, pos2: Pair<Float, Float>, color: Color = Color.BLACK) {
+	line(pos1.first, pos1.second, pos2.first, pos2.second, color)
 }
 
 /**
@@ -52,6 +84,30 @@ fun Canvas.line(x1: Int, y1: Int, x2: Int, y2: Int, color: Color = Color.BLACK) 
 fun Canvas.line(x1: Int, y1: Int, x2: Int, y2: Int, thick: Float, color: Color = Color.BLACK) {
 	ensureDrawing()
 	DrawLineEx((x1 to y1).toVector2(), (x2 to y2).toVector2(), thick, color.raw())
+}
+
+/**
+ * Draws a line on the canvas using triangles and quads.
+ * @param x1 The X coordinate of the first point
+ * @param y1 The Y coordinate of the second point
+ * @param x2 The X coordinate of the first point
+ * @param y2 The Y coordinate of the second point
+ * @param thick The thickness of the line.
+ * @param color The color of the line
+ */
+fun Canvas.line(x1: Float, y1: Float, x2: Float, y2: Float, thick: Float, color: Color = Color.BLACK) {
+	line(x1.toInt(), y1.toInt(), x2.toInt(), y2.toInt(), thick, color)
+}
+
+/**
+ * Draws a line on the canvas using triangles and quads.
+ * @param pos1 The coordinate of the first point
+ * @param pos2 The coordinate of the second point
+ * @param thick The thickness of the line.
+ * @param color The color of the line
+ */
+fun Canvas.line(pos1: Pair<Float, Float>, pos2: Pair<Float, Float>, thick: Float, color: Color = Color.BLACK) {
+	line(pos1.first, pos1.second, pos2.first, pos2.second, thick, color)
 }
 
 /**
@@ -368,6 +424,18 @@ fun Canvas.rect(x: Int, y: Int, width: Int, height: Int, lineThick: Float, color
 fun Canvas.fillRect(x: Int, y: Int, width: Int, height: Int, color: Color = Color.BLACK) {
 	ensureDrawing()
 	DrawRectangle(x, y, width, height, color.raw())
+}
+
+/**
+ * Draws a filled rectangle on the canvas.
+ * @param x The X coordinate of the rectangle top-left corner
+ * @param y The Y coordinate of the rectangle top-left corner
+ * @param width The width of the rectangle
+ * @param height The height of the rectangle
+ * @param color The color of the rectangle
+ */
+fun Canvas.fillRect(x: Float, y: Float, width: Float, height: Float, color: Color = Color.BLACK) {
+	fillRect(x.toInt(), y.toInt(), width.toInt(), height.toInt(), color)
 }
 
 /**

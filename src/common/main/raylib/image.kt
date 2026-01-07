@@ -4137,7 +4137,10 @@ class PictureFormat private constructor(internal val value: PixelFormat, val bpp
 		 */
 		val COMPRESSED_ASTC_8X8_RGBA: PictureFormat by lazy { PictureFormat(PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA) }
 
-		private val allFormats by lazy {
+		/**
+		 * A list of all supported picture formats.
+		 */
+		val allFormats by lazy {
 			listOf(
 				UNCOMPRESSED_GRAYSCALE, UNCOMPRESSED_GRAY_ALPHA, UNCOMPRESSED_R5G6B5, UNCOMPRESSED_R8G8B8,
 				UNCOMPRESSED_R5G5B5A1, UNCOMPRESSED_R4G4B4A4, UNCOMPRESSED_R8G8B8A8, UNCOMPRESSED_R32,
@@ -5061,7 +5064,13 @@ class Texture2D(
 		 */
 		fun load(path: String): Texture2D {
 			val rawTexture = LoadTexture(path.inAppDir())
-			val texture = Texture2D(rawTexture)
+			val texture = rawTexture.useContents {
+				val format = PictureFormat.fromValue(format)
+					?: throw IllegalStateException("Unknown texture format: $format [${PictureFormat.allFormats.joinToString { it.value.toString() }}]")
+
+				Texture2D(id, width, height, mipmaps, format)
+			}
+
 			UnloadTexture(rawTexture)
 
 			return texture
@@ -5077,12 +5086,6 @@ class Texture2D(
 	}
 
 	/**
-	 * Creates a Texture2D instance from a raw raylib Texture2D C struct.
-	 * @param raw The raw CValue representing the raylib Texture2D.
-	 */
-	constructor(raw: CValue<raylib.internal.Texture2D>) : this(raw.useContents { this })
-
-	/**
 	 * Creates a Texture2D instance from a raw raylib Texture2D struct.
 	 * @param raw The raw raylib Texture2D struct.
 	 */
@@ -5092,7 +5095,7 @@ class Texture2D(
 		height = raw.height,
 		mipmaps = raw.mipmaps,
 		format = PictureFormat.fromValue(raw.format)
-			?: throw IllegalStateException("Unknown texture format: ${raw.format}")
+			?: throw IllegalStateException("Unknown texture format: ${raw.format} [${PictureFormat.allFormats.joinToString { it.value.toString() }}]")
 	)
 
 	internal fun raw(): CValue<raylib.internal.Texture2D> = cValue {
@@ -5101,6 +5104,22 @@ class Texture2D(
 		height = this@Texture2D.height
 		mipmaps = this@Texture2D.mipmaps
 		format = this@Texture2D.format.value.toInt()
+	}
+
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (other !is Texture2D) return false
+
+		if (id != other.id) return false
+		if (format != other.format) return false
+
+		return true
+	}
+
+	override fun hashCode(): Int {
+		var result = id.hashCode()
+		result = 31 * result + format.hashCode()
+		return result
 	}
 
 }
@@ -5181,7 +5200,7 @@ fun Image.Companion.load(texture: Texture2D) = Image(LoadImageFromTexture(textur
  */
 fun Texture2D.Companion.load(image: Image): Texture2D {
 	val rawTexture = LoadTextureFromImage(image.raw)
-	return Texture2D(rawTexture)
+	return rawTexture.useContents { Texture2D(this) }
 }
 
 /**

@@ -3959,10 +3959,12 @@ fun Canvas.billboard(
 	z: Float,
 	scale: Float = 1F,
 	tint: Color = Color.WHITE
-) {
+) = memScoped {
 	ensureDrawing()
+
+	val ptr = camera.raw(this)
 	DrawBillboard(
-		camera.raw(),
+		ptr.pointed.readValue(),
 		texture.raw(),
 		(x to y to z).toVector3(),
 		scale,
