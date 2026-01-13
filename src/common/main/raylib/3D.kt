@@ -8,6 +8,10 @@ import raylib.MaterialMap.Texture
 import raylib.Mesh.Companion.cubicMap
 import raylib.Mesh.Companion.heightMap
 import raylib.internal.*
+import kotlin.math.abs
+import kotlin.math.asin
+import kotlin.math.atan2
+import kotlin.math.sqrt
 
 /**
  * A 4x4 matrix.
@@ -55,10 +59,10 @@ data class Matrix4(
 	 * @return The float array representation of the matrix.
 	 */
 	fun toFloatArray(): FloatArray = floatArrayOf(
-		m0, m4, m8, m12,
-		m1, m5, m9, m13,
-		m2, m6, m10, m14,
-		m3, m7, m11, m15
+		m0, m1, m2, m3,
+		m4, m5, m6, m7,
+		m8, m9, m10, m11,
+		m12, m13, m14, m15
 	)
 	/**
 	 * Multiplies this matrix by another matrix.
@@ -70,6 +74,210 @@ data class Matrix4(
 		return raw.useContents { Matrix4(this) }
 	}
 
+	/**
+	 * @see [multiply]
+	 */
+	operator fun times(b: Matrix4): Matrix4 = multiply(b)
+
+	/**
+	 * Multiplies this matrix by a 3D vector.
+	 * @param vector3 The 3D vector as a [Triple] of floats (x, y, z).
+	 * @return The resulting 3D vector as a [Triple] of floats (x, y, z).
+	 */
+	fun multiply(vector3: Triple<Float, Float, Float>): Triple<Float, Float, Float> {
+		val x = m0 * vector3.first + m4 * vector3.second + m8 * vector3.third + m12
+		val y = m1 * vector3.first + m5 * vector3.second + m9 * vector3.third + m13
+		val z = m2 * vector3.first + m6 * vector3.second + m10 * vector3.third + m14
+
+		return Triple(x, y, z)
+	}
+
+	/**
+	 * @see [multiply]
+	 */
+	operator fun times(vector3: Triple<Float, Float, Float>): Triple<Float, Float, Float> = multiply(vector3)
+
+	/**
+	 * Multiplies this matrix by a 4D vector.
+	 * @param vector4 The 4D vector as a [Quadruple] of floats (x, y, z, w).
+	 * @return The resulting 4D vector as a [Quadruple] of floats (x, y, z, w).
+	 */
+	fun multiply(vector4: Quadruple<Float, Float, Float, Float>): Quadruple<Float, Float, Float, Float> {
+		val x = m0 * vector4.first + m4 * vector4.second + m8 * vector4.third + m12 * vector4.fourth
+		val y = m1 * vector4.first + m5 * vector4.second + m9 * vector4.third + m13 * vector4.fourth
+		val z = m2 * vector4.first + m6 * vector4.second + m10 * vector4.third + m14 * vector4.fourth
+		val w = m3 * vector4.first + m7 * vector4.second + m11 * vector4.third + m15 * vector4.fourth
+
+		return Quadruple(x, y, z, w)
+	}
+
+	operator fun times(vector4: Quadruple<Float, Float, Float, Float>): Quadruple<Float, Float, Float, Float> = multiply(vector4)
+
+	/**
+	 * Translates this matrix given coordinates.
+	 * @param x The x coordinate of the translation
+	 * @param y The y coordinate of the translation
+	 * @param z The z coordinate of the translation
+	 * @return This matrix, multiplied by the translation matrix
+	 */
+	fun translate(x: Float, y: Float, z: Float): Matrix4
+		= multiply(Companion.translate(x, y, z))
+
+	/**
+	 * Rotates this matrix given pitch, yaw, and roll.
+	 * @param pitch The pitch angle in radians.
+	 * @param yaw The yaw angle in radians.
+	 * @param roll The roll angle in radians.
+	 * @return This matrix, multiplied by the rotation matrix
+	 */
+	fun rotate(pitch: Float, yaw: Float, roll: Float): Matrix4
+		= multiply(Companion.rotate(pitch, yaw, roll))
+
+	/**
+	 * Scales this matrix given various scale values.
+	 * @param sx The scale across the X axis.
+	 * @param sy The scale across the Y axis.
+	 * @param sz The scale across the Z axis.
+	 * @return This matrix, multiplied by the transformation matrix
+	 */
+	fun scale(sx: Float, sy: Float, sz: Float): Matrix4
+		= multiply(Companion.scale(sx, sy, sz))
+
+	/**
+	 * Scales this matrix.
+	 * @param scale The scale for X, Y, and Z.
+	 * @return This matrix, multiplied by the transformation matrix
+	 */
+	fun scale(scale: Float): Matrix4 = scale(scale, scale, scale)
+
+	/**
+	 * Transposes this matrix.
+	 *
+	 * Transposing a matrix flips it over its diagonal, switching the row and column indices of the matrix.
+	 * This creates a visual effect of an object being mirrored along the diagonal axis.
+	 * @return The transposed matrix.
+	 */
+	fun transpose(): Matrix4 {
+		val raw = MatrixTranspose(this.raw())
+		return raw.useContents { Matrix4(this) }
+	}
+
+	/**
+	 * Inverts this matrix.
+	 *
+	 * Matrix inversion is a mathematical operation that reverses the effects of a transformation represented by the matrix.
+	 * When a matrix is inverted, applying the original transformation followed by its inverse results in no net change to the object or space being transformed.
+	 * @return The inverted matrix.
+	 */
+	fun inverted(): Matrix4 {
+		val raw = MatrixInvert(this.raw())
+		return raw.useContents { Matrix4(this) }
+	}
+
+	/**
+	 * The X translation component of the matrix.
+	 *
+	 * Stored in [m12].
+	 */
+	val x: Float
+		get() = m12
+
+	/**
+	 * The Y translation component of the matrix.
+	 *
+	 * Stored in [m13].
+	 */
+	val y: Float
+		get() = m13
+
+	/**
+	 * The Z translation component of the matrix.
+	 *
+	 * Stored in [m14].
+	 */
+	val z: Float
+		get() = m14
+
+	/**
+	 * The scale component of the matrix along the X axis.
+	 *
+	 * Calculated as the length of the first column vector.
+	 */
+	val scaleX: Float
+		get() = sqrt(m0 * m0 + m1 * m1 + m2 * m2)
+
+	/**
+	 * The scale component of the matrix along the Y axis.
+	 *
+	 * Calculated as the length of the second column vector.
+	 */
+	val scaleY: Float
+		get() = sqrt(m4 * m4 + m5 * m5 + m6 * m6)
+
+	/**
+	 * The scale component of the matrix along the Z axis.
+	 *
+	 * Calculated as the length of the third column vector.
+	 */
+	val scaleZ: Float
+		get() = sqrt(m8 * m8 + m9 * m9 + m10 * m10)
+
+	/**
+	 * The rotation component of the matrix as Euler angles (pitch, yaw, roll) in radians.
+	 * Raylib uses the YXZ order for rotations.
+	 *
+	 * Calculated by removing the scale from the rotation matrix and extracting the Euler angles.
+	 */
+	val rotation: Triple<Float, Float, Float>
+		get() {
+			// remove scale
+			// raylib uses YXZ order
+
+			val r00 = m0 / scaleX
+//			val r01 = m4 / scaleY (not used)
+//			val r02 = m8 / scaleZ (not used)
+
+			val r10 = m1 / scaleX
+			val r11 = m5 / scaleY
+			val r12 = m9 / scaleZ
+
+			val r20 = m2 / scaleX
+			val r21 = m6 / scaleY
+			val r22 = m10 / scaleZ
+
+			val yaw = asin(-r20)
+			val pitch: Float
+			val roll: Float
+			if (abs(r20) < 0.99999f) {
+				pitch = atan2(r21, r22)
+				roll = atan2(r10, r00)
+			} else {
+				// gimbal lock (not a unique solution)
+				pitch = 0F
+				roll = atan2(-r12, r11)
+			}
+
+			return Triple(pitch, yaw, roll)
+		}
+
+	/**
+	 * The pitch rotation component of the matrix in radians.
+	 */
+	val pitch: Float
+		get() = rotation.first
+
+	/**
+	 * The yaw rotation component of the matrix in radians.
+	 */
+	val yaw: Float
+		get() = rotation.second
+
+	/**
+	 * The roll rotation component of the matrix in radians.
+	 */
+	val roll: Float
+		get() = rotation.third
+
 	companion object {
 
 		/**
@@ -80,10 +288,10 @@ data class Matrix4(
 		fun fromFloatArray(array: FloatArray): Matrix4 {
 			require(array.size == 16) { "Array must have exactly 16 elements." }
 			return Matrix4(
-				array[0], array[4], array[8], array[12],
-				array[1], array[5], array[9], array[13],
-				array[2], array[6], array[10], array[14],
-				array[3], array[7], array[11], array[15]
+				array[0], array[1], array[2], array[3],
+				array[4], array[5], array[6], array[7],
+				array[8], array[9], array[10], array[11],
+				array[12], array[13], array[14], array[15]
 			)
 		}
 
@@ -122,6 +330,32 @@ data class Matrix4(
 			}, angle)
 
 			return raw.useContents { Matrix4(this) }
+		}
+
+		/**
+		 * Generates a rotation matrix given three angles.
+		 * @param angles The angle of rotations in radians (pitch, yaw, roll)
+		 * @return The rotation matrix as a [Matrix4].
+		 */
+		fun getRotationMatrix(angles: Triple<Float, Float, Float>): Matrix4 {
+			val raw = MatrixRotateXYZ(cValue {
+				x = angles.first
+				y = angles.second
+				z = angles.third
+			})
+
+			return raw.useContents { Matrix4(this) }
+		}
+
+		/**
+		 * Generates a rotation matrix given three angles.
+		 * @param pitch The pitch angle in radians.
+		 * @param yaw The yaw angle in radians.
+		 * @param roll The roll angle in radians.
+		 * @return The rotation matrix as a [Matrix4].
+		 */
+		fun rotate(pitch: Float, yaw: Float, roll: Float): Matrix4 {
+			return getRotationMatrix(pitch to yaw to roll)
 		}
 
 		/**
@@ -205,15 +439,22 @@ data class Matrix4(
 }
 
 /**
- * A 3D bounding box.
+ * A 3D rectangular bounding box.
+ * @property min The minimum coordinates as a [Triple] of floats (x, y, z).
+ * @property max The maximum coordinates as a [Triple] of floats (x, y, z).
  */
-data class BoundingBox(
+data class BoundingBox3D(
 	val min: Triple<Float, Float, Float>,
 	val max: Triple<Float, Float, Float>
 ) {
-
 	/**
-	 * Creates a [BoundingBox] from raw min and max coordinates.
+	 * Creates a [BoundingBox3D] from raw min and max coordinates.
+	 * @param minX The minimum X coordinate.
+	 * @param minY The minimum Y coordinate.
+	 * @param minZ The minimum Z coordinate.
+	 * @param maxX The maximum X coordinate.
+	 * @param maxY The maximum Y coordinate.
+	 * @param maxZ The maximum Z coordinate.
 	 */
 	constructor(
 		minX: Float, minY: Float, minZ: Float,
@@ -224,7 +465,7 @@ data class BoundingBox(
 	)
 
 	/**
-	 * Creates a [BoundingBox] from a raw raylib [BoundingBox].
+	 * Creates a [BoundingBox3D] from a raw raylib [BoundingBox3D].
 	 * @param raw The raw bounding box.
 	 */
 	constructor(raw: raylib.internal.BoundingBox) : this(
@@ -287,12 +528,12 @@ data class BoundingBox(
 		get() = maxZ - minZ
 
 	internal fun raw(): CValue<raylib.internal.BoundingBox> = cValue<raylib.internal.BoundingBox> {
-		min.x = this@BoundingBox.min.first
-		min.y = this@BoundingBox.min.second
-		min.z = this@BoundingBox.min.third
-		max.x = this@BoundingBox.max.first
-		max.y = this@BoundingBox.max.second
-		max.z = this@BoundingBox.max.third
+		min.x = this@BoundingBox3D.min.first
+		min.y = this@BoundingBox3D.min.second
+		min.z = this@BoundingBox3D.min.third
+		max.x = this@BoundingBox3D.max.first
+		max.y = this@BoundingBox3D.max.second
+		max.z = this@BoundingBox3D.max.third
 	}
 }
 
@@ -301,7 +542,7 @@ data class BoundingBox(
  * @param box The bounding box to draw.
  * @param color The color of the bounding box lines. Defaults to red.
  */
-fun Canvas.drawBoundingBox(box: BoundingBox, color: Color = Color.RED) {
+fun Canvas.drawBoundingBox(box: BoundingBox3D, color: Color = Color.RED) {
 	ensureDrawing()
 	DrawBoundingBox(box.raw(), color.raw())
 }
@@ -1633,6 +1874,11 @@ class Material(internal val raw: CPointer<raylib.internal.Material>) {
 		setTextureMap(mapType.value.toInt(), texture)
 	}
 
+	/**
+	 * Frees the material from memory.
+	 */
+	fun unload() = UnloadMaterial(raw.pointed.readValue())
+
 	companion object {
 		/**
 		 * The maximum number of material maps.
@@ -1648,15 +1894,7 @@ class Material(internal val raw: CPointer<raylib.internal.Material>) {
 		fun default(shader: Shader? = null, apply: Material.() -> Unit = {}): Material {
 			val default = LoadMaterialDefault()
 			val ptr = nativeHeap.alloc<raylib.internal.Material>()
-			default.useContents {
-				ptr.shader.id = this.shader.id
-				ptr.shader.locs = this.shader.locs
-				ptr.maps = maps
-				ptr.params[0] = params[0]
-				ptr.params[1] = params[1]
-				ptr.params[2] = params[2]
-				ptr.params[3] = params[3]
-			}
+			default.place(ptr.ptr)
 
 			val material = Material(ptr.ptr)
 			if (shader != null) material.shader = shader
@@ -1691,19 +1929,19 @@ class Material(internal val raw: CPointer<raylib.internal.Material>) {
 /**
  * Represents a raylib mesh.
  */
-class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
+class Mesh(internal val raw: CPointer<raylib.internal.Mesh>) {
 
 	/**
 	 * The number of vertices on the mesh.
 	 */
 	val vertexCount: Int
-		get() = raw.useContents { vertexCount }
+		get() = raw.pointed.vertexCount
 
 	/**
 	 * The number of triangle objects on the mesh.
 	 */
 	val triangleCount: Int
-		get() = raw.useContents { triangleCount }
+		get() = raw.pointed.triangleCount
 
 	private var verticesCache: List<Vertex>? = null
 
@@ -1717,7 +1955,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 			val count = vertexCount
 			val out = ArrayList<Vertex>(count)
 
-			raw.useContents {
+			raw.pointed.apply {
 				for (i in 0 until count) {
 					val vi = i * 3
 					val ti = i * 2
@@ -1757,7 +1995,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		set(value) {
 			verticesCache = value
 
-			raw.useContents {
+			raw.pointed.apply {
 				val count = value.size
 
 				// free old arrays before allocating new ones
@@ -1879,7 +2117,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	var animatedVertices: List<Triple<Float, Float, Float>>
 		get() {
 			val list = mutableListOf<Triple<Float, Float, Float>>()
-			raw.useContents {
+			raw.pointed.apply {
 				for (i in 0 until vertexCount * 3 step 3) {
 					val x = animVertices?.get(i) ?: 0F
 					val y = animVertices?.get(i + 1) ?: 0F
@@ -1891,7 +2129,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 			return list
 		}
 		set(value) {
-			raw.useContents {
+			raw.pointed.apply {
 				// free old array if it exists
 				animVertices?.let { nativeHeap.free(it.rawValue) }
 
@@ -1915,7 +2153,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	var animatedNormals: List<Triple<Float, Float, Float>>
 		get() {
 			val list = mutableListOf<Triple<Float, Float, Float>>()
-			raw.useContents {
+			raw.pointed.apply {
 				for (i in 0 until vertexCount * 3 step 3) {
 					val x = animNormals?.get(i) ?: 0F
 					val y = animNormals?.get(i + 1) ?: 0F
@@ -1927,7 +2165,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 			return list
 		}
 		set(value) {
-			raw.useContents {
+			raw.pointed.apply {
 				// free old array if it exists
 				animNormals?.let { nativeHeap.free(it.rawValue) }
 
@@ -1949,7 +2187,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	 * The number of bones in the mesh.
 	 */
 	val boneCount: Int
-		get() = raw.useContents { boneCount }
+		get() = raw.pointed.boneCount
 
 	/**
 	 * The bone IDs affecting each vertex of the mesh.
@@ -1959,7 +2197,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	val boneWeights: List<Float>
 		get() {
 			val list = mutableListOf<Float>()
-			raw.useContents {
+			raw.pointed.apply {
 				for (i in 0 until vertexCount * 4) {
 					boneWeights?.get(i)?.let { list.add(it) }
 				}
@@ -1976,7 +2214,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	 * @return The bone ID, or 0 if the vertex is not found in the mesh.
 	 */
 	fun getBoneId(vertexIndex: Int, boneIndex: Int): Int {
-		return raw.useContents { boneIds?.get(vertexIndex * 4 + boneIndex)?.toInt() ?: 0 }
+		return raw.pointed.boneIds?.get(vertexIndex * 4 + boneIndex)?.toInt() ?: 0
 	}
 
 	/**
@@ -1999,7 +2237,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	val boneMatrices: List<Matrix4>
 		get() {
 			val list = mutableListOf<Matrix4>()
-			raw.useContents {
+			raw.pointed.apply {
 				for (i in 0 until boneCount) {
 					boneMatrices?.get(i)?.let { list.add(Matrix4(it)) }
 				}
@@ -2014,7 +2252,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	 * @return The bone transformation matrix, or null if the bone index is invalid.
 	 */
 	fun getTransformForBone(boneIndex: Int): Matrix4? {
-		return raw.useContents { boneMatrices?.get(boneIndex)?.let { Matrix4(it) } }
+		return raw.pointed.boneMatrices?.get(boneIndex)?.let { Matrix4(it) }
 	}
 
 	/**
@@ -2061,8 +2299,8 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	/**
 	 * The bounding box of the mesh.
 	 */
-	val boundingBox: BoundingBox
-		get() = GetMeshBoundingBox(raw).useContents { BoundingBox(this) }
+	val boundingBox: BoundingBox3D
+		get() = GetMeshBoundingBox(raw.pointed.readValue()).useContents { BoundingBox3D(this) }
 
 	/**
 	 * Uploads the mesh data to the GPU.
@@ -2074,8 +2312,8 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	 *
 	 * @param dynamic Whether the mesh is dynamic (i.e., will be updated frequently).
 	 */
-	fun upload(dynamic: Boolean = true) = memScoped {
-		UploadMesh(raw.ptr, dynamic)
+	fun upload(dynamic: Boolean = true) {
+		UploadMesh(raw, dynamic)
 	}
 
 	/**
@@ -2091,7 +2329,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		get() {
 			val list = mutableListOf<Quadruple<Float, Float, Float, Float>>()
 
-			raw.useContents {
+			raw.pointed.apply {
 				for (i in 0 until vertexCount * 4 step 4) {
 					val x = tangents?.get(i) ?: 0F
 					val y = tangents?.get(i + 1) ?: 0F
@@ -2112,8 +2350,8 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	 * techniques such as normal mapping. They are used to determine how light interacts
 	 * with the surface of the mesh.
 	 */
-	fun createTangents() = memScoped {
-		GenMeshTangents(raw.ptr)
+	fun createTangents() {
+		GenMeshTangents(raw)
 	}
 
 	/**
@@ -2123,7 +2361,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	 * @param fileName The name of the file to export to.
 	 */
 	fun export(fileName: String) {
-		ExportMesh(raw, fileName.inAppDir())
+		ExportMesh(raw.pointed.readValue(), fileName.inAppDir())
 	}
 
 	/**
@@ -2144,7 +2382,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	 * @param fileName The name of the file to export to.
 	 */
 	fun exportAsCode(fileName: String) {
-		ExportMeshAsCode(raw, fileName.inAppDir())
+		ExportMeshAsCode(raw.pointed.readValue(), fileName.inAppDir())
 	}
 
 	/**
@@ -2168,7 +2406,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	 * @param matrix The transformation matrix to apply.
 	 */
 	fun transform(matrix: Matrix4) {
-		raw.useContents {
+		raw.pointed.apply {
 			val v = vertices ?: return
 			val n = normals
 
@@ -2197,6 +2435,11 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	}
 
 	/**
+	 * Frees the mesh from memory.
+	 */
+	fun unload() = UnloadMesh(raw.pointed.readValue())
+
+	/**
 	 * Generates various standard 3D meshes.
 	 *
 	 * When generating a mesh using these functions, the mesh data is automatically
@@ -2209,6 +2452,12 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 	 */
 	companion object {
 
+		private fun from(value: CValue<raylib.internal.Mesh>): Mesh {
+			val ptr = nativeHeap.alloc<raylib.internal.Mesh>()
+			value.place(ptr.ptr)
+			return Mesh(ptr.ptr)
+		}
+
 		/**
 		 * Generates a polygonal mesh.
 		 * @param sides The number of sides of the polygon.
@@ -2217,7 +2466,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		 */
 		fun poly(sides: Int, radius: Float): Mesh {
 			val raw = GenMeshPoly(sides, radius)
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2230,7 +2479,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		 */
 		fun plane(width: Float, length: Float, resX: Int, resZ: Int): Mesh {
 			val raw = GenMeshPlane(width, length, resX, resZ)
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2240,7 +2489,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		 */
 		fun cube(size: Float): Mesh {
 			val raw = GenMeshCube(size, size, size)
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2252,7 +2501,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		 */
 		fun rectPrism(width: Float, height: Float, length: Float): Mesh {
 			val raw = GenMeshCube(width, height, length)
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2268,7 +2517,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		 */
 		fun sphere(radius: Float, rings: Int, slices: Int = 16): Mesh {
 			val raw = GenMeshSphere(radius, rings, slices)
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2284,7 +2533,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		 */
 		fun hemiSphere(radius: Float, rings: Int, slices: Int = 16): Mesh {
 			val raw = GenMeshHemiSphere(radius, rings, slices)
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2298,7 +2547,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		 */
 		fun cylinder(radius: Float, height: Float, slices: Int = 16): Mesh {
 			val raw = GenMeshCylinder(radius, height, slices)
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2312,7 +2561,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		 */
 		fun cone(radius: Float, height: Float, slices: Int = 16): Mesh {
 			val raw = GenMeshCone(radius, height, slices)
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2329,7 +2578,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		 */
 		fun torus(radius: Float, size: Float, radSeg: Int, sides: Int): Mesh {
 			val raw = GenMeshTorus(radius, size, radSeg, sides)
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2346,7 +2595,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		 */
 		fun knot(radius: Float, size: Float, radSeg: Int, sides: Int): Mesh {
 			val raw = GenMeshKnot(radius, size, radSeg, sides)
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2364,7 +2613,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 			depth: Float = 1F
 		): Mesh {
 			val raw = GenMeshHeightmap(heightMap.raw, (width to height to depth).toVector3())
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2378,7 +2627,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 			size: Triple<Float, Float, Float>
 		): Mesh {
 			val raw = GenMeshHeightmap(heightMap.raw, size.toVector3())
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2389,7 +2638,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		 */
 		fun cubicMap(cubicMap: Image, cubeSize: Float): Mesh {
 			val raw = GenMeshCubicmap(cubicMap.raw, (cubeSize to cubeSize to cubeSize).toVector3())
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2402,7 +2651,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		 */
 		fun cubicMap(cubicMap: Image, width: Float, height: Float, depth: Float): Mesh {
 			val raw = GenMeshCubicmap(cubicMap.raw, (width to height to depth).toVector3())
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2413,7 +2662,7 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 		 */
 		fun cubicMap(cubicMap: Image, cubeSize: Triple<Float, Float, Float>): Mesh {
 			val raw = GenMeshCubicmap(cubicMap.raw, cubeSize.toVector3())
-			return Mesh(raw)
+			return from(raw)
 		}
 
 		// mesh utility functions
@@ -2429,12 +2678,11 @@ class Mesh(internal val raw: CValue<raylib.internal.Mesh>) {
 			combined.addAll(a.vertices)
 			combined.addAll(b.vertices)
 
-			val mesh = Mesh(
-				cValue {
-					vertexCount = combined.size
-					triangleCount = combined.size / 3
-				}
-			)
+			val ptr = nativeHeap.alloc<raylib.internal.Mesh>()
+			ptr.vertexCount = combined.size
+			ptr.triangleCount = combined.size / 3
+
+			val mesh = Mesh(ptr.ptr)
 
 			mesh.vertices = combined
 			mesh.upload(dynamic = false)
@@ -2560,8 +2808,11 @@ fun Canvas.drawMesh(
  */
 fun Canvas.drawMesh(mesh: Mesh, material: Material, transform: Matrix4) {
 	ensureDrawing()
-
-	DrawMesh(mesh.raw, material.raw.pointed.readValue(), transform.raw())
+	DrawMesh(
+		mesh.raw.pointed.readValue(),
+		material.raw.pointed.readValue(),
+		transform.raw()
+	)
 }
 
 /**
@@ -2575,24 +2826,15 @@ fun Canvas.drawMesh(mesh: Mesh, material: Material, transformations: List<Matrix
 	memScoped {
 		val array = allocArray<Matrix>(transformations.size) { i ->
 			val matrix = transformations[i]
-			m0 = matrix.m0
-			m1 = matrix.m1
-			m2 = matrix.m2
-			m3 = matrix.m3
-			m4 = matrix.m4
-			m5 = matrix.m5
-			m6 = matrix.m6
-			m7 = matrix.m7
-			m8 = matrix.m8
-			m9 = matrix.m9
-			m10 = matrix.m10
-			m11 = matrix.m11
-			m12 = matrix.m12
-			m13 = matrix.m13
-			m14 = matrix.m14
-			m15 = matrix.m15
+			matrix.raw().place(ptr)
 		}
-		DrawMeshInstanced(mesh.raw, material.raw.pointed.readValue(), array, transformations.size)
+
+		DrawMeshInstanced(
+			mesh.raw.pointed.readValue(),
+			material.raw.pointed.readValue(),
+			array,
+			transformations.size
+		)
 	}
 }
 
@@ -2618,39 +2860,65 @@ fun Canvas.drawMesh(mesh: Mesh, material: Material, vararg transformations: Matr
 /**
  * Represents a raylib model.
  */
-class Model(internal val raw: CValue<raylib.internal.Model>) {
+class Model(internal val raw: CPointer<raylib.internal.Model>) {
 	/**
 	 * The model transformation matrix.
 	 */
 	@Suppress("DuplicatedCode")
 	var transform: Matrix4
-		get() = raw.useContents { Matrix4(transform) }
+		get() = Matrix4(raw.pointed.transform)
 		set(value) {
-			raw.useContents {
-				transform.m0 = value.m0
-				transform.m1 = value.m1
-				transform.m2 = value.m2
-				transform.m3 = value.m3
-				transform.m4 = value.m4
-				transform.m5 = value.m5
-				transform.m6 = value.m6
-				transform.m7 = value.m7
-				transform.m8 = value.m8
-				transform.m9 = value.m9
-				transform.m10 = value.m10
-				transform.m11 = value.m11
-				transform.m12 = value.m12
-				transform.m13 = value.m13
-				transform.m14 = value.m14
-				transform.m15 = value.m15
-			}
+			value.raw().place(raw.pointed.transform.ptr)
 		}
+
+	/**
+	 * Translates this model via [transform].
+	 * @param x The amount to translate across the X axis
+	 * @param y The amount to translate across the Y axis
+	 * @param z The amount to translate across the Z axis
+	 * @return this model, for chaining
+	 */
+	fun translate(x: Float, y: Float, z: Float): Model {
+		transform *= Matrix4.translate(x, y, z)
+		return this
+	}
+
+	/**
+	 * Rotates this model via [transform].
+	 * @param pitch The amount to rotate on the X axis
+	 * @param yaw The amount to rotate on the Y axis
+	 * @param roll The amount to rotate on the Z axis
+	 * @return this model, for chaining
+	 */
+	fun rotate(pitch: Float, yaw: Float, roll: Float): Model {
+		transform *= Matrix4.rotate(pitch, yaw, roll)
+		return this
+	}
+
+	/**
+	 * Scales this model via [transform].
+	 * @param sx The amount to scale on the X axis
+	 * @param sy The amount to scale on the Y axis
+	 * @param sz The amount to scale on the Z axis
+	 * @return this model, for chaining
+	 */
+	fun scale(sx: Float, sy: Float, sz: Float): Model {
+		transform *= Matrix4.scale(sx, sy, sz)
+		return this
+	}
+
+	/**
+	 * Scales this model via [transform].
+	 * @param scale The amount to scale by
+	 * @return this model, for chaining
+	 */
+	fun scale(scale: Float): Model = scale(scale, scale, scale)
 
 	/**
 	 * The number of meshes in the model.
 	 */
 	val meshCount: Int
-		get() = raw.useContents { meshCount }
+		get() = raw.pointed.meshCount
 
 	/**
 	 * The meshes in the model.
@@ -2658,38 +2926,22 @@ class Model(internal val raw: CValue<raylib.internal.Model>) {
 	var meshes: List<Mesh>
 		get() {
 			val list = mutableListOf<Mesh>()
-			raw.useContents {
+			raw.pointed.apply {
 				for (i in 0 until meshCount) {
-					meshes?.get(i)?.let { list.add(Mesh(it.readValue())) }
+					meshes?.get(i)?.let { list.add(Mesh(it.ptr)) }
 				}
 			}
 
 			return list
 		}
 		set(value) {
-			raw.useContents {
+			raw.pointed.apply {
 				// free old array if it exists
 				meshes?.let { nativeHeap.free(it.rawValue) }
 
-				val array = nativeHeap.allocArray<raylib.internal.Mesh>(value.size) newMesh@{ i ->
+				val array = nativeHeap.allocArray<raylib.internal.Mesh>(value.size) { i ->
 					val mesh = value[i].raw
-
-					mesh.useContents {
-						this@newMesh.vertices = vertices
-						this@newMesh.texcoords = texcoords
-						this@newMesh.texcoords2 = texcoords2
-						this@newMesh.normals = normals
-						this@newMesh.tangents = tangents
-						this@newMesh.colors = colors
-						this@newMesh.indices = indices
-						this@newMesh.animVertices = animVertices
-						this@newMesh.animNormals = animNormals
-						this@newMesh.boneIds = boneIds
-						this@newMesh.boneWeights = boneWeights
-						this@newMesh.vertexCount = vertexCount
-						this@newMesh.triangleCount = triangleCount
-						this@newMesh.vaoId = vaoId
-					}
+					mesh.pointed.readValue().place(ptr)
 				}
 
 				meshes = array
@@ -2701,7 +2953,7 @@ class Model(internal val raw: CValue<raylib.internal.Model>) {
 	 * The number of materials in the model.
 	 */
 	val materialCount: Int
-		get() = raw.useContents { materialCount }
+		get() = raw.pointed.materialCount
 
 	/**
 	 * The materials in the model.
@@ -2709,7 +2961,7 @@ class Model(internal val raw: CValue<raylib.internal.Model>) {
 	var materials: List<Material>
 		get() {
 			val list = mutableListOf<Material>()
-			raw.useContents {
+			raw.pointed.apply {
 				for (i in 0 until materialCount) {
 					materials?.get(i)?.let {
 						list.add(Material(it.ptr))
@@ -2720,18 +2972,13 @@ class Model(internal val raw: CValue<raylib.internal.Model>) {
 			return list
 		}
 		set(value) {
-			raw.useContents {
+			raw.pointed.apply {
 				// free old array if it exists
 				materials?.let { nativeHeap.free(it.rawValue) }
 
-				val array = nativeHeap.allocArray<raylib.internal.Material>(value.size) newMaterial@{ i ->
+				val array = nativeHeap.allocArray<raylib.internal.Material>(value.size) { i ->
 					val material = value[i].raw
-
-					material.pointed.apply {
-						this@newMaterial.shader.id = shader.id
-						this@newMaterial.shader.locs = shader.locs
-						this@newMaterial.maps = maps
-					}
+					material.pointed.readValue().place(ptr)
 				}
 
 				materials = array
@@ -2782,7 +3029,7 @@ class Model(internal val raw: CValue<raylib.internal.Model>) {
 			val meshList = meshes
 			val materialList = materials
 
-			return raw.useContents {
+			return raw.pointed.run {
 				List(meshCount) { i ->
 					val materialIndex = meshMaterial?.get(i) ?: 0
 					val clampedIndex = materialIndex.coerceIn(0, materialCount - 1)
@@ -2796,7 +3043,7 @@ class Model(internal val raw: CValue<raylib.internal.Model>) {
 		meshes = currentMeshes
 		materials = currentMaterials
 
-		raw.useContents {
+		raw.pointed.apply {
 			meshMaterial = meshMaterial?.let {
 				val newArray = nativeHeap.allocArray<IntVarOf<Int>>(currentMeshes.size) { i ->
 					this.value = if (i < currentMaterials.size) i else 0
@@ -2860,19 +3107,19 @@ class Model(internal val raw: CValue<raylib.internal.Model>) {
 	 * Whether the model is valid.
 	 */
 	val isValid: Boolean
-		get() = IsModelValid(raw)
+		get() = IsModelValid(raw.pointed.readValue())
 
-	internal var boundingBoxCache: BoundingBox? = null
+	internal var boundingBoxCache: BoundingBox3D? = null
 
 	/**
 	 * The bounding box of the model.
 	 */
-	val boundingBox: BoundingBox
+	val boundingBox: BoundingBox3D
 		get() {
 			if (boundingBoxCache != null) return boundingBoxCache!!
 
-			boundingBoxCache = GetModelBoundingBox(raw)
-				.useContents { BoundingBox(this) }
+			boundingBoxCache = GetModelBoundingBox(raw.pointed.readValue())
+				.useContents { BoundingBox3D(this) }
 
 			return boundingBoxCache!!
 		}
@@ -2910,7 +3157,19 @@ class Model(internal val raw: CValue<raylib.internal.Model>) {
 		}
 	}
 
+	/**
+	 * Frees the model from memory.
+	 */
+	fun unload() = UnloadModel(raw.pointed.readValue())
+
 	companion object {
+
+		private fun from(value: CValue<raylib.internal.Model>): Model {
+			val ptr = nativeHeap.alloc<raylib.internal.Model>()
+			value.place(ptr.ptr)
+
+			return Model(ptr.ptr)
+		}
 
 		/**
 		 * Loads a model from the specified file path.
@@ -2919,7 +3178,7 @@ class Model(internal val raw: CValue<raylib.internal.Model>) {
 		 */
 		fun load(path: String): Model {
 			val raw = LoadModel(path.inAppDir())
-			return Model(raw)
+			return from(raw)
 		}
 
 		/**
@@ -2936,8 +3195,8 @@ class Model(internal val raw: CValue<raylib.internal.Model>) {
 		 * @return The created [Model].
 		 */
 		fun fromMesh(mesh: Mesh, material: Material? = null): Model {
-			val raw = LoadModelFromMesh(mesh.raw)
-			val model = Model(raw)
+			val raw = LoadModelFromMesh(mesh.raw.pointed.readValue())
+			val model = from(raw)
 			if (material != null) {
 				model.setMaterial(0, material)
 			}
@@ -2966,7 +3225,12 @@ fun Canvas.drawModel(
 	tint: Color = Color.WHITE
 ) {
 	ensureDrawing()
-	DrawModel(model.raw, (x to y to z).toVector3(), scale, tint.raw())
+	DrawModel(
+		model.raw.pointed.readValue(),
+		(x to y to z).toVector3(),
+		scale,
+		tint.raw()
+	)
 }
 
 /**
@@ -2987,7 +3251,12 @@ fun Canvas.drawModel(
 	tint: Color = Color.WHITE
 ) {
 	ensureDrawing()
-	DrawModel(model.raw, (x to y to z).toVector3(), scale, tint.raw())
+	DrawModel(
+		model.raw.pointed.readValue(),
+		(x to y to z).toVector3(),
+		scale,
+		tint.raw()
+	)
 }
 
 /**
@@ -3004,7 +3273,12 @@ fun Canvas.drawModel(
 	tint: Color = Color.WHITE
 ) {
 	ensureDrawing()
-	DrawModel(model.raw, position.toVector3(), scale, tint.raw())
+	DrawModel(
+		model.raw.pointed.readValue(),
+		position.toVector3(),
+		scale,
+		tint.raw()
+	)
 }
 
 /**
@@ -3038,7 +3312,7 @@ fun Canvas.drawModel(
 ) {
 	ensureDrawing()
 	DrawModelEx(
-		model.raw,
+		model.raw.pointed.readValue(),
 		(x to y to z).toVector3(),
 		(rotX to rotY to rotZ).toVector3(),
 		rotAngle,
@@ -3074,7 +3348,7 @@ fun Canvas.drawModel(
 ) {
 	ensureDrawing()
 	DrawModelEx(
-		model.raw,
+		model.raw.pointed.readValue(),
 		(x to y to z).toVector3(),
 		(rotX to rotY to rotZ).toVector3(),
 		rotAngle,
@@ -3106,7 +3380,7 @@ fun Canvas.drawModel(
 ) {
 	ensureDrawing()
 	DrawModelEx(
-		model.raw,
+		model.raw.pointed.readValue(),
 		position.toVector3(),
 		rotation.toVector3(),
 		rotAngle,
@@ -3134,7 +3408,7 @@ fun Canvas.drawModel(
 ) {
 	ensureDrawing()
 	DrawModelEx(
-		model.raw,
+		model.raw.pointed.readValue(),
 		position.toVector3(),
 		rotation.toVector3(),
 		rotAngle,
@@ -3163,7 +3437,12 @@ fun Canvas.drawModelWires(
 	tint: Color = Color.BLACK
 ) {
 	ensureDrawing()
-	DrawModelWires(model.raw, (x to y to z).toVector3(), scale, tint.raw())
+	DrawModelWires(
+		model.raw.pointed.readValue(),
+		(x to y to z).toVector3(),
+		scale,
+		tint.raw()
+	)
 }
 
 /**
@@ -3182,7 +3461,12 @@ fun Canvas.drawModelWires(
 	tint: Color = Color.BLACK
 ) {
 	ensureDrawing()
-	DrawModelWires(model.raw, position.toVector3(), scale, tint.raw())
+	DrawModelWires(
+		model.raw.pointed.readValue(),
+		position.toVector3(),
+		scale,
+		tint.raw()
+	)
 }
 
 /**
@@ -3218,7 +3502,7 @@ fun Canvas.drawModelWires(
 ) {
 	ensureDrawing()
 	DrawModelWiresEx(
-		model.raw,
+		model.raw.pointed.readValue(),
 		(x to y to z).toVector3(),
 		(rotX to rotY to rotZ).toVector3(),
 		rotAngle,
@@ -3250,7 +3534,7 @@ fun Canvas.drawModelWires(
 ) {
 	ensureDrawing()
 	DrawModelWiresEx(
-		model.raw,
+		model.raw.pointed.readValue(),
 		position.toVector3(),
 		rotation.toVector3(),
 		rotAngle,
