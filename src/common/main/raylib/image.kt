@@ -5247,10 +5247,19 @@ fun Canvas.drawTexture(
 	drawTexture(texture, x.toInt(), y.toInt(), tint)
 }
 
+/**
+ * Draws a texture on the canvas at the specified position with rotation, scale, and optional tint color.
+ * @param texture The texture to draw.
+ * @param x The X coordinate where the texture will be drawn.
+ * @param y The Y coordinate where the texture will be drawn.
+ * @param rotation The rotation of the sprite in degrees.
+ * @param scale The scale of the sprite. Default is 1.0 (no scale).
+ * @param tint The color to tint the texture. Default is white (no tint).
+ */
 fun Canvas.drawTexture(
 	texture: Texture2D,
-	x: Int,
-	y: Int,
+	x: Float,
+	y: Float,
 	rotation: Float,
 	scale: Float = 1.0f,
 	tint: Color = Color.WHITE
@@ -5270,11 +5279,90 @@ fun Canvas.drawTexture(
  */
 fun Canvas.drawTexture(
 	texture: Texture2D,
-	x: Float,
-	y: Float,
+	x: Int,
+	y: Int,
 	rotation: Float,
 	scale: Float = 1.0f,
 	tint: Color = Color.WHITE
 ) {
-	drawTexture(texture, x.toInt(), y.toInt(), rotation, scale, tint)
+	drawTexture(texture, x.toFloat(), y.toFloat(), rotation, scale, tint)
+}
+
+/**
+ * Draws a texture on the canvas at the specified position.
+ * @param texture The texture to draw.
+ * @param x The X coordinate where the texture will be drawn.
+ * @param y The Y coordinate where the texture will be drawn.
+ * @param rotation The rotation of the sprite in degrees.
+ * @param centerX The X delta of the origin where transformations are calculated, relative to [x].
+ * @param centerY The Y delta of the origin where transformations are calcualted, relative to [y].
+ * @param scale The scale of the sprite. Default is 1.0 (no scale).
+ * @param tint The color to tint the texture. Default is white (no tint).
+ */
+fun Canvas.drawTexture(
+	texture: Texture2D,
+	x: Int,
+	y: Int,
+	rotation: Float,
+	centerX: Int = 0,
+	centerY: Int = 0,
+	scale: Float = 1.0f,
+	tint: Color = Color.WHITE
+) {
+	drawTexture(
+		texture,
+		x.toFloat(),
+		y.toFloat(),
+		rotation,
+		centerX.toFloat(),
+		centerY.toFloat(),
+		scale,
+		tint
+	)
+}
+
+/**
+ * Draws a texture on the canvas at the specified position.
+ * @param texture The texture to draw.
+ * @param x The X coordinate where the texture will be drawn.
+ * @param y The Y coordinate where the texture will be drawn.
+ * @param rotation The rotation of the sprite in degrees.
+ * @param centerX The X delta of the origin where transformations are calculated, relative to [x].
+ * @param centerY The Y delta of the origin where transformations are calcualted, relative to [y].
+ * @param scale The scale of the sprite. Default is 1.0 (no scale).
+ * @param tint The color to tint the texture. Default is white (no tint).
+ */
+fun Canvas.drawTexture(
+	texture: Texture2D,
+	x: Float,
+	y: Float,
+	rotation: Float,
+	centerX: Float = 0.0f,
+	centerY: Float = 0.0f,
+	scale: Float = 1.0f,
+	tint: Color = Color.WHITE
+) {
+	val source = cValue<Rectangle> {
+		this.x = 0.0f
+		this.y = 0.0f
+		this.width = texture.width.toFloat()
+		this.height = texture.height.toFloat()
+	}
+
+	val dest = cValue<Rectangle> {
+		this.x = x
+		this.y = y
+		this.width = texture.width.toFloat() * scale
+		this.height = texture.height.toFloat() * scale
+	}
+
+	ensureDrawing()
+	DrawTexturePro(
+		texture.raw(),
+		source,
+		dest,
+		(centerX to centerY).toVector2(),
+		rotation,
+		tint.raw()
+	)
 }
