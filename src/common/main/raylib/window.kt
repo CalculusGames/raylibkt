@@ -796,6 +796,13 @@ class Camera2D(internal val raw: raylib.internal.Camera2D) {
 	val bottomLeft: Pair<Float, Float>
 		get() = screenToWorld(0, Window.screenHeight)
 
+	/**
+	 * Frees the native memory used by the Camera2D.
+	 */
+	fun unload() {
+		nativeHeap.free(raw)
+	}
+
 	companion object {
 
 		/**

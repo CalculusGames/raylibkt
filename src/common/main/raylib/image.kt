@@ -4163,7 +4163,7 @@ class PictureFormat private constructor(internal val value: PixelFormat, val bpp
  *
  * Note that images are immutable and modification operations return new Image instances.
  */
-class Image internal constructor(internal val raw: CValue<raylib.internal.Image>) {
+class Image(internal val raw: CValue<raylib.internal.Image>) {
 
     companion object {
         /**
@@ -5204,6 +5204,17 @@ fun Texture2D.Companion.load(image: Image): Texture2D {
 }
 
 /**
+ * Creates a [Texture2D] from an [Image] and then frees the image from memory.
+ * @param image The image to create the texture from.
+ * @return A Texture2D object representing the created texture.
+ */
+fun Texture2D.Companion.loadFree(image: Image): Texture2D {
+	val texture = load(image)
+	image.unload()
+	return texture
+}
+
+/**
  * Draws a texture on the canvas at the specified position with an optional tint color.
  * @param texture The texture to draw.
  * @param x The X coordinate where the texture will be drawn.
@@ -5218,4 +5229,52 @@ fun Canvas.drawTexture(
 ) {
 	ensureDrawing()
 	DrawTexture(texture.raw(), x, y, tint.raw())
+}
+
+/**
+ * Draws a texture on the canvas at the specified position with an optional tint color.
+ * @param texture The texture to draw.
+ * @param x The X coordinate where the texture will be drawn.
+ * @param y The Y coordinate where the texture will be drawn.
+ * @param tint The color to tint the texture. Default is white (no tint).
+ */
+fun Canvas.drawTexture(
+	texture: Texture2D,
+	x: Float,
+	y: Float,
+	tint: Color = Color.WHITE
+) {
+	drawTexture(texture, x.toInt(), y.toInt(), tint)
+}
+
+fun Canvas.drawTexture(
+	texture: Texture2D,
+	x: Int,
+	y: Int,
+	rotation: Float,
+	scale: Float = 1.0f,
+	tint: Color = Color.WHITE
+) {
+	ensureDrawing()
+	DrawTextureEx(texture.raw(), (x to y).toVector2(), rotation, scale, tint.raw())
+}
+
+/**
+ * Draws a texture on the canvas at the specified position with rotation, scale, and an optional tint color.
+ * @param texture The texture to draw.
+ * @param x The X coordinate where the texture will be drawn.
+ * @param y The Y coordinate where the texture will be drawn.
+ * @param rotation The rotation angle in degrees.
+ * @param scale The scale factor. Default is 1.0f (no scaling).
+ * @param tint The color to tint the texture. Default is white (no tint).
+ */
+fun Canvas.drawTexture(
+	texture: Texture2D,
+	x: Float,
+	y: Float,
+	rotation: Float,
+	scale: Float = 1.0f,
+	tint: Color = Color.WHITE
+) {
+	drawTexture(texture, x.toInt(), y.toInt(), rotation, scale, tint)
 }

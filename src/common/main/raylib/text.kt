@@ -46,19 +46,7 @@ class Font(internal val raw: raylib.internal.Font) {
 
 		private fun from(value: CValue<raylib.internal.Font>): Font {
 			val ptr = nativeHeap.alloc<raylib.internal.Font>()
-			value.useContents {
-				ptr.texture.height = texture.height
-				ptr.texture.width = texture.width
-				ptr.texture.id = texture.id
-				ptr.texture.mipmaps = texture.mipmaps
-				ptr.texture.format = texture.format
-
-				ptr.baseSize = baseSize
-				ptr.glyphPadding = glyphPadding
-				ptr.glyphCount = glyphCount
-				ptr.glyphs = glyphs
-				ptr.recs = recs
-			}
+			value.place(ptr.ptr)
 
 			return Font(ptr)
 		}
