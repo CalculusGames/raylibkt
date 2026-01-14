@@ -1,4 +1,4 @@
-package kray
+package kray.physics
 
 /**
  * Represents a hitbox.

@@ -1,5 +1,6 @@
-package kray
+package kray.physics
 
+import kray.to
 import raylib.Matrix4
 import kotlin.math.PI
 import kotlin.math.cos

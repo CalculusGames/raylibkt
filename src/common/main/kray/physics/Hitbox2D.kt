@@ -1,4 +1,4 @@
-package kray
+package kray.physics
 
 import kotlin.math.PI
 import kotlin.math.abs
