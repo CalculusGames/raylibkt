@@ -10,10 +10,10 @@ import kotlin.random.Random
 /**
  * A 3D hitbox for collision detection.
  * @property minX The side of the hitbox facing negative infinity on the X axis
- * @property minY The side of the hitbox facing **positive** infinity on the Y axis
+ * @property minY The side of the hitbox facing negative infinity on the Y axis
  * @property minZ The side of the hitbox facing negative infinity on the Z axis
  * @property maxX The side of the hitbox facing positive infinity on the X axis
- * @property maxY The side of the hitbox facing **negative** infinity on the Y axis
+ * @property maxY The side of the hitbox facing positive infinity on the Y axis
  * @property maxZ The side of the hitbox facing positive infinity on the Z axis
  * @property inside A function that takes a triple of (x, y, z) coordinates and returns true if the point is inside the hitbox.
  */
@@ -93,7 +93,7 @@ class Hitbox3D(
 	 * @param z The Z value to check
 	 * @return true if left, false otherwise
 	 */
-	fun isLeftZ(z: Float): Boolean = minX >= z
+	fun isLeftZ(z: Float): Boolean = minZ >= z
 
 	/**
 	 * Returns whether the sprite is right of the given Z boundary using [maxZ].
@@ -107,14 +107,15 @@ class Hitbox3D(
 	 * @param y The Y value to check
 	 * @return true if above, false otherwise
 	 */
-	fun isAbove(y: Float): Boolean = minY <= y
+	fun isAbove(y: Float): Boolean = maxY >= y
 
 	/**
 	 * Returns whether the sprite is below the given Y boundary using [maxY].
 	 * @param y The Y value to check
 	 * @return true if below, false otherwise
 	 */
-	fun isBelow(y: Float): Boolean = maxY >= y
+	fun isBelow(y: Float): Boolean = minY <= y
+
 	/**
 	 * Creates a rectangular hitbox defined by its minimum and maximum x, y, and z coordinates.
 	 * @param minX The minimum x coordinate.
@@ -462,18 +463,62 @@ class Hitbox3D(
 			depth: Float,
 			transform: Matrix4
 		): Hitbox3D {
-			val invTransform = transform.inverted()
-			fun transform(px: Float, py: Float, pz: Float): Triple<Float, Float, Float> {
-				// apply inverse transform to point
-				return invTransform * (px to py to pz)
+			val cx = x + width / 2f
+			val cy = y + height / 2f
+			val cz = z + depth / 2f
+
+			val corners = listOf(
+				x to y to z,
+				x + width to y to z,
+				x to y + height to z,
+				x + width to y + height to z,
+				x to y to z + depth,
+				x + width to y to z + depth,
+				x to y + height to z + depth,
+				x + width to y + height to z + depth
+			)
+
+			val transformedCorners = corners.map { (px, py, pz) ->
+				val tx = px - cx
+				val ty = py - cy
+				val tz = pz - cz
+
+				// apply rotation
+				val (rx, ry, rz) = transform * (tx to ty to tz)
+
+				// translate back
+				val fx = rx + cx
+				val fy = ry + cy
+				val fz = rz + cz
+
+				fx to fy to fz
 			}
 
-			val (tminX, tminY, tminZ) = transform(x, y, z)
-			val (tmaxX, tmaxY, tmaxZ) = transform(x + width, y + height, z + depth)
+			// find AABB of all transformed corners
+			val allX = transformedCorners.map { it.first }
+			val allY = transformedCorners.map { it.second }
+			val allZ = transformedCorners.map { it.third }
 
-			return Hitbox3D(tminX, tminY, tminZ, tmaxX, tmaxY, tmaxZ) { (px, py, pz) ->
+			val aabbMinX = allX.minOrNull() ?: x
+			val aabbMaxX = allX.maxOrNull() ?: (x + width)
+			val aabbMinY = allY.minOrNull() ?: y
+			val aabbMaxY = allY.maxOrNull() ?: (y + height)
+			val aabbMinZ = allZ.minOrNull() ?: z
+			val aabbMaxZ = allZ.maxOrNull() ?: (z + depth)
 
-				val (finalX, finalY, finalZ) = transform(px, py, pz)
+			val invTransform = transform.inverted()
+
+			return Hitbox3D(aabbMinX, aabbMinY, aabbMinZ, aabbMaxX, aabbMaxY, aabbMaxZ) { (px, py, pz) ->
+				val tx = px - cx
+				val ty = py - cy
+				val tz = pz - cz
+
+				// apply inverse rotation
+				val (lx, ly, lz) = invTransform * (tx to ty to tz)
+
+				val finalX = lx + cx
+				val finalY = ly + cy
+				val finalZ = lz + cz
 
 				finalX in x..(x + width) && finalY in y..(y + height) && finalZ in z..(z + depth)
 			}

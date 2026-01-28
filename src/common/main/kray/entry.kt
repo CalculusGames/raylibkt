@@ -113,32 +113,50 @@ object Kray {
 
 			// drawing
 			canvas.draw {
+				// drawing loop (out camera, positive priority)
+				drawings.filter { (_, inCamera) -> !inCamera }
+					.filter { (p) -> p > 0 }
+					.sortedBy { it.priority }
+					.forEach { (_, _, action) -> action(canvas) }
+
 				if (camera2D != null)
 					canvas.start2D(camera2D!!)
 				else if (camera3D != null)
 					canvas.start3D(camera3D!!)
 
-				// drawing loop
-				drawings.filter { (i, _) -> i >= 0 }
-					.sortedBy { it.first }
-					.forEach { (_, action) -> action(canvas) }
+				// drawing loop (in camera, positive priority)
+				drawings.filter { (_, inCamera) -> inCamera }
+					.filter { (p) -> p > 0 }
+					.sortedBy { it.priority }
+					.forEach { (_, _, action) -> action(canvas) }
 
 				// draw registered sprites
 				drawnSprites.forEach { sprite ->
 					if (sprite is Sprite2D && sprite.isDrawn) {
-						canvas.drawSprite(sprite, sprite.x, sprite.y)
+						canvas.drawSprite(sprite)
+					}
+
+					if (sprite is Sprite3D && sprite.isDrawn) {
+						canvas.drawSprite(sprite)
 					}
 				}
 
-				// drawing loop (negative priority)
-				drawings.filter { (i, _) -> i < 0 }
-					.sortedBy { it.first }
-					.forEach { (_, action) -> action(canvas) }
+				// drawing loop (in camera, negative priority)
+				drawings.filter { (_, inCamera) -> inCamera }
+					.filter { (p) -> p < 0 }
+					.sortedBy { it.priority }
+					.forEach { (_, _, action) -> action(canvas) }
 
 				if (camera2D != null)
 					canvas.end2D()
 				else if (camera3D != null)
 					canvas.end3D()
+
+				// drawing loop (out camera, negative priority)
+				drawings.filter { (_, inCamera) -> !inCamera }
+					.filter { (p) -> p < 0 }
+					.sortedBy { it.priority }
+					.forEach { (_, _, action) -> action(canvas) }
 			}
 
 			drawings.clear()
@@ -146,16 +164,26 @@ object Kray {
 		}
 	}
 
-	internal val drawings: MutableList<Pair<Int, Canvas.() -> Unit>> = mutableListOf()
+	internal data class DrawingCommand(
+		val priority: Int,
+		val inCamera: Boolean,
+		val logic: Canvas.() -> Unit
+	)
+
+	internal val drawings: MutableList<DrawingCommand> = mutableListOf()
 
 	/**
 	 * Adds drawing logic inside the [loop].
 	 * @param priority The priority layer of the drawing. Can be used as a z-index to order drawings. Lower values are drawn first.
 	 * To draw on top of sprites, use a negative priority.
+	 * **Drawing commands with a priority of `0` will be ignored.**
+	 * @param inCamera Whether to draw with the current camera. True by default.
 	 * @param logic The drawing logic.
 	 */
-	fun drawing(priority: Int = 1, logic: Canvas.() -> Unit) {
-		drawings.add(priority to logic)
+	fun drawing(priority: Int = 1, inCamera: Boolean = true, logic: Canvas.() -> Unit) {
+		drawings.add(DrawingCommand(
+			priority, inCamera, logic
+		))
 	}
 
 	/**

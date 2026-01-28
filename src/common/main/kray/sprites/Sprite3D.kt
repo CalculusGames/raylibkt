@@ -105,8 +105,8 @@ class Sprite3D(internal var raw: Model) : Sprite<Model>, Positionable3D, Sizeabl
 
 	override var hitbox: Hitbox3D = Hitbox3D.rectangle(0.0f, 0.0f, 0.0f, width.toFloat(), height.toFloat(), depth.toFloat())
 	override fun isLeftX(x: Float): Boolean = hitbox.isLeftX(x - this.x)
-	override fun isRightX(x: Float): Boolean = hitbox.isRightX(x - this.y)
-	override fun isAbove(y: Float): Boolean = hitbox.isAbove(y - this.z)
+	override fun isRightX(x: Float): Boolean = hitbox.isRightX(x - this.x)
+	override fun isAbove(y: Float): Boolean = hitbox.isAbove(y - this.y)
 	override fun isBelow(y: Float): Boolean = hitbox.isBelow(y - this.y)
 	override fun isLeftZ(z: Float): Boolean = hitbox.isLeftZ(z - this.z)
 	override fun isRightZ(z: Float): Boolean = hitbox.isRightZ(z - this.z)

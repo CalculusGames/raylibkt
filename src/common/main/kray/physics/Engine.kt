@@ -9,10 +9,27 @@ import kray.Positionable3D
 import kray.sprites.Sprite2D
 import kray.sprites.Sprite3D
 import kray.sprites.registeredSprites
+import kray.to
+import raylib.Matrix4
+import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.round
 import kotlin.math.sqrt
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+
+private const val FPI = PI.toFloat()
+private const val TWO_PI = (2 * PI).toFloat()
+
+/**
+ * Normalizes an angle in radians to the range [-π, π].
+ */
+private fun normalizeAngle(angle: Float): Float {
+	var normalized = angle % TWO_PI
+	if (normalized > FPI) normalized -= TWO_PI
+	if (normalized < -FPI) normalized += TWO_PI
+	return normalized
+}
 
 private val massMultipliers = mutableMapOf<Uuid, Double>()
 
@@ -98,6 +115,7 @@ var Positionable.restitutionCoefficient: Double
 
 
 private val spinFactors = mutableMapOf<Uuid, Float>()
+private const val snapThreshold = 0.1f
 
 /**
  * The spin factor of the [Positionable] object.
@@ -699,6 +717,24 @@ val Sprite3D.collisions: Set<Sprite3D>
 
 private val pendingSpins2D = mutableMapOf<Uuid, Float>()
 private val pendingSpins3D = mutableMapOf<Uuid, Triple<Float, Float, Float>>()
+private val storedRotations3D = mutableMapOf<Uuid, Triple<Float, Float, Float>>()
+
+/**
+ * The stored rotation of the 3D sprite as Euler angles (pitch, yaw, roll) in radians.
+ * This is the source of truth for rotation, separate from the transform matrix.
+ */
+var Sprite3D.storedRotation: Triple<Float, Float, Float>
+	get() = storedRotations3D[id] ?: (0f to 0f to 0f)
+	set(value) {
+		// Normalize angles to [-π, π] range
+		val normalizedPitch = normalizeAngle(value.first)
+		val normalizedYaw = normalizeAngle(value.second)
+		val normalizedRoll = normalizeAngle(value.third)
+
+		storedRotations3D[id] = (normalizedPitch to normalizedYaw to normalizedRoll)
+		// Update the actual transform to match
+		transform = Matrix4.IDENTITY.rotate(normalizedPitch, normalizedYaw, normalizedRoll)
+	}
 
 /**
  * The spin decay factor per frame. Higher values = slower decay.
@@ -719,11 +755,13 @@ fun Sprite2D.lerpSpin(degrees: Float) {
 
 /**
  * Adds rotation to a 3D sprite that will be applied gradually over multiple frames.
- * @param pitch The pitch rotation to add in degrees
- * @param yaw The yaw rotation to add in degrees
- * @param roll The roll rotation to add in degrees
+ * @param pitch The pitch rotation to add in radians
+ * @param yaw The yaw rotation to add in radians
+ * @param roll The roll rotation to add in radians
  */
 fun Sprite3D.lerpRotation(pitch: Float, yaw: Float, roll: Float) {
+	if (abs(pitch) < NORMAL_THRESHOLD && abs(yaw) < NORMAL_THRESHOLD && abs(roll) < NORMAL_THRESHOLD) return
+
 	val current = pendingSpins3D.getOrElse(id) { Triple(0f, 0f, 0f) }
 	pendingSpins3D[id] = Triple(
 		current.first + pitch,
@@ -732,11 +770,50 @@ fun Sprite3D.lerpRotation(pitch: Float, yaw: Float, roll: Float) {
 	)
 }
 
+private val targetRotations2D = mutableMapOf<Uuid, Float>()
+
 /**
- * Advances the physics engine by one tick, updating the positions and velocities of all non-static objects
- * based on the applied forces such as gravity and friction.
- * @return A set of all [Positionable] objects that were moved during this tick.
+ * The target rotation steps to move toward then on the ground.
+ *
+ * When a sprite has a [spinFactor] greater than `0`, it will spin when colliding
+ * with other objects or floors. This value represents the step to move toward its
+ * default orientation. For example, the default value is `90`, which means that it
+ * will try and flip itself up on either a `0`, `90`, `180`, or `270` degree axis
+ * (ensuring that a rectangular object is flat on the ground).
+ *
+ * Setting this to `0` will make it stand back up on its original axis.
  */
+var Sprite2D.targetRotation: Float
+	get() = targetRotations2D[id] ?: 90f
+	set(value) {
+		if (value !in 0f..360f)
+			throw IllegalArgumentException("Rotation must be in degrees, between 0F and 360F")
+
+		targetRotations2D[id] = value
+	}
+
+private val targetRotations3D = mutableMapOf<Uuid, Triple<Float, Float, Float>>()
+
+/**
+ * The target rotation steps to move toward then on the ground.
+ *
+ * When a sprite has a [spinFactor] greater than `0`, it will spin when colliding
+ * with other objects or floors. This value represents the step to move toward its
+ * default orientation as a pair of `pitch` (X) to `roll` (Z). For example, the default value is `180` on XZ and `360` on Y, which means that it
+ * will try and flip itself up on either a `0`, or `180` degree axis on both X and Z
+ * (ensuring that a rectangular object is flat on the ground) and can face any direction on Y.
+ *
+ * Setting this to `0` to `0` to `0` will make it stand back up on its original axis.
+ */
+var Sprite3D.targetRotation: Triple<Float, Float, Float>
+	get() = targetRotations3D[id] ?: (180f to 360f to 180f)
+	set(value) {
+		if (value.first !in 0f..360f || value.second !in 0f..360f || value.third !in 0f..360f)
+			throw IllegalArgumentException("Rotation components must be in degrees, between 0F and 360F")
+
+		targetRotations3D[id] = value
+	}
+
 /**
  * Advances the physics engine by one tick, updating the positions and velocities of all non-static objects
  * based on the applied forces such as gravity and friction.
@@ -783,12 +860,34 @@ fun engineTick(): Set<Positionable> {
 					// 2b. rotational friction
 					val currentSpin = pendingSpins2D[sprite.id]
 					if (currentSpin != null && abs(currentSpin) > NORMAL_THRESHOLD) {
-						pendingSpins2D[sprite.id] = currentSpin * spinDecayFactor
+						val velocityFactor = if (abs(sprite.vx) < NORMAL_THRESHOLD * 2) {
+							spinDecayFactor / 1.15f
+						} else {
+							spinDecayFactor
+						}
+
+						val newSpin = currentSpin * velocityFactor
+						if (abs(newSpin) < NORMAL_THRESHOLD) {
+							pendingSpins2D.remove(sprite.id)
+						} else {
+							pendingSpins2D[sprite.id] = newSpin
+						}
 					}
 
 					// 2c. torque to return to flat orientation
-					if (abs(sprite.rotation) > NORMAL_THRESHOLD) {
-						val restoreTorque = -sprite.rotation * 0.2f
+					var delta: Float
+					if (sprite.targetRotation != 0f) {
+						val targetRotation = round(sprite.rotation / sprite.targetRotation) * sprite.targetRotation
+						delta = sprite.rotation - targetRotation
+						while (delta > 180f) delta -= 360f
+						while (delta < -180f) delta += 360f
+					} else {
+						delta = sprite.rotation
+					}
+
+					if (abs(delta) < snapThreshold) delta = 0f
+					if (abs(delta) > NORMAL_THRESHOLD) {
+						val restoreTorque = -delta * 0.2f
 						sprite.lerpSpin(restoreTorque)
 					}
 
@@ -949,7 +1048,7 @@ fun engineTick(): Set<Positionable> {
 				val oldY = sprite.y
 				val oldZ = sprite.z
 
-				val onGround = sprite.isBelow(groundY - 1f)
+				val onGround = sprite.isBelow(groundY + 0.3f)
 
 				// 1. apply gravity unless on ground
 				sprite.ay -= gravity * dt
@@ -958,7 +1057,7 @@ fun engineTick(): Set<Positionable> {
 				if (onGround) {
 					val normalForce = sprite.mass * gravity
 					val frictionForce = sprite.frictionCoefficient * normalForce
-					val frictionAccel = (frictionForce / sprite.mass) * dt
+					val frictionAccel = (frictionForce / sprite.mass) * dt * fps
 
 					if (sprite.vx > 0) {
 						sprite.vx -= frictionAccel
@@ -980,20 +1079,92 @@ fun engineTick(): Set<Positionable> {
 					val currentSpin = pendingSpins3D[sprite.id]
 					if (currentSpin != null) {
 						val (pitch, yaw, roll) = currentSpin
+
+						val velocityFactor = if (abs(sprite.vx) < NORMAL_THRESHOLD * 2 && abs(sprite.vz) < NORMAL_THRESHOLD * 2) {
+							spinDecayFactor / 1.2f
+						} else {
+							spinDecayFactor
+						}
+
 						if (abs(pitch) > NORMAL_THRESHOLD || abs(yaw) > NORMAL_THRESHOLD || abs(roll) > NORMAL_THRESHOLD) {
-							pendingSpins3D[sprite.id] = Triple(pitch * spinDecayFactor, yaw * spinDecayFactor, roll * spinDecayFactor)
+							pendingSpins3D[sprite.id] = Triple(
+								pitch * velocityFactor,
+								yaw * velocityFactor,
+								roll * velocityFactor
+							)
+						} else {
+							pendingSpins3D.remove(sprite.id)
 						}
 					}
 
 					// 2c. torque to return to flat orientation
-					// XZ plane, so change pitch and roll
-					if (
-						abs(sprite.transform.pitch) > NORMAL_THRESHOLD ||
-						abs(sprite.transform.roll) > NORMAL_THRESHOLD
-					) {
-						val restoreTorquePitch = -sprite.transform.pitch * 0.2f
-						val restoreTorqueRoll = -sprite.transform.roll * 0.2f
-						sprite.lerpRotation(restoreTorquePitch, 0f, restoreTorqueRoll)
+					val (storedPitch, storedYaw, storedRoll) = sprite.storedRotation
+					val (tPitchDeg, tYawDeg, tRollDeg) = sprite.targetRotation
+
+					// Convert stored rotation to degrees
+					val pitchDeg = storedPitch * 180f / FPI
+					val yawDeg = storedYaw * 180f / FPI
+					val rollDeg = storedRoll * 180f / FPI
+
+					// Calculate delta for pitch (exactly like 2D)
+					var deltaPitch: Float = when (tPitchDeg) {
+						0f -> pitchDeg
+						360f -> 0f
+						else -> {
+							var d = pitchDeg - round(pitchDeg / tPitchDeg) * tPitchDeg
+							while (d > 180f) d -= 360f
+							while (d < -180f) d += 360f
+							d
+						}
+					}
+
+					// Calculate delta for yaw (exactly like 2D)
+					var deltaYaw: Float = when (tYawDeg) {
+						0f -> yawDeg
+						360f -> 0f
+						else -> {
+							var d = yawDeg - round(yawDeg / tYawDeg) * tYawDeg
+							while (d > 180f) d -= 360f
+							while (d < -180f) d += 360f
+							d
+						}
+					}
+
+					// Calculate delta for roll (exactly like 2D)
+					var deltaRoll: Float = when (tRollDeg) {
+						0f -> rollDeg
+						360f -> 0f
+						else -> {
+							var d = rollDeg - round(rollDeg / tRollDeg) * tRollDeg
+							while (d > 180f) d -= 360f
+							while (d < -180f) d += 360f
+							d
+						}
+					}
+
+					// Snap to 0 if close enough
+					if (abs(deltaPitch) < snapThreshold) deltaPitch = 0f
+					if (abs(deltaYaw) < snapThreshold) deltaYaw = 0f
+					if (abs(deltaRoll) < snapThreshold) deltaRoll = 0f
+
+					// Apply restoring torque if significant
+					if (abs(deltaPitch) > NORMAL_THRESHOLD || abs(deltaYaw) > NORMAL_THRESHOLD || abs(deltaRoll) > NORMAL_THRESHOLD) {
+						// If sprite is nearly stationary, directly apply correction
+						if (abs(sprite.vx) < NORMAL_THRESHOLD * 2 && abs(sprite.vz) < NORMAL_THRESHOLD * 2) {
+							// Direct correction when stationary
+							val correctionFactor = 0.15f
+							sprite.storedRotation = (
+								storedPitch - deltaPitch * correctionFactor * FPI / 180f to
+								storedYaw - deltaYaw * correctionFactor * FPI / 180f to
+								storedRoll - deltaRoll * correctionFactor * FPI / 180f
+							)
+						} else {
+							// Add torque when moving
+							val restoreTorquePitch = -deltaPitch * 0.2f * FPI / 180f
+							val restoreTorqueYaw = -deltaYaw * 0.2f * FPI / 180f
+							val restoreTorqueRoll = -deltaRoll * 0.2f * FPI / 180f
+							sprite.lerpRotation(restoreTorquePitch, restoreTorqueYaw, restoreTorqueRoll)
+						}
 					}
 
 					// 2d. stop vertical motion when on ground
@@ -1024,7 +1195,7 @@ fun engineTick(): Set<Positionable> {
 
 				// 5. apply velocity to position
 				sprite.x += (sprite.vx * dt).toFloat()
-				sprite.y -= (sprite.vy * dt).toFloat() // Y is inverted
+				sprite.y += (sprite.vy * dt).toFloat()
 				sprite.z += (sprite.vz * dt).toFloat()
 
 				// 6a. apply collisions with other sprites
@@ -1179,13 +1350,13 @@ fun engineTick(): Set<Positionable> {
 				}
 
 				// 7. ensure sprite does not fall below ground level
-				if (sprite.y + sprite.hitbox.maxY >= groundY) {
-					sprite.y = groundY - sprite.hitbox.maxY
+				if (sprite.y + sprite.hitbox.minY <= groundY) {
+					sprite.y = groundY - sprite.hitbox.minY
 
 					if (sprite.vy < -NORMAL_THRESHOLD * 5) {
 						sprite.vy = -sprite.vy * sprite.restitutionCoefficient
 
-						if (sprite.spinFactor > 0) {
+						if (sprite.spinFactor > 0 && (abs(sprite.vx) > NORMAL_THRESHOLD || abs(sprite.vz) > NORMAL_THRESHOLD)) {
 							val pitch = (sprite.vz * sprite.spinFactor * 10f).toFloat()
 							val roll = (-sprite.vx * sprite.spinFactor * 10f).toFloat()
 							sprite.lerpRotation(pitch, 0f, roll)
@@ -1207,7 +1378,13 @@ fun engineTick(): Set<Positionable> {
 						val yawFrame = yaw * (1f - spinDecayFactor)
 						val rollFrame = roll * (1f - spinDecayFactor)
 
-						sprite.rotate(pitchFrame, yawFrame, rollFrame)
+						// Apply to stored rotation instead of transform
+						val (currentPitch, currentYaw, currentRoll) = sprite.storedRotation
+						sprite.storedRotation = (
+							currentPitch + pitchFrame to
+							currentYaw + yawFrame to
+							currentRoll + rollFrame
+						)
 
 						val remainingPitch = pitch * spinDecayFactor
 						val remainingYaw = yaw * spinDecayFactor

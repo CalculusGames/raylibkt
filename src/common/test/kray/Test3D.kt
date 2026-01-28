@@ -98,8 +98,6 @@ class Test3D {
 		}
 
 		model.unload()
-		mesh.unload()
-		material.unload()
 	}
 
 	@Test

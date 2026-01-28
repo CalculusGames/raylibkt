@@ -23,10 +23,11 @@ fun Canvas.drawSprite(
 	rotation: Float = sprite.rotation,
 	scale: Float = sprite.scale
 ) {
+	ensureDrawing()
+
 	val cx = sprite.width / 2f
 	val cy = sprite.height / 2f
 
-	ensureDrawing()
 	drawTexture(
 		sprite.raw,
 		x + cx,
@@ -52,7 +53,12 @@ fun Canvas.drawSprite(
 	z: Float = sprite.z,
 ) {
 	ensureDrawing()
-	drawModel(sprite.raw, x, y, z)
+
+	val cx = sprite.width / 2f
+	val cy = sprite.height / 2f
+	val cz = sprite.depth / 2f
+
+	drawModel(sprite.raw, x + cx, y + cy, z + cz)
 }
 
 // Kray
@@ -69,10 +75,8 @@ val Kray.drawnSprites: Set<Sprite<*>>
 /**
  * Adds the given [sprite] to the Kray canvas at its current position or at the specified [x] and [y] coordinates.
  * @param sprite The sprite to add.
- * @param x The x-coordinate to add the sprite at. Defaults to the sprite's current x position.
- * @param y The y-coordinate to add the sprite at. Defaults to the sprite's current y position.
  */
-fun Kray.addSprite(sprite: Sprite<*>, x: Float = sprite.x, y: Float = sprite.y) {
+fun Kray.addSprite(sprite: Sprite<*>) {
 	registeredSprites.add(sprite)
 
 	if (sprite is Sprite2D)
